@@ -15,8 +15,6 @@ void testHttpServer() {
 	for (test in {testRequestHeaders,testPath,testQuery,testForm,test200}) {
 		test(server);
 		Promise<Null> promise = server.close();
-		print("Closing server");
-		promise.then_((Null n) => print("Server closed"));
 		assertResolve(promise);
 	}
 }
@@ -30,12 +28,8 @@ void testPath(HttpServer server) {
 		resp.contentType("text/html");
 		resp.end("HELLO");
 	}
-	print("Opening");
 	value a = server.requestHandler(f).listen(8080);
-	a.then_((Null n) => print("Opened"));
-	print("Resolving");
 	assertResolve(a);
-	print("Resolved");
 	assertRequest("http://localhost:8080/foo%20?bar");
 	assertEquals("/foo ", path);
 }

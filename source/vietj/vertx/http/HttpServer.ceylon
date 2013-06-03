@@ -19,6 +19,7 @@ import org.vertx.java.core { Handler_=Handler, AsyncResult_=AsyncResult }
 import vietj.promises { Promise, Deferred }
 import vietj.vertx { toMap }
 import java.lang { Void_=Void }
+import vietj.vertx { HandlerPromise }
 
 by "Julien Viet"
 license "ASL2"
@@ -58,38 +59,18 @@ shared class HttpServer(HttpServer_ delegate) {
 	}
 	
 	shared Promise<Null> listen(Integer port, String? hostName = null) {
-		Deferred<Null> deferred = Deferred<Null>();
-		object handler satisfies Handler_<AsyncResult_<HttpServer_>> {
-			shared actual void handle(AsyncResult_<HttpServer_> delegate) {
-				if (delegate.succeeded()) {
-					deferred.resolve(null);
-				} else {
-					value cause = delegate.cause();
-					deferred.reject(cause);
-				}
-			}
-		}
+		value handler = HandlerPromise<Null, HttpServer_>((HttpServer_ s) => null);
 		if (exists hostName) {
 			delegate.listen(port, hostName, handler);
 		} else {
 			delegate.listen(port, handler);
 		}
-		return deferred.promise;
+		return handler.promise;
 	}
 	
 	shared Promise<Null> close() {
-		Deferred<Null> deferred = Deferred<Null>();
-		object handler satisfies Handler_<AsyncResult_<Void_>> {
-			shared actual void handle(AsyncResult_<Void_> delegate) {
-				if (delegate.succeeded()) {
-					deferred.resolve(null);
-				} else {
-					value cause = delegate.cause();
-					deferred.reject(cause);
-				}
-			}
-		}
+		value handler = HandlerPromise<Null, Void_>((Void_ v) => null);
 		delegate.close(handler);
-		return deferred.promise;
+		return handler.promise;
 	}
 }

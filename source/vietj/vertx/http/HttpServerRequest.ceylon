@@ -21,13 +21,14 @@ import vietj.vertx { combine, toMap }
 
 by "Julien Viet"
 license "ASL2"
-shared class HttpServerRequest(HttpServerRequest_ delegate, shared Map<String, {String+}>? formParameters = null) {
+shared class HttpServerRequest(HttpServerRequest_ delegate, Map<String, {String+}>? formParameters_ = null) {
 	
 	shared HttpServerResponse response = HttpServerResponse(delegate.response());
 	shared String method => delegate.method();
 	shared Uri uri => parseUri(delegate.uri());
 	shared String path => delegate.path();
 	shared Query query => uri.query;
+	shared Map<String, {String+}>? formParameters = formParameters_;
 	
 	// Compute query parameter map
 	variable Map<String, {String+}>? queryMap = null;

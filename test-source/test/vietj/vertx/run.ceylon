@@ -37,7 +37,7 @@ T assertResolve<T>(Promise<T>|Deferred<T> obj) {
 			}
 		}
 	} else {
-		throw AssertException("Timed out waiting for ``promise``");
+		throw AssertException("Timed out waiting for :" + promise.hash.string);
 	}
 }
 

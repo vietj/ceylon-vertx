@@ -15,6 +15,7 @@
  */
 
 import vietj.vertx.http { HttpServerRequest }
+import java.lang { Thread { sleep } }
 
 by "Julien Viet"
 license "ASL2"
@@ -50,12 +51,10 @@ shared void run(){
 			     
 			     </body></html>")
 	);
-	http.listen(8080);
 	
-    print("Application started");
+	http.listen(8080).then_((Null n) => print("Application started"));
     process.readLine();
-	
-	
+	http.close().then_((Null n) => print("Application stopped"));
 }
 
 
