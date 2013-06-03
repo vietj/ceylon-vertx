@@ -16,7 +16,7 @@
 
 by "Julien Viet"
 license "ASL2"
-module vietj.vertx '0.1.0' {
+module vietj.vertx '0.1.1' {
 
   import 'io.netty.netty-all' '4.0.0.CR3';
   shared import 'io.vertx.vertx-core' '2.0.0-beta3';
