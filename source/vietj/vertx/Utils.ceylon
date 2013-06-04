@@ -15,9 +15,12 @@
  */
 
 import ceylon.collection { HashMap }
+import ceylon.json { Object }
 import org.vertx.java.core { MultiMap }
+import org.vertx.java.core.json { JsonObject }
 import java.lang { String_=String }
 import java.util { Iterator_=Iterator }
+import vietj.vertx { JavaBridge { getFieldValue } }
 
 by "Julien Viet"
 license "ASL2"
@@ -58,3 +61,36 @@ shared Map<String, {String+}> toMap(MultiMap multiMap) {
 	}
 	return map;
 }
+
+@doc "Convert a ceylon.json.Object to a Vert.x JsonObject"
+shared JsonObject fromObject(Object obj) {
+	JsonObject jsonObject = JsonObject();
+	for (field in obj) {
+		value v = field.item;
+		switch (v)
+			case (is String) { jsonObject.putString(field.key, v); }
+			case (is Object) { jsonObject.putObject(field.key, fromObject(v)); }
+			else { throw Exception("todo"); }
+	}
+	return jsonObject;
+}
+
+@doc "Convert a Vert.x JsonObject to a ceylon.json.Object"
+shared Object toObject(JsonObject jsonObject) {
+	value obj = Object();
+	value fieldNameIterator = jsonObject.fieldNames.iterator();
+	while (fieldNameIterator.hasNext()) {
+		value nextFieldName = fieldNameIterator.next();
+		String fieldName = nextFieldName.string;
+		value fieldValue = getFieldValue(jsonObject, fieldName);
+		switch (fieldValue)
+			case (is JsonObject) { obj.put(fieldName, toObject(fieldValue)); }
+			case (is String_) { obj.put(fieldName, fieldValue.string); }
+			else { throw Exception(); }
+		
+	}
+	
+	return obj;
+}
+
+

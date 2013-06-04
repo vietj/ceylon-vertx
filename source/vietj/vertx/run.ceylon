@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import vietj.vertx.http { HttpServerRequest }
-import java.lang { Thread { sleep } }
+import vietj.vertx.http { ... }
+import vietj.vertx.eventbus { ... }
+import vietj.promises { ... }
 
 by "Julien Viet"
 license "ASL2"
@@ -24,8 +25,8 @@ shared void run(){
 	value vertx = Vertx();
 	value server = vertx.createHttpServer();
 	
-	value http = server.requestHandler(
-		(HttpServerRequest req) => req.response.
+	void handle(HttpServerRequest req) {
+		req.response.
 			contentType("text/html").
 			end("<html><body>
 			     <h1>Hello from Vert.x with Ceylon!</h1>
@@ -42,19 +43,24 @@ shared void run(){
 			     <p>``req.queryParameters``</p>
 			     <h2>Form parameters</h2>
 			     <p>``req.formParameters else {}``</p>
-			                              
 			     
 			     <form action='/post' method='POST'>
 			     <input type='text' name='foo'>
 			     <input type='submit'>
 			     </form>
-			     
-			     </body></html>")
-	);
+			             			      			            
+			     </body></html>");
+		vertx.eventBus.send("foo", "got request ``req.path`` from ``req.remoteAddress.address``");
+		
+	}
 	
-	http.listen(8080).then_((Null n) => print("Application started"));
+	value http = server.requestHandler(handle);
+	Promise<Registration> registration = vertx.eventBus.registerHandler("foo", (Message<String> msg) => print(msg.body));
+	registration.then_((Registration reg) => http.listen(8080).then_((Null n) => print("Application started")));
+
+	//
     process.readLine();
-	http.close().then_((Null n) => print("Application stopped"));
+	vertx.stop();
 }
 
 

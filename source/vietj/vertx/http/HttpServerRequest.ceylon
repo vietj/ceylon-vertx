@@ -16,6 +16,7 @@
 
 import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest }
 import ceylon.net.uri { Uri, parseUri=parse, Query, Parameter }
+import ceylon.io { SocketAddress }
 import ceylon.collection { HashMap }
 import vietj.vertx { combine, toMap }
 
@@ -29,6 +30,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate, Map<String, {String+
 	shared String path => delegate.path();
 	shared Query query => uri.query;
 	shared Map<String, {String+}>? formParameters = formParameters_;
+	shared SocketAddress remoteAddress = SocketAddress(delegate.remoteAddress().address.hostAddress, delegate.remoteAddress().port);
 	
 	// Compute query parameter map
 	variable Map<String, {String+}>? queryMap = null;

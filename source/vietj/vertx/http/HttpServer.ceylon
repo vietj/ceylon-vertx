@@ -15,8 +15,8 @@
  */
 
 import org.vertx.java.core.http { HttpServer_=HttpServer, HttpServerRequest_=HttpServerRequest }
-import org.vertx.java.core { Handler_=Handler, AsyncResult_=AsyncResult }
-import vietj.promises { Promise, Deferred }
+import org.vertx.java.core { Handler_=Handler}
+import vietj.promises { Promise }
 import vietj.vertx { toMap }
 import java.lang { Void_=Void }
 import vietj.vertx { HandlerPromise }

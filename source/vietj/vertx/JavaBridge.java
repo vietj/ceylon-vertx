@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-by "Julien Viet"
-license "ASL2"
-module vietj.vertx '0.1.1' {
+package vietj.vertx;
 
-  import 'io.netty.netty-all' '4.0.0.CR3';
-  shared import 'io.vertx.vertx-core' '2.0.0-beta3';
-  import java.base '7';
-  shared import vietj.promises '0.2.1';
-  shared import ceylon.net '0.5';
-  shared import ceylon.json '0.5';
-  shared import ceylon.io '0.5';
-  import ceylon.collection '0.5';
+import org.vertx.java.core.json.JsonObject;
 
-} 
+public class JavaBridge {
+
+  // Erase the <T> variable from getField 
+  public static Object getFieldValue(JsonObject obj, String fieldName) {
+    return obj.getField(fieldName);
+  }
+  
+}

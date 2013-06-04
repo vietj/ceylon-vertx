@@ -11,11 +11,15 @@ import ceylon.io.charset { ascii }
 
 void testHttpServer() {
 	value vertx = Vertx();
-	value server = vertx.createHttpServer();
-	for (test in {testRequestHeaders,testPath,testQuery,testForm,test200}) {
-		test(server);
-		Promise<Null> promise = server.close();
-		assertResolve(promise);
+	try {
+		value server = vertx.createHttpServer();
+		for (test in {testRequestHeaders,testPath,testQuery,testForm,test200}) {
+			test(server);
+			Promise<Null> promise = server.close();
+			assertResolve(promise);
+		}
+	} finally {
+		vertx.stop();
 	}
 }
 

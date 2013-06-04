@@ -16,15 +16,12 @@
 
 by "Julien Viet"
 license "ASL2"
-module vietj.vertx '0.1.1' {
+shared class Message<T>(T body_, String? replyAddress_, Anything(BodyType) doReply) {
 
-  import 'io.netty.netty-all' '4.0.0.CR3';
-  shared import 'io.vertx.vertx-core' '2.0.0-beta3';
-  import java.base '7';
-  shared import vietj.promises '0.2.1';
-  shared import ceylon.net '0.5';
-  shared import ceylon.json '0.5';
-  shared import ceylon.io '0.5';
-  import ceylon.collection '0.5';
-
-} 
+	shared T body = body_;
+	shared String? replyAddress = replyAddress_;
+	
+	shared void reply(BodyType body) {
+		doReply(body);
+	}
+}

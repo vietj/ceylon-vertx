@@ -19,6 +19,7 @@ import org.vertx.java.core {
 	Vertx_=Vertx
 }
 import vietj.vertx.http { HttpServer }
+import vietj.vertx.eventbus { EventBus }
 
 by "Julien Viet"
 license "ASL2"
@@ -41,7 +42,14 @@ shared class Vertx(shared Integer? port = null, shared String? hostName = null) 
 	}
 	Vertx_ v = v_;
 	
+	@doc "The event bus"
+	shared EventBus eventBus = EventBus(v.eventBus());
+	
 	shared HttpServer createHttpServer() {
 		return HttpServer(v.createHttpServer());
+	}
+	
+	shared void stop() {
+		v_.stop();
 	}
 }

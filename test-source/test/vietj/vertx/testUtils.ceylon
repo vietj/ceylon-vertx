@@ -16,6 +16,4 @@ void testUtils() {
 		"bar" -> {"bar_value"},
 		"juu" -> {"juu_value"}}), combined);
 	
-	
-	
 }
