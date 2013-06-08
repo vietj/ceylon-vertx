@@ -19,7 +19,7 @@ license "ASL2"
 module vietj.vertx '0.1.1' {
 
   import 'io.netty.netty-all' '4.0.0.CR3';
-  shared import 'io.vertx.vertx-core' '2.0.0-beta3';
+  shared import 'io.vertx.vertx-core' '2.0.0-beta5';
   import java.base '7';
   shared import vietj.promises '0.2.1';
   shared import ceylon.net '0.5';
