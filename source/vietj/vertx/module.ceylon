@@ -16,7 +16,7 @@
 
 by "Julien Viet"
 license "ASL2"
-module vietj.vertx '0.1.1' {
+module vietj.vertx '0.1.2' {
 
   shared import io.netty '4.0.0.CR3';
   shared import com.fasterxml.jackson.annotations '2.1.2';

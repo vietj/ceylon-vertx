@@ -1,7 +1,7 @@
-module test.vietj.vertx '0.1.1' {
+module test.vietj.vertx '0.1.2' {
 
   import vietj.promises '0.3.0';
-  import vietj.vertx '0.1.1';
+  import vietj.vertx '0.1.2';
   import java.base '7';
   import ceylon.net '0.5';
   import ceylon.json '0.5';
