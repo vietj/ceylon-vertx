@@ -21,7 +21,7 @@
     </target>
 
     <target name="compile">
-        <ceylon-compile encoding="${source.encoding}">
+        <ceylon-compile encoding="${source.encoding}" verbose="false">
           <!--
             <reposet refid="reposet.compile"/>-->
             <module name="vietj.vertx"/>
