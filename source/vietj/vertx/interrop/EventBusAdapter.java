@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vietj.vertx.eventbus;
+package vietj.vertx.interrop;
 
 import org.vertx.java.core.eventbus.EventBus;
 import org.vertx.java.core.eventbus.Message;
@@ -27,7 +27,7 @@ import org.vertx.java.core.AsyncResult;
  * 
  * @author julien
  */
-class EventBusAdapter {
+public class EventBusAdapter {
   
   public static <T, M extends Message<T>> void registerHandler(
       EventBus eventBus, 

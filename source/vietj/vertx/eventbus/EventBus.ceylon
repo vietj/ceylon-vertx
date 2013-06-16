@@ -19,7 +19,7 @@ import org.vertx.java.core { Handler_=Handler }
 import org.vertx.java.core.json { JsonObject_=JsonObject }
 import vietj.promises { Promise }
 import java.lang { String_=String, Void_=Void }
-import vietj.vertx.eventbus { EventBusAdapter { registerHandler_=registerHandler, unregisterHandler_=unregisterHandler } }
+import vietj.vertx.interrop { EventBusAdapter { registerHandler_=registerHandler, unregisterHandler_=unregisterHandler } }
 import vietj.vertx { HandlerPromise, fromObject, toObject, Registration }
 import ceylon.json { JSonObject=Object, JSonArray=Array }
 

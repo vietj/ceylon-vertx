@@ -20,7 +20,7 @@ import org.vertx.java.core { MultiMap }
 import org.vertx.java.core.json { JsonObject }
 import java.lang { String_=String }
 import java.util { Iterator_=Iterator }
-import vietj.vertx { JavaBridge { getFieldValue } }
+import vietj.vertx.interrop { JavaBridge { getFieldValue } }
 
 by "Julien Viet"
 license "ASL2"

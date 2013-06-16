@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-package vietj.vertx;
-
-import org.vertx.java.core.json.JsonObject;
-
-public class JavaBridge {
-
-  // Erase the <T> variable from getField 
-  public static Object getFieldValue(JsonObject obj, String fieldName) {
-    return obj.getField(fieldName);
-  }
-  
-}
+by "Julien Viet"
+license "ASL2"
+shared package vietj.vertx.interrop;
