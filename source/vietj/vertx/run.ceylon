@@ -16,7 +16,7 @@
 
 import vietj.vertx.http { ... }
 import vietj.promises { ... }
-// import vietj.vertx.eventbus { ... }
+import vietj.vertx.eventbus { ... }
 
 by "Julien Viet"
 license "ASL2"
@@ -53,7 +53,7 @@ shared void run(){
 		vertx.eventBus.send("foo", "got request ``req.path`` from ``req.remoteAddress.address``");
 		
 	}
-/*	
+
 	value http = server.requestHandler(handle);
 	Promise<Registration> registration = vertx.eventBus.registerHandler("foo", (Message<String> msg) => print(msg.body));
 	registration.then_((Registration reg) => http.listen(8080).then_((Null n) => print("Application started")));
@@ -61,7 +61,6 @@ shared void run(){
 	//
     process.readLine();
 	vertx.stop();
-*/
 }
 
 
