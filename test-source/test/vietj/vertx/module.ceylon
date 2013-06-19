@@ -1,8 +1,8 @@
-module test.vietj.vertx '0.1.2' {
+module test.vietj.vertx '0.1.3' {
 
   import io.netty '4.0.0.CR3';
   import vietj.promises '0.3.3';
-  import vietj.vertx '0.1.2';
+  import vietj.vertx '0.1.3';
   import java.base '7';
   import ceylon.net '0.5';
   import ceylon.json '0.5';
