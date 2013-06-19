@@ -21,8 +21,8 @@ module vietj.vertx '0.1.2' {
   shared import io.netty '4.0.0.CR3';
   shared import com.fasterxml.jackson.annotations '2.1.2';
   shared import com.fasterxml.jackson.core '2.1.3';
-  shared import com.fasterxml.jackson.databind '2.1.3';
-  shared import io.vertx.core '2.0.0-beta5';
+  shared import com.fasterxml.jackson.databind '2.1.3.SP1';
+  shared import io.vertx.core '2.0.0-beta5.SP1';
   import java.base '7';
   shared import vietj.promises '0.3.0';
   shared import ceylon.net '0.5';
