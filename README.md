@@ -2,6 +2,12 @@
 
 Provides a Ceylon API for the Vert.x framework.
 
+# Test Drive
+
+    ceylon run vietj.vertx/0.1.2
+
+This will execute the sample [sample](https://github.com/vietj/ceylon-vertx/blob/master/source/vietj/vertx/run.ceylon) server.
+
 # What works
 
 ## Basic HTTP bridging
@@ -48,6 +54,3 @@ Now supports String and JSON.
     Promise<Registration> promise = bus.registerHandler(...);
     promise.then_((Registration reg) => print("Registered"), (Exception e) => print("Failed"));
 
-# Example
-
-Here is a [sample](https://github.com/vietj/ceylon-vertx/blob/master/source/vietj/vertx/run.ceylon).
