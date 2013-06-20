@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
-by "Julien Viet"
-license "ASL2"
-shared package vietj.vertx.interrop;
+package vietj.vertx.interop;
+
+import org.vertx.java.core.json.JsonObject;
+
+public class JavaBridge {
+
+  // Erase the <T> variable from getField 
+  public static Object getFieldValue(JsonObject obj, String fieldName) {
+    return obj.getField(fieldName);
+  }
+  
+}

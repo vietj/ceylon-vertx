@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package vietj.vertx.interrop;
+package vietj.vertx.interop;
 
 import org.vertx.java.core.eventbus.EventBus;
 import org.vertx.java.core.eventbus.Message;
