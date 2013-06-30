@@ -32,4 +32,5 @@ void run() {
 	suite("vietj.vertx", "test utils" -> testUtils);
 	suite("vietj.vertx", "test http server" -> testHttpServer);
 	suite("vietj.vertx", "test event bus" -> testEventBus);
+	suite("vietj.vertx", "test http client" -> testHttpClient);
 }

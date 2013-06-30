@@ -18,7 +18,7 @@ import org.vertx.java.core {
 	VertxFactory { newVertx },
 	Vertx_=Vertx
 }
-import vietj.vertx.http { HttpServer }
+import vietj.vertx.http { HttpServer, HttpClient }
 import vietj.vertx.eventbus { EventBus }
 
 by "Julien Viet"
@@ -49,7 +49,18 @@ shared class Vertx(shared Integer? port = null, shared String? hostName = null) 
 		return HttpServer(v.createHttpServer());
 	}
 	
-	shared void stop() {
+	shared HttpClient createHttpClient(Integer? port = null, String? hostName = null) {
+		value client = v.createHttpClient();
+		if (exists port) {
+			client.setPort(port);
+		}
+		if (exists hostName) {
+			client.setHost(hostName);
+		}
+		return HttpClient(client);
+	}
+
+		shared void stop() {
 		v_.stop();
 	}
 }

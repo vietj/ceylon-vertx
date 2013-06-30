@@ -46,6 +46,11 @@ shared class HttpServer(HttpServer_ delegate) {
 					} 
 					delegate.endHandler(handler); 
 				} else {
+					
+					// We must pause
+					delegate.pause();
+					
+					//
 					try {
 						requestHandler(HttpServerRequest(delegate));
 					} finally {

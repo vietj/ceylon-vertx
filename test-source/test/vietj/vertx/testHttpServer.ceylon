@@ -1,5 +1,5 @@
 import vietj.vertx { Vertx }
-import vietj.vertx.http { HttpServer, HttpServerRequest, HttpServerResponse }
+import vietj.vertx.http { HttpServer, HttpServerRequest, HttpServerResponse, textBody }
 import ceylon.net.http { Header }
 import ceylon.net.uri { Query, Parameter }
 import ceylon.net.http.client { Response, Parser }
@@ -13,7 +13,7 @@ void testHttpServer() {
 	value vertx = Vertx();
 	try {
 		value server = vertx.createHttpServer();
-		for (test in {testRequestHeaders,testPath,testQuery,testForm,test200}) {
+		for (test in {testRequestHeaders,testPath,testQuery,testForm,test200,testParseBody}) {
 			test(server);
 			Promise<Null> promise = server.close();
 			assertResolve(promise);
@@ -142,6 +142,36 @@ void test200(HttpServer server) {
 	} else {
 		fail("Was expecting the bar header");
 	}
+}
+
+void testParseBody(HttpServer server) {
+	value parameters = Deferred<String>();
+	Promise<String> p = parameters.promise;
+	void f(HttpServerRequest req) {
+		value form = req.formParameters;
+		if (exists form) {
+			parameters.reject(Exception("Was not expecting parameters"));
+		} else {
+			value text = req.getBody(textBody);
+			parameters.resolve(text);
+		}
+		HttpServerResponse resp = req.response;
+		resp.status(200);
+		resp.contentType("text/html");
+		resp.end("HELLO");
+	}
+	assertResolve(server.requestHandler(f).listen(8080));
+
+	// Do it by hand as the Ceylon client does not yet support POST
+	value request = "POST / HTTP/1.1\r\nContent-Type: text/plain\r\nContent-Length: 9\r\n\r\nsome_text";
+	value connector = newSocketConnector(SocketAddress("localhost", 8080));
+	value socket = connector.connect();
+	value buffer = ascii.encode(request);
+	socket.writeFully(buffer);
+	Parser(socket).parseResponse();
+	socket.close();
+	value o = assertResolve(p);
+	assertEquals("some_text", o);
 }
 
 

@@ -18,30 +18,19 @@ import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
 
 by "Julien Viet"
 license "ASL2"
-shared class HttpServerResponse(HttpServerResponse_ delegate) {
+shared class HttpServerResponse(HttpServerResponse_ delegate) extends HttpOutput<HttpServerResponse>() {
 
 	shared HttpServerResponse status(Integer code) {
 		delegate.setStatusCode(code);
 		return this;
   	}
-
-	shared HttpServerResponse contentType(String mimeType, String charset = "UTF-8") {
-		return headers("Content-Type" -> "``mimeType``; charset=``charset``");
-	}
-	
-	shared HttpServerResponse headers(<String-><String|{String+}>>* headers) {
-		for (header in headers) {
-			value item = header.item;
-			switch (item)
-				case (is String) { delegate.putHeader(header.key, item); }
-				case (is {String+}) { 
-					throw Exception("Cannot be implemented now : ambiguous reference to overloaded method or class: putHeader");
-				}
-		}
+  	
+	shared actual HttpServerResponse header(String headerName, String headerValue) {
+		delegate.putHeader(headerName, headerValue);
 		return this;
 	}
-	
-	shared HttpServerResponse end(String? chunk = null) {
+
+	shared actual HttpServerResponse end(String? chunk) {
 		if (exists chunk) {
 			delegate.end(chunk);
 		} else {
@@ -50,4 +39,17 @@ shared class HttpServerResponse(HttpServerResponse_ delegate) {
 		return this;
 	}
 
+	shared actual HttpServerResponse headers(<String-><String|{String+}>>* headers) {
+		for (header_ in headers) {
+			value item = header_.item;
+			switch (item)
+				case (is String) {
+					delegate.putHeader(header_.key, item);
+				}
+				case (is {String+}) { 
+					throw Exception("Cannot be implemented now : ambiguous reference to overloaded method or class: putHeader");
+				}
+		}
+		return this;
+	}
 }

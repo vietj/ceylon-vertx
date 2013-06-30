@@ -1,5 +1,6 @@
 module test.vietj.vertx '0.1.3' {
 
+  import io.netty '4.0.0.CR3';
   import vietj.promises '0.3.5';
   import vietj.vertx '0.1.3';
   import java.base '7';
