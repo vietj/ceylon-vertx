@@ -1,12 +1,22 @@
-import vietj.promises { Promise, Deferred }
+import vietj.promises { Promise, Deferred, Future }
 import ceylon.test { ... }
 
 import ceylon.net.uri { Uri, parseUri=parse }
 import ceylon.net.http.client { Request, Response }
 
 T assertResolve<T>(Promise<T>|Deferred<T> obj) {
-	value future = Future<T>(obj);
-	return future.get();
+	Future<T> future;
+	switch (obj)
+	case (is Promise<T>) { future = obj.future; }
+	case (is Deferred<T>) { future = obj.promise.future; }
+	T|Exception r = future.get(20000);
+	if (is T r) {
+	  return r;
+	} else if (is Exception r) {
+	  throw r;
+	} else {
+	  throw Exception("Was not expecting this");
+	}
 }
 
 Response assertRequest(String uri, {<String->{String*}>*} headers = {}) {
