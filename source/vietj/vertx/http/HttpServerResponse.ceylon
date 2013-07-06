@@ -18,14 +18,14 @@ import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
 
 by "Julien Viet"
 license "ASL2"
-shared class HttpServerResponse(HttpServerResponse_ delegate) {
+shared class HttpServerResponse(HttpServerResponse_ delegate) satisfies HttpOutput {
 
 	shared HttpServerResponse status(Integer code) {
 		delegate.setStatusCode(code);
 		return this;
   	}
 
-	shared HttpServerResponse contentType(String mimeType, String charset = "UTF-8") {
+	shared actual HttpServerResponse contentType(String mimeType, String charset) {
 		return headers("Content-Type" -> "``mimeType``; charset=``charset``");
 	}
 	
