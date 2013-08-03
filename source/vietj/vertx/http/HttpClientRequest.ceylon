@@ -20,6 +20,8 @@ import org.vertx.java.core { Handler_=Handler}
 import vietj.vertx.interop { ExceptionSupportAdapter { handle } }
 import java.lang { Exception }
 
+by "Julien Viet"
+license "ASL2"
 shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) extends HttpOutput<HttpClientRequest>() {
 	
 	Deferred<HttpClientResponse> deferred = Deferred<HttpClientResponse>();

@@ -17,6 +17,8 @@
 import org.vertx.java.core { Handler_=Handler, AsyncResult_=AsyncResult }
 import vietj.promises { Deferred, Promise }
 
+by "Julien Viet"
+license "ASL2"
 shared class HandlerPromise<Value, Result>(Value(Result) transform) satisfies Handler_<AsyncResult_<Result>>  {
 	
 	Deferred<Value> deferred = Deferred<Value>();

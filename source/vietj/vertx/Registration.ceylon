@@ -16,6 +16,8 @@
 
 import vietj.promises { Promise }
 
+by "Julien Viet"
+license "ASL2"
 shared interface Registration {
 	
 	shared formal Promise<Null> cancel();

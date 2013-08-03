@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+by "Julien Viet"
+license "ASL2"
 shared abstract class HttpOutput<O>() given O satisfies HttpOutput<O> {
 	
 	shared formal O headers(<String-><String|{String+}>>* headers);
