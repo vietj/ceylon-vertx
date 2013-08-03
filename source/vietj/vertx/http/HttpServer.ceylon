@@ -44,6 +44,7 @@ shared class HttpServer(HttpServer_ delegate) {
 							}
 						}
 					} 
+					delegate.expectMultiPart(true);
 					delegate.endHandler(handler); 
 				} else {
 					
