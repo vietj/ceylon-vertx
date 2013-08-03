@@ -16,6 +16,7 @@
 
 by "Julien Viet"
 license "ASL2"
+doc "Vertx API for Ceylon"
 module vietj.vertx '0.1.3' {
 
   import io.netty '4.0.2.Final';

@@ -18,8 +18,13 @@ import vietj.promises { Promise }
 
 by "Julien Viet"
 license "ASL2"
+doc "A registration is a cancellable object"
 shared interface Registration {
 	
+	//doc "Resolved when the registration is complete"
+	//shared formal Promise<Null> completed;
+	
+	doc "Cancel the registration, this is an asynchronous operation."
 	shared formal Promise<Null> cancel();
 	
 }

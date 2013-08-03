@@ -18,9 +18,16 @@ import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
 
 by "Julien Viet"
 license "ASL2"
+doc "Represents a server-side HTTP response. Instances of this class are created and associated to every instance of
+     [HttpServerRequest] that is created. It allows the developer to control the HTTP response that is sent back to the
+     client for a particular HTTP request. It contains methods that allow HTTP  headers and trailers to be set, and
+     for a body to be written out to the response.
+     
+     Instances of this class are not thread-safe."
 shared class HttpServerResponse(HttpServerResponse_ delegate) extends HttpOutput<HttpServerResponse>() {
 
-	shared HttpServerResponse status(Integer code) {
+	doc "Set the status code."
+	shared HttpServerResponse status(doc "the status code value" Integer code) {
 		delegate.setStatusCode(code);
 		return this;
   	}

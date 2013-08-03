@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import vietj.vertx { combine }
+import vietj.vertx.util { combine }
 import ceylon.collection { HashMap }
 import ceylon.test { ... }
 

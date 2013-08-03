@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
+import ceylon.json { JSonObject=Object, JSonArray=Array }
+
 by "Julien Viet"
 license "ASL2"
-shared class Message<T>(T body_, String? replyAddress_, Anything(BodyType) doReply) {
+doc "Represents a message on the event bus."
+shared class Message<T>(T body_, String? replyAddress_, Anything(String|JSonObject|JSonArray) doReply) {
 
+	doc "The body of the message"
 	shared T body = body_;
+
+	doc "The body of the message"
 	shared String? replyAddress = replyAddress_;
 	
-	shared void reply(BodyType body) {
+	doc "Reply to this message. If the message was sent specifying a reply handler, that handler will be
+         called when it has received a reply. If the message wasn't sent specifying a receipt handler
+         this method does nothing."
+	shared void reply(String|JSonObject|JSonArray body) {
 		doReply(body);
 	}
 }

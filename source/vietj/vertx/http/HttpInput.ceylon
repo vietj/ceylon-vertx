@@ -23,6 +23,7 @@ import vietj.vertx.interop { ExceptionSupportAdapter { handle } }
 
 by "Julien Viet"
 license "ASL2"
+doc "Provides access for reading the http headers and the body of an [HttpServerRequest] or an [HttpClientResponse]."
 shared abstract class HttpInput() {
 	
 	variable [String?, Charset?]? _contentType = null;
@@ -69,13 +70,13 @@ shared abstract class HttpInput() {
 		return contentType[0];
 	}
 
-	doc "Get the input body as a promise"
-	shared formal Promise<Body> getBody<Body>(BodyType<Body> parser);
+	doc "Parse the input body, the returned promise is resolved with the body."
+	shared formal Promise<Body> parseBody<Body>(BodyType<Body> parser);
 	
 }
 
 doc "Parse the body of an input"
-Promise<Body> parseBody<Body, T>(
+Promise<Body> doParseBody<Body, T>(
 	BodyType<Body> bodyType,
 	Anything(Handler_<Buffer>) setBodyHandler,
 	ReadStream<T> stream,

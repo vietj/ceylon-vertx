@@ -23,44 +23,57 @@ import vietj.vertx.eventbus { EventBus }
 
 by "Julien Viet"
 license "ASL2"
-shared class Vertx(shared Integer? port = null, shared String? hostName = null) {
+doc "Create a new Vertx instance, when the `clusterPort` or the `clusterHost` is specified a clustered instance
+     is created."
+shared class Vertx(
+	doc "The port to listen for cluster connections"
+	shared Integer? clusterPort = null,
+	doc "The hostname or ip address to listen for cluster connection"
+	shared String? clusterHost = null) {
 	
 	// Create deleg
 	Vertx_ v_;
-	if (exists port) {
-		if (exists hostName) {
-  			v_ = newVertx(port, hostName);
+	if (exists clusterPort) {
+		if (exists clusterHost) {
+  			v_ = newVertx(clusterPort, clusterHost);
 		} else {
   			throw Exception("When port is provided, hostName must be too");
 		}
 	} else {
-		if (exists hostName) {
-  			v_ = newVertx(hostName);
+		if (exists clusterHost) {
+  			v_ = newVertx(clusterHost);
 		} else {
 			v_ = newVertx();
 		}
 	}
 	Vertx_ v = v_;
 	
-	@doc "The event bus"
+	doc "The event bus"
 	shared EventBus eventBus = EventBus(v.eventBus());
 	
+	doc "Create a new http server and returns it"
 	shared HttpServer createHttpServer() {
 		return HttpServer(v.createHttpServer());
 	}
 	
-	shared HttpClient createHttpClient(Integer? port = null, String? hostName = null) {
+	doc "Create a new http client and return it"
+	shared HttpClient createHttpClient(
+		doc "the client port"
+		Integer? port = null,
+		doc "the client host"
+		String? host = null) {
 		value client = v.createHttpClient();
 		if (exists port) {
 			client.setPort(port);
 		}
-		if (exists hostName) {
-			client.setHost(hostName);
+		if (exists host) {
+			client.setHost(host);
 		}
 		return HttpClient(client);
 	}
 
-		shared void stop() {
+	doc "Stop Vertx"
+	shared void stop() {
 		v_.stop();
 	}
 }

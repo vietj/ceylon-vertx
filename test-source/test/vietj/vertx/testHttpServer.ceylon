@@ -169,7 +169,7 @@ void testParseBody(HttpServer server) {
 		if (exists form) {
 			parameters.reject(Exception("Was not expecting parameters"));
 		} else {
-			value text = req.getBody(textBody);
+			value text = req.parseBody(textBody);
 			parameters.resolve(text);
 		}
 		HttpServerResponse resp = req.response;

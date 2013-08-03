@@ -20,14 +20,49 @@ import org.vertx.java.core.json { JsonObject_=JsonObject }
 import vietj.promises { Promise }
 import java.lang { String_=String, Void_=Void }
 import vietj.vertx.interop { EventBusAdapter { registerHandler_=registerHandler, unregisterHandler_=unregisterHandler } }
-import vietj.vertx { HandlerPromise, fromObject, toObject, Registration }
+import vietj.vertx { Registration }
+import vietj.vertx.util { HandlerPromise, fromObject, toObject }
 import ceylon.json { JSonObject=Object, JSonArray=Array }
 
 // What a message body can be
-shared alias BodyType => String|JSonObject|JSonArray;
+//shared alias BodyType => String|JSonObject|JSonArray;
 
 by "Julien Viet"
 license "ASL2"
+doc "A distributed lightweight event bus which can encompass multiple vert.x instances.
+     The event bus implements publish / subscribe, point to point messaging and request-response messaging.
+     
+     Messages sent over the event bus are represented by instances of the [Message] class.
+     
+     For publish / subscribe, messages can be published to an address using one of the `publish` methods. An
+     address is a simple `String` instance.
+     
+     Handlers are registered against an address. There can be multiple handlers registered against each address, and a particular handler can
+     be registered against multiple addresses. The event bus will route a sent message to all handlers which are
+     registered against that address.
+     
+     For point to point messaging, messages can be sent to an address using one of the `send` methods.
+     The messages will be delivered to a single handler, if one is registered on that address. If more than one
+     handler is registered on the same address, Vert.x will choose one and deliver the message to that. Vert.x will
+     aim to fairly distribute messages in a round-robin way, but does not guarantee strict round-robin under all
+     circumstances.
+     
+     All messages sent over the bus are transient. On event of failure of all or part of the event bus messages
+     may be lost. Applications should be coded to cope with lost messages, e.g. by resending them, and making application
+     services idempotent.
+     
+     The order of messages received by any specific handler from a specific sender should match the order of messages
+     sent from that sender.
+     
+     When sending a message, a reply handler can be provided. If so, it will be called when the reply from the receiver
+     has been received. Reply messages can also be replied to, etc, ad infinitum
+     
+     Different event bus instances can be clustered together over a network, to give a single logical event bus.<p>
+     Instances of EventBus are thread-safe.
+     
+     If handlers are registered from an event loop, they will be executed using that same event loop. If they are
+     registered from outside an event loop (i.e. when using Vert.x embedded) then Vert.x will assign an event loop
+     to the handler and use it to deliver messages to that handler."
 shared class EventBus(EventBus_ delegate) {
 
 
@@ -36,7 +71,7 @@ shared class EventBus(EventBus_ delegate) {
 		shared actual void handle(Message_<Object> eventDelegate) {
 			String? replyAddress = eventDelegate.replyAddress();
 			Object body = eventDelegate.body();
-			void doReply(BodyType body) {
+			void doReply(String|JSonObject|JSonArray body) {
 				switch(body)
 					case (is String) { eventDelegate.reply(body); }
 					case (is JSonObject) { eventDelegate.reply(fromObject(body)); }
@@ -72,7 +107,14 @@ shared class EventBus(EventBus_ delegate) {
 		}
 	}
 
-	shared EventBus send<M>(String address, BodyType message, Anything(Message<M>)? replyHandler = null) {
+	doc "Send a message"
+	shared EventBus send<M>(
+		doc "The address to send it to"
+		String address,
+		doc "The message"
+		String|JSonObject|JSonArray message,
+		doc "Reply handler will be called when any reply from the recipient is received"
+		Anything(Message<M>)? replyHandler = null) {
 		if (exists replyHandler) {
 			HandlerAdapter<M> handlerAdapter = HandlerAdapter<M>(replyHandler);
 			switch (message)
@@ -88,7 +130,14 @@ shared class EventBus(EventBus_ delegate) {
 		return this;
 	}
 	
-	shared EventBus publish<M>(String address, BodyType message, Anything(Message<M>)? replyHandler = null) {
+	doc "Publish a message"
+	shared EventBus publish<M>(
+		doc "The address to send it to"
+		String address,
+		doc "The message"
+		String|JSonObject|JSonArray message,
+		doc "Reply handler will be called when any reply from the recipient is received"
+		Anything(Message<M>)? replyHandler = null) {
 		switch (message)
 			case (is String) { delegate.publish(address, message); }
 			case (is JSonObject) { delegate.publish(address, fromObject(message)); }
@@ -96,7 +145,13 @@ shared class EventBus(EventBus_ delegate) {
 		return this;
 	}
 
-	shared Promise<Registration> registerHandler<M>(String address, Anything(Message<M>) handler) given M satisfies Object {
+	doc "Registers a handler against the specified address. The method returns a promise that is resolved when the
+	     register has been propagated to all nodes of the event bus."
+	shared Promise<Registration> registerHandler<M>(
+		doc "The address to register it at"
+		String address,
+		doc "The handler"
+		Anything(Message<M>) handler) given M satisfies Object {
 		RegistrableHandlerAdapter<M> handlerAdapter = RegistrableHandlerAdapter<M>(address, handler);
 		return handlerAdapter.register();
 	}
