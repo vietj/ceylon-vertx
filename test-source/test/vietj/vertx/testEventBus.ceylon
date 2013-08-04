@@ -34,8 +34,8 @@ void testEventBus() {
 
 void testStringEvent(EventBus bus) {
 	value deferred = Deferred<String>();
-	Promise<Registration> promise = bus.registerHandler("foo", (Message<String> msg) => deferred.resolve(msg.body));
-	Registration registration = assertResolve(promise);
+	Registration registration = bus.registerHandler("foo", (Message<String> msg) => deferred.resolve(msg.body));
+	assertResolve(registration.completed);
 	bus.send("foo", "foo_value");
 	value payload = deferred.promise.future.get();	
 	assertEquals("foo_value", payload);
@@ -45,8 +45,8 @@ void testStringEvent(EventBus bus) {
 
 void testJSonEvent(EventBus bus) {
 	value deferred = Deferred<Object>();
-	Promise<Registration> promise2 = bus.registerHandler("bar", (Message<Object> msg) => deferred.resolve(msg.body));
-	Registration registration = assertResolve(promise2);
+	Registration registration = bus.registerHandler("bar", (Message<Object> msg) => deferred.resolve(msg.body));
+	assertResolve(registration.completed);
 	Object o = Object({"juu"->"juu_value"});
 	bus.send("bar", o);
 	value payload2 = deferred.promise.future.get();
@@ -56,8 +56,8 @@ void testJSonEvent(EventBus bus) {
 }
 
 void testReply(EventBus bus) {
-	Promise<Registration> promise = bus.registerHandler("foo", (Message<String> msg) => msg.reply("foo_reply"));
-	Registration registration = assertResolve(promise);
+	Registration registration = bus.registerHandler("foo", (Message<String> msg) => msg.reply("foo_reply"));
+	assertResolve(registration.completed);
 	value deferred = Deferred<String>();
 	bus.send("foo", "foo_value", (Message<String> msg) => deferred.resolve(msg.body));
 	value payload = deferred.promise.future.get();	

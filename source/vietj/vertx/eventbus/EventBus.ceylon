@@ -92,18 +92,17 @@ shared class EventBus(EventBus_ delegate) {
 	class RegistrableHandlerAdapter<M>(String address, Anything(Message<M>) handler) extends
 			HandlerAdapter<M>(handler) satisfies Registration {
 	
-		// todo : should return a promise
+		value resultHandler = HandlerPromise<Null, Void_>((Void_ s) => null);
+		shared actual Promise<Null> completed = resultHandler.promise;
+
 		shared actual Promise<Null> cancel() {
 			value resultHandler = HandlerPromise<Null, Void_>((Void_ s) => null);
 			unregisterHandler_(delegate, address, this, resultHandler);
 			return resultHandler.promise;
-		} 
-
-		shared Promise<Registration> register() {
-			Registration r = this;
-			value resultHandler = HandlerPromise<Registration, Void_>((Void_ s) => r);
+		}
+		
+		shared void register() {
 			registerHandler_(delegate, address, this, resultHandler);
-			return resultHandler.promise;
 		}
 	}
 
@@ -147,12 +146,13 @@ shared class EventBus(EventBus_ delegate) {
 
 	doc "Registers a handler against the specified address. The method returns a promise that is resolved when the
 	     register has been propagated to all nodes of the event bus."
-	shared Promise<Registration> registerHandler<M>(
+	shared Registration registerHandler<M>(
 		doc "The address to register it at"
 		String address,
 		doc "The handler"
 		Anything(Message<M>) handler) given M satisfies Object {
 		RegistrableHandlerAdapter<M> handlerAdapter = RegistrableHandlerAdapter<M>(address, handler);
-		return handlerAdapter.register();
+		handlerAdapter.register();
+		return handlerAdapter;
 	}
 }
