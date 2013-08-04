@@ -24,10 +24,10 @@ import vietj.promises { Promise }
 by "Julien Viet"
 license "ASL2"
 doc "Represents a server-side HTTP request. Each instance of this class is associated with a corresponding
-     [HttpServerResponse] instance via the `response` field. Instances of this class are not thread-safe."
+     [[HttpServerResponse]] instance via the `response` field. Instances of this class are not thread-safe."
 shared class HttpServerRequest(HttpServerRequest_ delegate, Map<String, {String+}>? formParameters_ = null) extends HttpInput() {
 	
-	doc "The response. Each instance of this class has an [HttpServerResponse] instance attached to it.
+	doc "The response. Each instance of this class has an [[HttpServerResponse]] instance attached to it.
 	     This is used to send the response back to the client."
 	shared HttpServerResponse response = HttpServerResponse(delegate.response());
 	

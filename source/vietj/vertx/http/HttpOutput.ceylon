@@ -16,7 +16,7 @@
 
 by "Julien Viet"
 license "ASL2"
-doc "Provides access for writing the headers and  content of an [HttpClientRequest] or an [HttpServerResponse]."
+doc "Provides access for writing the headers and  content of an [[HttpClientRequest]] or an [[HttpServerResponse]]."
 shared abstract class HttpOutput<O>() given O satisfies HttpOutput<O> {
 	
 	doc "Set the response headers."

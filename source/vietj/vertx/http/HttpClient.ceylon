@@ -52,7 +52,7 @@ shared class HttpClient(HttpClient_ delegate) {
          where it can be used by another request. In this manner, many HTTP requests can be pipe-lined over an HTTP connection.
          Keep alive connections will not be closed until the `close()` method is invoked.
       
-         If `keepAlive` is `false`}then a new connection will be created for each request and it won't ever go in the pool,
+         If `keepAlive` is `false` then a new connection will be created for each request and it won't ever go in the pool,
          the connection will closed after the response has been received. Even with no keep alive,
          the client will not allow more than `maxPoolSize` connections to be created at any one time."
 	assign keepAlive => delegate.setKeepAlive(keepAlive);
@@ -71,7 +71,7 @@ shared class HttpClient(HttpClient_ delegate) {
 	doc "Set the connect timeout in milliseconds."
 	assign connectTimeout => delegate.setConnectTimeout(connectTimeout);
 	
-	doc "This method returns an [HttpClientRequest] instance which represents an HTTP request with the specified `uri`.
+	doc "This method returns an [[HttpClientRequest]] instance which represents an HTTP request with the specified `uri`.
          The specific HTTP method (e.g. GET, POST, PUT etc) is specified using the parameter `method`.
       
          When an HTTP response is received from the server the promise `response` is resolved with the response."

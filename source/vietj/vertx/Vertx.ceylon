@@ -23,8 +23,17 @@ import vietj.vertx.eventbus { EventBus }
 
 by "Julien Viet"
 license "ASL2"
-doc "Create a new Vertx instance, when the `clusterPort` or the `clusterHost` is specified a clustered instance
-     is created."
+doc "The control centre of the Vert.x Core API.
+     
+     You should normally only use a single instance of this class throughout your application. If you are running in the
+     Vert.x container an instance will be provided to you.
+     
+     This class acts as a factory for TCP/SSL and HTTP/HTTPS servers and clients, SockJS servers, and provides an
+     instance of the event bus, file system and shared data classes, as well as methods for setting and cancelling
+     timers.
+     
+     Create a new Vertx instance, when the `clusterPort` or the `clusterHost` is specified a clustered instance
+     is created. Instances of this class are thread-safe."
 shared class Vertx(
 	doc "The port to listen for cluster connections"
 	shared Integer? clusterPort = null,

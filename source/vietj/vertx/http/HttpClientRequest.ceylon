@@ -24,12 +24,12 @@ by "Julien Viet"
 license "ASL2"
 doc "Represents a client-side HTTP request.
      
-     Instances are created by an [HttpClient] instance, via one of the methods corresponding to the
+     Instances are created by an [[HttpClient]] instance, via one of the methods corresponding to the
      specific HTTP methods, or the generic `request` method. Once a request has been obtained, headers can be set on
      it, and data can be written to its body if required. Once you are ready to send the request, the `end()` method
      should be called.
      
-     Nothing is actually sent until the request has been internally assigned an HTTP connection. The [HttpClient]
+     Nothing is actually sent until the request has been internally assigned an HTTP connection. The [[HttpClient]]
      instance will return an instance of this class immediately, even if there are no HTTP connections available
      in the pool. Any requests sent before a connection is assigned will be queued internally and actually sent
      when an HTTP connection becomes available from the pool.

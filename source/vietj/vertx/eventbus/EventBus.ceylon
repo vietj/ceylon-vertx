@@ -32,7 +32,7 @@ license "ASL2"
 doc "A distributed lightweight event bus which can encompass multiple vert.x instances.
      The event bus implements publish / subscribe, point to point messaging and request-response messaging.
      
-     Messages sent over the event bus are represented by instances of the [Message] class.
+     Messages sent over the event bus are represented by instances of the [[Message]] class.
      
      For publish / subscribe, messages can be published to an address using one of the `publish` methods. An
      address is a simple `String` instance.
@@ -144,8 +144,10 @@ shared class EventBus(EventBus_ delegate) {
 		return this;
 	}
 
-	doc "Registers a handler against the specified address. The method returns a promise that is resolved when the
-	     register has been propagated to all nodes of the event bus."
+	doc "Registers a handler against the specified address. The method returns a registration whose:
+	     * the `completed` promise is resolved when the register has been propagated to all nodes of the event bus
+	     * the `cancel()` method can be called to cancel the registration
+	     "
 	shared Registration registerHandler<M>(
 		doc "The address to register it at"
 		String address,

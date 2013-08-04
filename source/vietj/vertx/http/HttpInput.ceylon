@@ -23,7 +23,7 @@ import vietj.vertx.interop { ExceptionSupportAdapter { handle } }
 
 by "Julien Viet"
 license "ASL2"
-doc "Provides access for reading the http headers and the body of an [HttpServerRequest] or an [HttpClientResponse]."
+doc "Provides access for reading the http headers and the body of an [[HttpServerRequest]] or an [[HttpClientResponse]]."
 shared abstract class HttpInput() {
 	
 	variable [String?, Charset?]? _contentType = null;

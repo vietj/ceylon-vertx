@@ -18,7 +18,8 @@ import vietj.promises { Promise }
 
 by "Julien Viet"
 license "ASL2"
-doc "A registration is a cancellable object"
+doc "A registration, the `completed` promise is resolved when the registration is completed, the `cancel()` method
+     can be used to cancel the registration."
 shared interface Registration {
 	
 	doc "Resolved when the registration is complete"

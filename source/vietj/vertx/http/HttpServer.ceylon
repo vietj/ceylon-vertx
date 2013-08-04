@@ -33,7 +33,7 @@ doc "An HTTP and WebSockets server
 shared class HttpServer(HttpServer_ delegate) {
 	
 	doc "Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
-	     instances of [HttpServerRequest] will be created and passed to this handler."
+	     instances of [[HttpServerRequest]] will be created and passed to this handler."
 	shared HttpServer requestHandler(Anything(HttpServerRequest) requestHandler) {
 		object handler satisfies Handler_<HttpServerRequest_> {
 			shared actual void handle(HttpServerRequest_ delegate) {
