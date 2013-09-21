@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-by "Julien Viet"
-license "ASL2"
-doc "Vertx API for Ceylon"
-module vietj.vertx '0.1.3' {
+"Vertx API for Ceylon"
+by("Julien Viet")
+license("ASL2")
+module vietj.vertx '0.2.0' {
 
-  import io.netty '4.0.2.Final';
-  import com.fasterxml.jackson.annotations '2.2.2';
-  import com.fasterxml.jackson.core '2.2.2';
-  import com.fasterxml.jackson.databind '2.2.2';
-  shared import io.vertx.core '2.0.0-final';
-  import java.base '7';
-  shared import vietj.promises '0.3.5';
-  shared import ceylon.net '0.5';
-  shared import ceylon.json '0.5';
-  import ceylon.io '0.5';
-  import ceylon.collection '0.5';
+    import io.netty '4.0.2.Final';
+    import com.fasterxml.jackson.annotations '2.2.2';
+    import com.fasterxml.jackson.core '2.2.2';
+    import com.fasterxml.jackson.databind '2.2.2';
+    shared import io.vertx.core '2.0.0-final';
+    import java.base '7';
+    shared import vietj.promises '0.4.0';
+    shared import ceylon.net '0.6';
+    shared import ceylon.json '0.6';
+    import ceylon.io '0.6';
+    import ceylon.collection '0.6';
 
 } 

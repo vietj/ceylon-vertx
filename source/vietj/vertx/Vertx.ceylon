@@ -21,68 +21,67 @@ import org.vertx.java.core {
 import vietj.vertx.http { HttpServer, HttpClient }
 import vietj.vertx.eventbus { EventBus }
 
-by "Julien Viet"
-license "ASL2"
-doc "The control centre of the Vert.x Core API.
-     
-     You should normally only use a single instance of this class throughout your application. If you are running in the
-     Vert.x container an instance will be provided to you.
-     
-     This class acts as a factory for TCP/SSL and HTTP/HTTPS servers and clients, SockJS servers, and provides an
-     instance of the event bus, file system and shared data classes, as well as methods for setting and cancelling
-     timers.
-     
-     Create a new Vertx instance, when the `clusterPort` or the `clusterHost` is specified a clustered instance
-     is created. Instances of this class are thread-safe."
+"The control centre of the Vert.x Core API.
+ 
+ You should normally only use a single instance of this class throughout your application. If you are running in the
+ Vert.x container an instance will be provided to you.
+ 
+ This class acts as a factory for TCP/SSL and HTTP/HTTPS servers and clients, SockJS servers, and provides an
+ instance of the event bus, file system and shared data classes, as well as methods for setting and cancelling
+ timers.
+ 
+ Create a new Vertx instance, when the `clusterPort` or the `clusterHost` is specified a clustered instance
+ is created. Instances of this class are thread-safe."
+by("Julien Viet")
 shared class Vertx(
-	doc "The port to listen for cluster connections"
-	shared Integer? clusterPort = null,
-	doc "The hostname or ip address to listen for cluster connection"
-	shared String? clusterHost = null) {
-	
-	// Create deleg
-	Vertx_ v_;
-	if (exists clusterPort) {
-		if (exists clusterHost) {
-  			v_ = newVertx(clusterPort, clusterHost);
-		} else {
-  			throw Exception("When port is provided, hostName must be too");
-		}
-	} else {
-		if (exists clusterHost) {
-  			v_ = newVertx(clusterHost);
-		} else {
-			v_ = newVertx();
-		}
-	}
-	Vertx_ v = v_;
-	
-	doc "The event bus"
-	shared EventBus eventBus = EventBus(v.eventBus());
-	
-	doc "Create a new http server and returns it"
-	shared HttpServer createHttpServer() {
-		return HttpServer(v.createHttpServer());
-	}
-	
-	doc "Create a new http client and return it"
-	shared HttpClient createHttpClient(
-		doc "the client port"
-		Integer? port = null,
-		doc "the client host"
-		String? host = null) {
-		value client = v.createHttpClient();
-		if (exists port) {
-			client.setPort(port);
-		}
-		if (exists host) {
-			client.setHost(host);
-		}
-		return HttpClient(client);
-	}
+        "The port to listen for cluster connections"
+        shared Integer? clusterPort = null,
+        "The hostname or ip address to listen for cluster connection"
+        shared String? clusterHost = null) {
 
-	doc "Stop Vertx"
-	shared void stop() {
-		v_.stop();
-	}
+    // Create deleg
+    Vertx_ v_;
+    if (exists clusterPort) {
+        if (exists clusterHost) {
+            v_ = newVertx(clusterPort, clusterHost);
+        } else {
+            throw Exception("When port is provided, hostName must be too");
+        }
+    } else {
+        if (exists clusterHost) {
+            v_ = newVertx(clusterHost);
+        } else {
+            v_ = newVertx();
+        }
+    }
+    Vertx_ v = v_;
+
+    "The event bus"
+    shared EventBus eventBus = EventBus(v.eventBus());
+
+    "Create a new http server and returns it"
+    shared HttpServer createHttpServer() {
+        return HttpServer(v.createHttpServer());
+    }
+
+    "Create a new http client and return it"
+    shared HttpClient createHttpClient(
+        "the client port"
+        Integer? port = null,
+        "the client host"
+    String? host = null) {
+        value client = v.createHttpClient();
+        if (exists port) {
+            client.setPort(port);
+        }
+        if (exists host) {
+            client.setHost(host);
+        }
+        return HttpClient(client);
+    }
+    
+    "Stop Vertx"
+    shared void stop() {
+        v_.stop();
+    }
 }

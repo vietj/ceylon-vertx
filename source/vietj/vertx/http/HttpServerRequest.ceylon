@@ -21,92 +21,98 @@ import ceylon.collection { HashMap }
 import vietj.vertx.util { combine, toMap }
 import vietj.promises { Promise }
 
-by "Julien Viet"
-license "ASL2"
-doc "Represents a server-side HTTP request. Each instance of this class is associated with a corresponding
-     [[HttpServerResponse]] instance via the `response` field. Instances of this class are not thread-safe."
-shared class HttpServerRequest(HttpServerRequest_ delegate, Map<String, {String+}>? formParameters_ = null) extends HttpInput() {
-	
-	doc "The response. Each instance of this class has an [[HttpServerResponse]] instance attached to it.
-	     This is used to send the response back to the client."
-	shared HttpServerResponse response = HttpServerResponse(delegate.response());
-	
-	doc "The request method"
-	shared String method => delegate.method();
-	
-	doc "The request uri"
-	shared Uri uri => parseUri(delegate.uri());
-	
-	doc "The request path"
-	shared String path => delegate.path();
-	
-	doc "The query part of the request uri"
-	shared Query query => uri.query;
-	
-	doc "The form parameters when the request is a POST with a _application/x-www-form-urlencoded_ mime type" 
-	shared Map<String, {String+}>? formParameters = formParameters_;
-	
-	doc "The remote socket address"
-	shared SocketAddress remoteAddress = SocketAddress(delegate.remoteAddress().address.hostAddress, delegate.remoteAddress().port);
-	
-	// Lazy query parameter map
-	variable Map<String, {String+}>? queryMap = null;
-	
-	doc "Return the query parameters of this request"
-	shared Map<String, {String+}> queryParameters {
-		if (exists ret = queryMap) {
-			return ret;
-		} else {
-			HashMap<String, {String+}> map = HashMap<String, {String+}>();
-			for (Parameter parameter in query.parameters.reversed) {
-				if (exists val = parameter.val) {
-					variable {String+}? previous = map[parameter.name];
-					{String+} values;
-					if (exists rest = previous) {
-						values = { val, *rest };
-					} else {
-						values = { val };
-					}
-					map.put(parameter.name, values);
-				} 
-			}
-			return queryMap = map;
-		}
-	}
-	
-	// Lazy parameter map
-	variable Map<String,{String+}>? parameterMap = null;
-	
-	@doc "Returns all the parameters of this request. When the request is a POST request with an mime type
-	      _application/x-www-form-urlencoded_ the form is decoded and the query and form parameters are aggregated
-	      in the returned parameter map."
-	shared Map<String, {String+}> parameters {
-		if (exists ret = parameterMap) {
-			return ret;
-		} else {
-			if (exists formParameters) {
-				return parameterMap = combine(formParameters, combine(queryParameters));
-			} else {
-				return parameterMap = queryParameters;
-			}
-		}
-	}
-	
-	// Lazy header map
-	variable Map<String,{String+}>? headerMap = null;
-	shared actual Map<String,{String+}> headers {
-		if (exists ret = headerMap) {
-			return ret;
-		} else {
-			value headersMM = delegate.headers();
-			return headerMap = toMap(headersMM);
-		}
-	}
+"Represents a server-side HTTP request. Each instance of this class is associated with a corresponding
+ [[HttpServerResponse]] instance via the `response` field. Instances of this class are not thread-safe."
+by("Julien Viet")
+shared class HttpServerRequest(
+    HttpServerRequest_ delegate,
+    Map<String, {String+}>? formParameters_ = null)
+            extends HttpInput() {
+        
+    "The response. Each instance of this class has an [[HttpServerResponse]] instance attached to it.
+     This is used to send the response back to the client."
+    shared HttpServerResponse response = HttpServerResponse(delegate.response());
 
-	shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
-		if (exists formParameters_) {
-			throw Exception("Form body cannot be parsed -> use formParameters instead");
-		}
-		return doParseBody(parser, delegate.bodyHandler, delegate, charset);
-	}
+    "The request method"
+    shared String method => delegate.method();
+
+    "The request uri"
+    shared Uri uri => parseUri(delegate.uri());
+
+    "The request path"
+    shared String path => delegate.path();
+
+    "The query part of the request uri"
+    shared Query query => uri.query;
+
+    "The form parameters when the request is a POST with a _application/x-www-form-urlencoded_ mime type" 
+    shared Map<String, {String+}>? formParameters = formParameters_;
+
+    "The remote socket address"
+    shared SocketAddress remoteAddress = SocketAddress {
+        address = delegate.remoteAddress().address.hostAddress;
+        port = delegate.remoteAddress().port;
+    };
+
+    // Lazy query parameter map
+    variable Map<String, {String+}>? queryMap = null;
+
+    "Return the query parameters of this request"
+    shared Map<String, {String+}> queryParameters {
+        if (exists ret = queryMap) {
+            return ret;
+        } else {
+            HashMap<String, {String+}> map = HashMap<String, {String+}>();
+            for (Parameter parameter in query.parameters.reversed) {
+                if (exists val = parameter.val) {
+                    variable {String+}? previous = map[parameter.name];
+                    {String+} values;
+                    if (exists rest = previous) {
+                        values = { val, *rest };
+                    } else {
+                        values = { val };
+                    }
+                    map.put(parameter.name, values);
+                } 
+            }
+            return queryMap = map;
+        }
+    }
+
+    // Lazy parameter map
+    variable Map<String,{String+}>? parameterMap = null;
+
+    "Returns all the parameters of this request. When the request is a POST request with an mime type
+      _application/x-www-form-urlencoded_ the form is decoded and the query and form parameters are aggregated
+      in the returned parameter map."
+    shared Map<String, {String+}> parameters {
+        if (exists ret = parameterMap) {
+            return ret;
+        } else {
+            if (exists formParameters) {
+                return parameterMap = combine(formParameters, combine(queryParameters));
+            } else {
+                return parameterMap = queryParameters;
+            }
+        }
+    }
+
+    // Lazy header map
+    variable Map<String,{String+}>? headerMap = null;
+    shared actual Map<String,{String+}> headers {
+        if (exists ret = headerMap) {
+            return ret;
+        } else {
+            value headersMM = delegate.headers();
+            return headerMap = toMap(headersMM);
+        }
+    }
+
+    shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
+        if (exists formParameters_) {
+            throw Exception("Form body cannot be parsed -> use formParameters instead");
+        }
+        return doParseBody(parser, delegate.bodyHandler, delegate, charset);
+    }
+
 }

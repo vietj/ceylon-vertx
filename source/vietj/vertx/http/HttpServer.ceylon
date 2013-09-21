@@ -20,20 +20,19 @@ import vietj.promises { Promise }
 import java.lang { Void_=Void }
 import vietj.vertx.util { HandlerPromise, toMap }
 
-by "Julien Viet"
-license "ASL2"
-doc "An HTTP and WebSockets server
-     
-     If an instance is instantiated from an event loop then the handlers of the instance will
-     always be called on that same event loop. If an instance is instantiated from some other
-     arbitrary Java thread then an event loop will be assigned to the instance and used when
-     any of its handlers are called.
-     
-     Instances of HttpServer are thread-safe."
+"An HTTP and WebSockets server
+
+ If an instance is instantiated from an event loop then the handlers of the instance will
+ always be called on that same event loop. If an instance is instantiated from some other
+ arbitrary Java thread then an event loop will be assigned to the instance and used when
+ any of its handlers are called.
+ 
+ Instances of HttpServer are thread-safe."
+by("Julien Viet")
 shared class HttpServer(HttpServer_ delegate) {
 	
-	doc "Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
-	     instances of [[HttpServerRequest]] will be created and passed to this handler."
+	"Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
+     instances of [[HttpServerRequest]] will be created and passed to this handler."
 	shared HttpServer requestHandler(Anything(HttpServerRequest) requestHandler) {
 		object handler satisfies Handler_<HttpServerRequest_> {
 			shared actual void handle(HttpServerRequest_ delegate) {
@@ -72,26 +71,28 @@ shared class HttpServer(HttpServer_ delegate) {
 		delegate.requestHandler(handler);
 		return this;
 	}
-	
-	doc "Tell the server to start listening on all available interfaces and port `port`.
-	     Be aware this is an async operation and the server may not bound on return of the method.
-	     The returned promise is resolved when the server is listening"
-	shared Promise<HttpServer> listen(Integer port, String? hostName = null) {
-		value server = this;
-		value handler = HandlerPromise<HttpServer, HttpServer_>((HttpServer_ s) => server);
-		if (exists hostName) {
-			delegate.listen(port, hostName, handler);
-		} else {
-			delegate.listen(port, handler);
-		}
-		return handler.promise;
-	}
 
-	doc "Close the server. Any open HTTP connections will be closed. The returned promise is resolved when the close
-         is complete."	
-	shared Promise<Null> close() {
-		value handler = HandlerPromise<Null, Void_>((Void_ v) => null);
-		delegate.close(handler);
-		return handler.promise;
-	}
+    "Tell the server to start listening on all available interfaces and port `port`.
+     Be aware this is an async operation and the server may not bound on return of the method.
+     The returned promise is resolved when the server is listening"
+    shared Promise<HttpServer> listen(Integer port, String? hostName = null) {
+        value server = this;
+        value handler = HandlerPromise<HttpServer, HttpServer_>(
+            (HttpServer_ s) => server);
+        if (exists hostName) {
+            delegate.listen(port, hostName, handler);
+        } else {
+            delegate.listen(port, handler);
+        }
+        return handler.promise;
+    }
+
+    "Close the server. Any open HTTP connections will be closed.
+     The returned promise is resolved when the close is complete."	
+    shared Promise<Null> close() {
+        value handler = HandlerPromise<Null, Void_>((Void_ v) => null);
+        delegate.close(handler);
+        return handler.promise;
+    }
+
 }
