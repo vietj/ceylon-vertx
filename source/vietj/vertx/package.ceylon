@@ -14,6 +14,5 @@
  * limitations under the License.
  */
 
-by "Julien Viet"
-license "ASL2"
+by("Julien Viet")
 shared package vietj.vertx;
