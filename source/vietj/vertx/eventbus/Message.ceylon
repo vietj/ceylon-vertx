@@ -17,15 +17,11 @@
 "Represents a message on the event bus."
 by("Julien Viet")
 shared class Message<T>(
-        T body_,
-        String? replyAddress_,
+		"The body of the message"
+        shared T body,
+		"The body of the message"
+        shared String? replyAddress,
         Anything(BodyType) doReply) {
-
-    "The body of the message"
-    shared T body = body_;
-
-    "The body of the message"
-    shared String? replyAddress = replyAddress_;
 
     "Reply to this message. If the message was sent specifying a reply handler, that handler will be
              called when it has received a reply. If the message wasn't sent specifying a receipt handler
