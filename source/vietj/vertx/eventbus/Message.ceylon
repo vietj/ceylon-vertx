@@ -21,12 +21,12 @@ shared class Message<T>(
         shared T body,
 		"The body of the message"
         shared String? replyAddress,
-        Anything(BodyType) doReply) {
+        Anything(PayloadType) doReply) {
 
     "Reply to this message. If the message was sent specifying a reply handler, that handler will be
              called when it has received a reply. If the message wasn't sent specifying a receipt handler
              this method does nothing."
-    shared void reply(BodyType body) {
+    shared void reply(PayloadType body) {
         doReply(body);
     }
 
