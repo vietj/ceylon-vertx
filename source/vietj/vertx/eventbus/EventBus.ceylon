@@ -24,8 +24,8 @@ import vietj.vertx { Registration }
 import vietj.vertx.util { HandlerPromise, fromObject, toObject }
 import ceylon.json { JSonObject=Object, JSonArray=Array }
 
-// What a message body can be
-//shared alias BodyType => String|JSonObject|JSonArray;
+"What a message body can be"
+shared alias BodyType => String|JSonObject|JSonArray;
 
 "A distributed lightweight event bus which can encompass multiple vert.x instances.
  The event bus implements publish / subscribe, point to point messaging and request-response messaging.
@@ -70,7 +70,7 @@ shared class EventBus(EventBus_ delegate) {
         shared actual void handle(Message_<Object> eventDelegate) {
             String? replyAddress = eventDelegate.replyAddress();
             Object body = eventDelegate.body();
-            void doReply(String|JSonObject|JSonArray body) {
+            void doReply(BodyType body) {
                 switch(body)
                 case (is String) { eventDelegate.reply(body); }
                 case (is JSonObject) { eventDelegate.reply(fromObject(body)); }
@@ -111,7 +111,7 @@ shared class EventBus(EventBus_ delegate) {
     		"The address to send it to"
     		String address,
     		"The message"
-    		String|JSonObject|JSonArray message,
+    		BodyType message,
     		"Reply handler will be called when any reply from the recipient is received"
     		Anything(Message<M>)? replyHandler = null) {
 
@@ -135,7 +135,7 @@ shared class EventBus(EventBus_ delegate) {
     		"The address to send it to"
     		String address,
     		"The message"
-    		String|JSonObject|JSonArray message,
+    		BodyType message,
     		"Reply handler will be called when any reply from the recipient is received"
     		Anything(Message<M>)? replyHandler = null) {
 

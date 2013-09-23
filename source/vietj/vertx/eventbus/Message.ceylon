@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-import ceylon.json {
-    JSonObject=Object,
-    JSonArray=Array
-}
-
 "Represents a message on the event bus."
 by("Julien Viet")
 shared class Message<T>(
         T body_,
         String? replyAddress_,
-        Anything(String|JSonObject|JSonArray) doReply) {
+        Anything(BodyType) doReply) {
 
     "The body of the message"
     shared T body = body_;
@@ -35,7 +30,7 @@ shared class Message<T>(
     "Reply to this message. If the message was sent specifying a reply handler, that handler will be
              called when it has received a reply. If the message wasn't sent specifying a receipt handler
              this method does nothing."
-    shared void reply(String|JSonObject|JSonArray body) {
+    shared void reply(BodyType body) {
         doReply(body);
     }
 
