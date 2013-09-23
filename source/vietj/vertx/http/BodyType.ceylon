@@ -19,19 +19,19 @@ import ceylon.json { JSONObject=Object, parseJSON=parse }
 import ceylon.io.buffer { ByteBuffer, newByteBuffer }
 import ceylon.io.charset { Charset }
 
-by "Julien Viet"
-license "ASL2"
-doc "The type of an input body, this interface allows to parse the body of a stream plugable"
+"The type of an input body, this interface allows to parse the body of a stream plugable"
+by("Julien Viet")
 shared interface BodyType<out Body> {
-	
-	doc "Return true when this body type can parse the specified mime type"
-	shared formal Boolean accept(String mimeType);
-	
-	doc "Parse the data with the specified charset and return the body"
-	shared formal Body parse(Charset? charset, Buffer data);
+
+    "Return true when this body type can parse the specified mime type"
+    shared formal Boolean accept(String mimeType);
+
+    "Parse the data with the specified charset and return the body"
+    shared formal Body parse(Charset? charset, Buffer data);
+
 }
 
-doc "Binary body type"
+"Binary body type"
 shared object binaryBody satisfies BodyType<ByteBuffer> {
 	shared actual Boolean accept(String mimeType) => true;
 	shared actual ByteBuffer parse(Charset? charset, Buffer data) {
@@ -47,7 +47,7 @@ shared object binaryBody satisfies BodyType<ByteBuffer> {
 	}
 }
 
-doc "String body type"
+"String body type"
 shared object textBody satisfies BodyType<String> {
 	shared actual Boolean accept(String mimeType) => mimeType.equals("text/plain");
 	shared actual String parse(Charset? charset, Buffer data) {
@@ -59,7 +59,7 @@ shared object textBody satisfies BodyType<String> {
 	}
 }
 
-doc "JSON body type"
+"JSON body type"
 shared object jsonBody satisfies BodyType<JSONObject> {
 	shared actual Boolean accept(String mimeType) => mimeType.equals("application/json");
 	shared actual JSONObject parse(Charset? charset, Buffer data) {
@@ -69,7 +69,7 @@ shared object jsonBody satisfies BodyType<JSONObject> {
 	}
 }
 
-doc "Find a body type for the specified mime type"
+"Find a body type for the specified mime type"
 shared BodyType<Anything> findBody(String mimeType) {
 	for (bodyType in {textBody, jsonBody}) {
 		if (bodyType.accept(mimeType)) {

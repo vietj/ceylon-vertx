@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-by "Julien Viet"
-license "ASL2"
-module test.vietj.vertx '0.1.3' {
+by("Julien Viet")
+license("ASL2")
+module test.vietj.vertx '0.2.0' {
 
-  import io.netty '4.0.2.Final';
-  import vietj.promises '0.3.5';
-  import vietj.vertx '0.1.3';
-  import java.base '7';
-  import ceylon.net '0.5';
-  import ceylon.json '0.5';
-  import ceylon.io '0.5';
-  import ceylon.collection '0.5';
-  import ceylon.test '0.5';
+    import io.netty '4.0.2.Final';
+    import vietj.promises '0.4.0';
+    import vietj.vertx '0.2.0';
+    import java.base '7';
+    import ceylon.net '0.6';
+    import ceylon.json '0.6';
+    import ceylon.io '0.6';
+    import ceylon.collection '0.6';
+    import ceylon.test '0.6';
 
 }

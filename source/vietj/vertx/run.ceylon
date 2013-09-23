@@ -18,55 +18,54 @@ import vietj.vertx.http { ... }
 import vietj.promises { ... }
 import vietj.vertx.eventbus { ... }
 
-by "Julien Viet"
-license "ASL2"
+by("Julien Viet")
 shared void run(){
 	value vertx = Vertx();
 	value server = vertx.createHttpServer();
 
-	void handle(HttpServerRequest req) {
-		req.response.
-			contentType("text/html").
-			end("<html><body>
-			     <h1>Hello from Vert.x with Ceylon!</h1>
-			     
-			     <h2>Method</h2>
-			     <p>``req.method``</p>
-			     <h2>Path</h2>               
-			     <p>``req.path``</p>
-			     <h2>Headers</h2>
-			     <p>``req.headers``</p>
-			     <h2>Parameters</h2>
-			     <p>``req.parameters``</p>
-			     <h2>Query parameter</h2>
-			     <p>``req.queryParameters``</p>
-			     <h2>Form parameters</h2>
-			     <p>``req.formParameters else {}``</p>
-			     
-			     <form action='/post' method='POST'>
-			     <input type='text' name='foo'>
-			     <input type='submit'>
-			     </form>
-			             			      			            
-			     </body></html>");
-		vertx.eventBus.send("foo", "Request ``req.path`` from ``req.remoteAddress.address``");
-		
-	}
+    void handle(HttpServerRequest req) {
+        req.response.
+            contentType("text/html").
+            end("<html><body>
+                 <h1>Hello from Vert.x with Ceylon!</h1>
+ 
+                 <h2>Method</h2>
+                 <p>``req.method``</p>
+                 <h2>Path</h2>               
+                 <p>``req.path``</p>
+                 <h2>Headers</h2>
+                 <p>``req.headers``</p>
+                 <h2>Parameters</h2>
+                 <p>``req.parameters``</p>
+                 <h2>Query parameter</h2>
+                 <p>``req.queryParameters``</p>
+                 <h2>Form parameters</h2>
+                 <p>``req.formParameters else {}``</p>
+ 
+                 <form action='/post' method='POST'>
+                 <input type='text' name='foo'>
+                 <input type='submit'>
+                 </form>
+ 
+                 </body></html>");
 
-	// Bind http server
-	Promise<HttpServer> http = server.requestHandler(handle).listen(8080);
-	http.then_((HttpServer arg) => print("Http server bound on 8080"));
+        vertx.eventBus.send("foo", "Request ``req.path`` from ``req.remoteAddress.address``");
+    }
 
-	// Register event bus for logging messages
-	Registration registration = vertx.eventBus.registerHandler("foo", (Message<String> msg) => print(msg.body));
-	registration.completed.then_((Null arg) => print("Event handler registered"));
-	
-	// Wait until both conditions are met to say we are fully started
-	// registration.completed.and(http).then_((HttpServer server, Null n) => print("Application started"));
+    // Bind http server
+    Promise<HttpServer> http = server.requestHandler(handle).listen(8080);
+    http.then_((HttpServer arg) => print("Http server bound on 8080"));
 
-	//
+    // Register event bus for logging messages
+    Registration registration = vertx.eventBus.registerHandler("foo", (Message<String> msg) => print(msg.body));
+    registration.completed.then_((Null arg) => print("Event handler registered"));
+
+    // Wait until both conditions are met to say we are fully started
+    // registration.completed.and(http).then_((HttpServer server, Null n) => print("Application started"));
+
+    //
     process.readLine();
-	vertx.stop();
+    vertx.stop();
 }
 
 

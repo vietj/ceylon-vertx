@@ -17,21 +17,22 @@ import vietj.vertx.util { toMap }
 import vietj.promises { Promise }
 import org.vertx.java.core.http { HttpClientResponse_=HttpClientResponse }
 
-by "Julien Viet"
-license "ASL2"
-doc "Represents a client-side HTTP response. Instances of this class are not thread-safe."
-shared class HttpClientResponse(HttpClientResponse_ delegate) extends HttpInput() {
-	
-	doc "The HTTP status code of the response"
-	shared Integer status => delegate.statusCode();
-	
-	doc "The http headers"
-	shared actual Map<String,{String+}> headers = toMap(delegate.headers());
-	
-	// We must pause
-	delegate.pause();
-	
-	shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
-		return doParseBody(parser, delegate.bodyHandler, delegate, charset);
-	}
+"Represents a client-side HTTP response. Instances of this class are not thread-safe."
+by("Julien Viet")
+shared class HttpClientResponse(HttpClientResponse_ delegate)
+        extends HttpInput() {
+
+    "The HTTP status code of the response"
+    shared Integer status => delegate.statusCode();
+
+    "The http headers"
+    shared actual Map<String,{String+}> headers = toMap(delegate.headers());
+
+    // We must pause
+    delegate.pause();
+
+    shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
+        return doParseBody(parser, delegate.bodyHandler, delegate, charset);
+    }
+
 }

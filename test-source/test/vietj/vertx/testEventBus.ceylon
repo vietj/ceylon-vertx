@@ -19,51 +19,47 @@ import vietj.vertx.eventbus { Message, EventBus }
 import ceylon.test { ... }
 import ceylon.json { Object }
 
-by "Julien Viet"
-license "ASL2"
 void testEventBus() {
-	for (test in {testStringEvent,testJSonEvent,testReply}) {
-		Vertx vertx = Vertx();
-		try {
-			test(vertx.eventBus);
-		} finally {
-			vertx.stop();
-		}
-	}
+    for (test in {testStringEvent,testJSonEvent,testReply}) {
+        Vertx vertx = Vertx();
+        try {
+            test(vertx.eventBus);
+        } finally {
+            vertx.stop();
+        }
+    }
 }
 
 void testStringEvent(EventBus bus) {
-	value deferred = Deferred<String>();
-	Registration registration = bus.registerHandler("foo", (Message<String> msg) => deferred.resolve(msg.body));
-	assertResolve(registration.completed);
-	bus.send("foo", "foo_value");
-	value payload = deferred.promise.future.get();	
-	assertEquals("foo_value", payload);
-	Promise<Null> cancel = registration.cancel();
-	assertResolve(cancel);
+    value deferred = Deferred<String>();
+    Registration registration = bus.registerHandler("foo", (Message<String> msg) => deferred.resolve(msg.body));
+    assertResolve(registration.completed);
+    bus.send("foo", "foo_value");
+    value payload = deferred.promise.future.get();	
+    assertEquals("foo_value", payload);
+    Promise<Null> cancel = registration.cancel();
+    assertResolve(cancel);
 }
 
 void testJSonEvent(EventBus bus) {
-	value deferred = Deferred<Object>();
-	Registration registration = bus.registerHandler("bar", (Message<Object> msg) => deferred.resolve(msg.body));
-	assertResolve(registration.completed);
-	Object o = Object({"juu"->"juu_value"});
-	bus.send("bar", o);
-	value payload2 = deferred.promise.future.get();
-	assertEquals(Object({"juu"->"juu_value"}), payload2);
-	Promise<Null> cancel = registration.cancel();
-	assertResolve(cancel);
+    value deferred = Deferred<Object>();
+    Registration registration = bus.registerHandler("bar", (Message<Object> msg) => deferred.resolve(msg.body));
+    assertResolve(registration.completed);
+    Object o = Object({"juu"->"juu_value"});
+    bus.send("bar", o);
+    value payload2 = deferred.promise.future.get();
+    assertEquals(Object({"juu"->"juu_value"}), payload2);
+    Promise<Null> cancel = registration.cancel();
+    assertResolve(cancel);
 }
 
 void testReply(EventBus bus) {
-	Registration registration = bus.registerHandler("foo", (Message<String> msg) => msg.reply("foo_reply"));
-	assertResolve(registration.completed);
-	value deferred = Deferred<String>();
-	bus.send("foo", "foo_value", (Message<String> msg) => deferred.resolve(msg.body));
-	value payload = deferred.promise.future.get();	
+    Registration registration = bus.registerHandler("foo", (Message<String> msg) => msg.reply("foo_reply"));
+    assertResolve(registration.completed);
+    value deferred = Deferred<String>();
+    bus.send("foo", "foo_value", (Message<String> msg) => deferred.resolve(msg.body));
+    value payload = deferred.promise.future.get();	
     assertEquals("foo_reply", payload);
-	Promise<Null> cancel = registration.cancel();
-	assertResolve(cancel);
+    Promise<Null> cancel = registration.cancel();
+    assertResolve(cancel);
 }
-
-

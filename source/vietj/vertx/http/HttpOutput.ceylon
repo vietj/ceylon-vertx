@@ -14,26 +14,29 @@
  * limitations under the License.
  */
 
-by "Julien Viet"
-license "ASL2"
-doc "Provides access for writing the headers and  content of an [[HttpClientRequest]] or an [[HttpServerResponse]]."
+"Provides access for writing the headers and  content of an
+ [[HttpClientRequest]] or an [[HttpServerResponse]]."
+by("Julien Viet")
 shared abstract class HttpOutput<O>() given O satisfies HttpOutput<O> {
-	
-	doc "Set the response headers."
-	shared formal O headers(<String-><String|{String+}>>* headers);
 
-	doc "Ends the response. If no data has been written to the response body,
-         the actual response won't get written until this method gets called.
-         Once the response has ended, it cannot be used any more."
-	shared formal O end(doc "The optional data chunk to write as the response content" String? chunk = null);
+    "Set the response headers."
+    shared formal O headers(<String-><String|{String+}>>* headers);
 
-	doc "Set the content type of the response."
-	shared default O contentType(String mimeType, String charset = "UTF-8") {
-		return headers("Content-Type" -> "``mimeType``; charset=``charset``");
-	}
-	
-	doc "Set a single header on the response"
-	shared default O header(String headerName, String headerValue) {
-		return headers(headerName -> headerValue);
-	}
+    "Ends the response. If no data has been written to the response body,
+     the actual response won't get written until this method gets called.
+     Once the response has ended, it cannot be used any more."
+    shared formal O end(
+        "The optional data chunk to write as the response content"
+        String? chunk = null);
+
+    "Set the content type of the response."
+    shared default O contentType(String mimeType, String charset = "UTF-8") {
+        return headers("Content-Type" -> "``mimeType``; charset=``charset``");
+    }
+
+    "Set a single header on the response"
+    shared default O header(String headerName, String headerValue) {
+        return headers(headerName -> headerValue);
+    }
+
 }
