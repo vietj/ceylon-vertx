@@ -17,7 +17,7 @@
 "Vertx API for Ceylon"
 by("Julien Viet")
 license("ASL2")
-module vietj.vertx '0.2.0' {
+module vietj.vertx '0.2.1' {
 
     import io.netty '4.0.2.Final';
     import com.fasterxml.jackson.annotations '2.2.2';

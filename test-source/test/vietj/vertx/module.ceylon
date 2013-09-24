@@ -16,11 +16,11 @@
 
 by("Julien Viet")
 license("ASL2")
-module test.vietj.vertx '0.2.0' {
+module test.vietj.vertx '0.2.1' {
 
     import io.netty '4.0.2.Final';
     import vietj.promises '0.4.1';
-    import vietj.vertx '0.2.0';
+    import vietj.vertx '0.2.1';
     import java.base '7';
     import ceylon.net '0.6.1';
     import ceylon.json '0.6.1';
