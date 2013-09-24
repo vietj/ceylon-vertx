@@ -26,11 +26,8 @@ import org.vertx.java.core.http { HttpClient_=HttpClient  }
 by("Julien Viet")
 shared class HttpClient(HttpClient_ delegate) {
 
-    "Returns the maximum number of connections in the pool"
     shared Integer maxPoolSize => delegate.maxPoolSize;
 
-    "Set the maximum pool size. The client will maintain up to `maxConnections`
-     HTTP connections in an internal pool"
     assign maxPoolSize => delegate.setMaxPoolSize(maxPoolSize);
 
     "The port"

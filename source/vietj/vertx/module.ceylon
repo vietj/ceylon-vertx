@@ -25,10 +25,10 @@ module vietj.vertx '0.2.0' {
     import com.fasterxml.jackson.databind '2.2.2';
     shared import io.vertx.core '2.0.0-final';
     import java.base '7';
-    shared import vietj.promises '0.4.0';
-    shared import ceylon.net '0.6';
-    shared import ceylon.json '0.6';
-    import ceylon.io '0.6';
-    import ceylon.collection '0.6';
+    shared import vietj.promises '0.4.1';
+    shared import ceylon.net '0.6.1';
+    shared import ceylon.json '0.6.1';
+    import ceylon.io '0.6.1';
+    import ceylon.collection '0.6.1';
 
 } 

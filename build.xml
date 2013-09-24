@@ -4,7 +4,7 @@
 -->
 <project name="vietj.vertx" default="run">
 
-    <property name="ceylon.home" value="/Users/julien/java/ceylon-0.6"/>
+    <property name="ceylon.home" value="/Users/julien/java/ceylon-0.6.1"/>
     <property name="ceylon.ant.lib" value="${ceylon.home}/lib/ceylon-ant.jar"/>
     <property name="source.encoding" value="UTF-8"/>
 
