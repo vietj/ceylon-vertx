@@ -4,7 +4,7 @@
 -->
 <project name="vietj.vertx" default="run">
 
-    <property name="ceylon.home" value="/Users/julien/java/ceylon-0.6.1"/>
+    <property name="ceylon.home" value="/Users/julien/java/ceylon-1.0.0"/>
     <property name="ceylon.ant.lib" value="${ceylon.home}/lib/ceylon-ant.jar"/>
     <property name="source.encoding" value="UTF-8"/>
 
@@ -45,7 +45,7 @@
     </target>
 
     <target name="run-js" depends="compile-js">
-        <ceylon-run-js module="vietj.vertx/0.210"/>
+        <ceylon-run-js module="vietj.vertx/0.2.1.0"/>
     </target>
 
    <target name="test" depends="compile">
