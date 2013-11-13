@@ -23,22 +23,29 @@ import vietj.promises { Promise, Deferred }
 import ceylon.collection { HashMap }
 import ceylon.io { newSocketConnector, SocketAddress }
 import ceylon.io.charset { ascii }
+import test.vietj.vertx { assertRequest, assertResolve }
+import vietj.vertx.eventbus { EventBus }
 
-void testHttpServer() {
-    value vertx = Vertx();
-    try {
-        value server = vertx.createHttpServer();
-        for (test in {testRequestHeaders,testPath,testQuery,testForm,test200,testParseBody}) {
-            test(server);
-            Promise<Null> promise = server.close();
-            assertResolve(promise);
-        }
-    } finally {
-        vertx.stop();
-    }
+void run(Anything(HttpServer) test) {
+	value vertx = Vertx();
+	try {
+		value server = vertx.createHttpServer();
+		test(server);
+		Promise<Null> promise = server.close();
+		assertResolve(promise);
+	} finally {
+		vertx.stop();
+	}
 }
 
-void testPath(HttpServer server) {
+shared test void testPath() => run(path);
+shared test void testRequestHeader() => run(requestHeaders);
+shared test void testQuery() => run(query);
+shared test void testForm() => run(form);
+shared test void testOk() => run(ok);
+shared test void testParseBody() => run(parseBody);
+
+void path(HttpServer server) {
     variable String? path = null;
     void f(HttpServerRequest req) {
         path = req.path;
@@ -53,7 +60,7 @@ void testPath(HttpServer server) {
     assertEquals("/foo ", path);
 }
 
-void testRequestHeaders(HttpServer server) {
+void requestHeaders(HttpServer server) {
     variable String? path = null;
     value headers = Deferred<Map<String, {String+}>>();
     void f(HttpServerRequest req) {
@@ -85,7 +92,7 @@ void testRequestHeaders(HttpServer server) {
 	assertEquals(HashMap({"foo"->{"foo_value1","foo_value2"}}), a);
 }
 
-void testQuery(HttpServer server) {
+void query(HttpServer server) {
     variable Query? query = null;
     variable Map<String, {String+}>? parameters = null;
     void f(HttpServerRequest req) {
@@ -102,7 +109,7 @@ void testQuery(HttpServer server) {
     assertEquals(HashMap({"foo"->{"foo_value"},"bar"->{"bar_value1","bar_value2"}}), parameters);
 }
 
-void testForm(HttpServer server) {
+void form(HttpServer server) {
     value parameters = Deferred<Map<String, {String+}>>();
     Promise<Map<String, {String+}>> p = parameters.promise;
     void f(HttpServerRequest req) {
@@ -131,7 +138,7 @@ void testForm(HttpServer server) {
     assertEquals(HashMap({"foo"->{"foo_value"},"bar"->{"bar_value1","bar_value2"}}), o);
 }
 
-void test200(HttpServer server) {
+void ok(HttpServer server) {
     void f(HttpServerRequest req) {
         HttpServerResponse resp = req.response;
         resp.status(200);
@@ -159,7 +166,7 @@ void test200(HttpServer server) {
     }
 }
 
-void testParseBody(HttpServer server) {
+void parseBody(HttpServer server) {
     value parameters = Deferred<String>();
     Promise<String> p = parameters.promise;
     void f(HttpServerRequest req) {

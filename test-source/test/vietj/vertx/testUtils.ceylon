@@ -17,7 +17,7 @@ import vietj.vertx.util { combine }
 import ceylon.collection { HashMap }
 import ceylon.test { ... }
 
-void testUtils() {
+test void testUtils() {
 
     HashMap<String, {String+}> src = HashMap<String, {String+}>({
         "foo" -> {"foo_value_2"},

@@ -20,7 +20,7 @@ module test.vietj.vertx "0.2.1" {
 
     import io.netty "4.0.2.Final";
     import vietj.promises "0.5.0";
-    import vietj.vertx "0.2.1";
+    shared import vietj.vertx "0.2.1";
     import java.base "7";
     import ceylon.net "1.0.0";
     import ceylon.json "1.0.0";

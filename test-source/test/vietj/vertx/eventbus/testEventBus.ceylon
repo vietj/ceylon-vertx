@@ -18,19 +18,22 @@ import vietj.promises { Promise, Deferred }
 import vietj.vertx.eventbus { Message, EventBus }
 import ceylon.test { ... }
 import ceylon.json { Object }
+import test.vietj.vertx { assertResolve }
 
-void testEventBus() {
-    for (test in {testStringEvent,testJSonEvent,testReply}) {
-        Vertx vertx = Vertx();
-        try {
-            test(vertx.eventBus);
-        } finally {
-            vertx.stop();
-        }
-    }
+void run(Anything(EventBus) test) {
+	Vertx vertx = Vertx();
+	try {
+		test(vertx.eventBus);
+	} finally {
+		vertx.stop();
+	}
 }
 
-void testStringEvent(EventBus bus) {
+shared test void testStringEvent() => run(stringEvent);
+shared test void testJSonEvent() => run(jsonEvent);
+shared test void testReply() => run(reply);
+
+void stringEvent(EventBus bus) {
     value deferred = Deferred<String>();
     Registration registration = bus.registerHandler("foo", (Message<String> msg) => deferred.resolve(msg.body));
     assertResolve(registration.completed);
@@ -41,7 +44,7 @@ void testStringEvent(EventBus bus) {
     assertResolve(cancel);
 }
 
-void testJSonEvent(EventBus bus) {
+void jsonEvent(EventBus bus) {
     value deferred = Deferred<Object>();
     Registration registration = bus.registerHandler("bar", (Message<Object> msg) => deferred.resolve(msg.body));
     assertResolve(registration.completed);
@@ -53,7 +56,7 @@ void testJSonEvent(EventBus bus) {
     assertResolve(cancel);
 }
 
-void testReply(EventBus bus) {
+void reply(EventBus bus) {
     Registration registration = bus.registerHandler("foo", (Message<String> msg) => msg.reply("foo_reply"));
     assertResolve(registration.completed);
     value deferred = Deferred<String>();

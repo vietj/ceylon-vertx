@@ -18,14 +18,9 @@ import vietj.vertx { Vertx }
 import vietj.vertx.http { ... }
 import ceylon.test { ... }
 import ceylon.io.charset { utf8 }
+import vietj.vertx.eventbus { EventBus }
 
-void testHttpClient() {
-    testTimeout();
-    testRequest();
-    testResponse();
-}
-
-void testTimeout() {
+shared test void testTimeout() {
     Vertx vertx = Vertx();
     try {
         HttpClient client = vertx.createHttpClient(5000, "localhost");
@@ -39,7 +34,7 @@ void testTimeout() {
     }
 }
 
-void testRequest() {
+shared test void testRequest() {
     Vertx vertx = Vertx();
     try {
         HttpServer server = vertx.createHttpServer();
@@ -65,7 +60,7 @@ void testRequest() {
     }
 }
 
-void testResponse() {
+shared test void testResponse() {
     Vertx vertx = Vertx();
     try {
         HttpServer server = vertx.createHttpServer();
@@ -93,5 +88,4 @@ void testResponse() {
     } finally {
         vertx.stop();
     }
-
 }

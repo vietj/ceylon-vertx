@@ -18,8 +18,11 @@ import ceylon.test { ... }
 
 import ceylon.net.uri { Uri, parseUri=parse }
 import ceylon.net.http.client { Request, Response }
+import test.vietj.vertx.http.server { ... }
+import test.vietj.vertx.http.client { ... }
+import test.vietj.vertx.eventbus { ... }
 
-T assertResolve<T>(Promise<T>|Deferred<T> obj) {
+shared T assertResolve<T>(Promise<T>|Deferred<T> obj) {
     Future<T> future;
     switch (obj)
     case (is Promise<T>) { future = obj.future; }
@@ -34,7 +37,7 @@ T assertResolve<T>(Promise<T>|Deferred<T> obj) {
     }
 }
 
-Response assertRequest(String uri, {<String->{String*}>*} headers = {}) {
+shared Response assertRequest(String uri, {<String->{String*}>*} headers = {}) {
     Uri tmp = parseUri(uri);
     Request req = Request(tmp);
     for (header in headers) {
@@ -45,8 +48,12 @@ Response assertRequest(String uri, {<String->{String*}>*} headers = {}) {
 
 by("Julien Viet")
 void run() {
-    suite("vietj.vertx", "test utils" -> testUtils);
-    suite("vietj.vertx", "test http server" -> testHttpServer);
-    suite("vietj.vertx", "test event bus" -> testEventBus);
-    suite("vietj.vertx", "test http client" -> testHttpClient);
+    value runner = createTestRunner([
+    	`testUtils`,
+    	`package test.vietj.vertx.http.server`,
+    	`package test.vietj.vertx.eventbus`,
+    	`package test.vietj.vertx.http.client`
+    ]);
+    value result = runner.run();
+    print(result);
 }
