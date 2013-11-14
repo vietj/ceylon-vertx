@@ -57,7 +57,7 @@ void path(HttpServer server) {
     value a = server.requestHandler(f).listen(8080);
     assertResolve(a);
     assertRequest("http://localhost:8080/foo%20?bar");
-    assertEquals("/foo ", path);
+    assertEquals("/foo%20", path);
 }
 
 void requestHeaders(HttpServer server) {

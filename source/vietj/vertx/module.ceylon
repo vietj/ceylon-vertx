@@ -19,11 +19,11 @@ by("Julien Viet")
 license("ASL2")
 module vietj.vertx "0.2.1" {
 
-    import io.netty "4.0.2.Final";
+    import io.netty "4.0.10.Final";
     import com.fasterxml.jackson.annotations "2.2.2";
     import com.fasterxml.jackson.core "2.2.2";
     import com.fasterxml.jackson.databind "2.2.2";
-    shared import io.vertx.core "2.0.0-final";
+    shared import io.vertx.core "2.0.2-final";
     import java.base "7";
     shared import vietj.promises "0.5.0";
     shared import ceylon.net "1.0.0";
