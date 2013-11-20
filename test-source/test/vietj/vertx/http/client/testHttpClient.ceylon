@@ -17,9 +17,10 @@ import vietj.promises { Promise }
 import vietj.vertx { Vertx }
 import vietj.vertx.http { ... }
 import ceylon.test { ... }
-import ceylon.io.charset { utf8 }
+import ceylon.io.charset { utf8, Charset }
 import vietj.vertx.eventbus { EventBus }
 import ceylon.io.buffer { ByteBuffer }
+import org.vertx.java.core.buffer { Buffer }
 
 shared test void testTimeout() {
     Vertx vertx = Vertx();
@@ -138,6 +139,42 @@ shared test void testBinaryBody() {
 			assertEquals(65, buffer.get());
 			assertEquals(66, buffer.get());
 			assertEquals(67, buffer.get());
+		} else {
+			fail("Was expecting a response");
+		}
+	} finally {
+		vertx.stop();
+	}
+}
+
+shared test void testBodyParserFailure() {
+	Vertx vertx = Vertx();
+	try {
+		HttpServer server = vertx.createHttpServer();
+		Promise<HttpServer> promise = server.
+				requestHandler((HttpServerRequest req)
+				=> req.response.
+				contentType("text/plain").
+				end("ABC")).
+				listen(8080);
+		assertEquals(server, promise.future.get(10000));
+		HttpClient client = vertx.createHttpClient(8080, "localhost");
+		HttpClientRequest req = client.request("GET", "/foo").end();
+		HttpClientResponse|Exception ret = req.response.future.get(10000);
+		if (is HttpClientResponse ret) {
+			assertEquals(200, ret.status);
+			assertEquals("text/plain", ret.mimeType);
+			assertEquals(utf8, ret.charset);
+			object failingParser satisfies BodyType<String> {
+				shared actual Boolean accept(String mimeType) => true;
+				shared actual String parse(Charset? charset, Buffer data) {
+					throw Exception("the_failure");
+				}
+			}
+			Promise<String> body = ret.parseBody(failingParser);
+			value result = body.future.get(10000);
+			assert(is Exception result);
+			assertEquals("the_failure", result.message);
 		} else {
 			fail("Was expecting a response");
 		}

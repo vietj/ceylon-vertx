@@ -89,9 +89,13 @@ Promise<Body> doParseBody<Body, T>(
 
     //
     object valueHandler satisfies Handler_<Buffer> {
-        shared actual void handle(Buffer e) {
-            Body body = bodyType.parse(charset, e);
-            deferred.resolve(body);
+        shared actual void handle(Buffer buffer) {
+            try {
+                Body body = bodyType.parse(charset, buffer);
+                deferred.resolve(body);
+            } catch(Exception e) {
+                deferred.reject(e);
+            }
         }
     }
 
