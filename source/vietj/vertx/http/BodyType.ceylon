@@ -35,11 +35,13 @@ shared interface BodyType<out Body> {
 shared object binaryBody satisfies BodyType<ByteBuffer> {
 	shared actual Boolean accept(String mimeType) => true;
 	shared actual ByteBuffer parse(Charset? charset, Buffer data) {
+		// This is likely not the most efficient way to do it
+		// but for now it is ok
 		Integer size = data.length();
 		ByteBuffer buff = newByteBuffer(size);
-		Integer index = 0;
+		variable Integer index = 0;
 		while (index < size) {
-			Integer byte = data.getByte(index);
+			Integer byte = data.getByte(index++);
 			buff.put(byte);
 		}
 		buff.flip();
@@ -47,9 +49,9 @@ shared object binaryBody satisfies BodyType<ByteBuffer> {
 	}
 }
 
-"String body type"
+"Text body type"
 shared object textBody satisfies BodyType<String> {
-	shared actual Boolean accept(String mimeType) => mimeType.equals("text/plain");
+	shared actual Boolean accept(String mimeType) => mimeType.startsWith("text/");
 	shared actual String parse(Charset? charset, Buffer data) {
 		if (exists charset) {
 			return data.toString(charset.name);
