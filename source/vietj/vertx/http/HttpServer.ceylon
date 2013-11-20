@@ -45,11 +45,7 @@ shared class HttpServer(HttpServer_ delegate) {
 						shared actual void handle(Void_ nothing) {
 							value attributes = delegate.formAttributes();
 							Map<String, {String+}> form = toMap(attributes);
-							try {
-								requestHandler(HttpServerRequest(delegate, form));
-							} finally {
-								delegate.response().close();
-							}
+							requestHandler(HttpServerRequest(delegate, form));
 						}
 					} 
 					delegate.expectMultiPart(true);
@@ -60,11 +56,7 @@ shared class HttpServer(HttpServer_ delegate) {
 					delegate.pause();
 					
 					//
-					try {
-						requestHandler(HttpServerRequest(delegate));
-					} finally {
-						delegate.response().close();
-					}
+					requestHandler(HttpServerRequest(delegate));
 				}
 			}
 		}
