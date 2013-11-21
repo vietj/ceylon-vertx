@@ -18,7 +18,6 @@ import vietj.vertx { Vertx }
 import vietj.vertx.http { ... }
 import ceylon.test { ... }
 import ceylon.io.charset { utf8, Charset }
-import vietj.vertx.eventbus { EventBus }
 import ceylon.io.buffer { ByteBuffer }
 import org.vertx.java.core.buffer { Buffer }
 

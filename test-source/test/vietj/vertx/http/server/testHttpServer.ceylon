@@ -24,7 +24,6 @@ import ceylon.collection { HashMap }
 import ceylon.io { newSocketConnector, SocketAddress }
 import ceylon.io.charset { ascii }
 import test.vietj.vertx { assertRequest, assertResolve }
-import vietj.vertx.eventbus { EventBus }
 
 void run(Anything(HttpServer) test) {
 	value vertx = Vertx();
