@@ -30,31 +30,9 @@ import vietj.vertx.eventbus { EventBus }
  instance of the event bus, file system and shared data classes, as well as methods for setting and cancelling
  timers.
  
- Create a new Vertx instance, when the `clusterPort` or the `clusterHost` is specified a clustered instance
- is created. Instances of this class are thread-safe."
+ Create a new Vertx instance. Instances of this class are thread-safe."
 by("Julien Viet")
-shared class Vertx(
-        "The port to listen for cluster connections"
-        shared Integer? clusterPort = null,
-        "The hostname or ip address to listen for cluster connection"
-        shared String? clusterHost = null) {
-
-    // Create deleg
-    Vertx_ v_;
-    if (exists clusterPort) {
-        if (exists clusterHost) {
-            v_ = newVertx(clusterPort, clusterHost);
-        } else {
-            throw Exception("When port is provided, hostName must be too");
-        }
-    } else {
-        if (exists clusterHost) {
-            v_ = newVertx(clusterHost);
-        } else {
-            v_ = newVertx();
-        }
-    }
-    Vertx_ v = v_;
+shared class Vertx(Vertx_ v = newVertx()) {
 
     "The event bus"
     shared EventBus eventBus = EventBus(v.eventBus());
@@ -82,6 +60,6 @@ shared class Vertx(
     
     "Stop Vertx"
     shared void stop() {
-        v_.stop();
+        v.stop();
     }
 }
