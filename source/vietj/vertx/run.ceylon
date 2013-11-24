@@ -47,7 +47,7 @@ shared void run(){
                  <input type='submit'>
                  </form>
  
-                 </body></html>");
+                 </body></html>").close();
 
         vertx.eventBus.send("foo", "Request ``req.path`` from ``req.remoteAddress.address``");
     }

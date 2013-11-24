@@ -84,4 +84,9 @@ shared class HttpClient(HttpClient_ delegate) {
         return HttpClientRequest(delegate, method, uri);
     }
     
+    "Close the HTTP client. This will cause any pooled HTTP connections to be closed."
+    shared void close() {
+        delegate.close();
+    }
+    
 }

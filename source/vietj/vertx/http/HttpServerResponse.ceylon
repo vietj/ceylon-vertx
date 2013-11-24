@@ -47,6 +47,11 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
         }
         return this;
     }
+    
+    "Close the underlying TCP connection"
+    shared void close() {
+        delegate.close();
+    }
 
     shared actual HttpServerResponse headers(<String-><String|{String+}>>* headers) {
         for (header_ in headers) {

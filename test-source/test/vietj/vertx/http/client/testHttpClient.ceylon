@@ -40,7 +40,7 @@ shared test void testRequest() {
     try {
         HttpServer server = vertx.createHttpServer();
         Promise<HttpServer> promise = server.
-                requestHandler((HttpServerRequest req) => req.response.headers("bar"->"bar_value").contentType("text/plain").end("foo_content")).
+                requestHandler((HttpServerRequest req) => req.response.headers("bar"->"bar_value").contentType("text/plain").end("foo_content").close()).
                 listen(8080);
         assertEquals(server, promise.future.get(10000));
         HttpClient client = vertx.createHttpClient(8080, "localhost");
@@ -69,7 +69,8 @@ shared test void testResponse() {
 				requestHandler((HttpServerRequest req)
 				=> req.response.
 				headers("bar"->"bar_value").
-				end()).
+				end().
+		        close()).
 				listen(8080);
 		assertEquals(server, promise.future.get(10000));
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
@@ -93,7 +94,8 @@ shared test void testTextResponse() {
                 requestHandler((HttpServerRequest req)
                     => req.response.
                         contentType("text/plain").
-                        end("foo_content")).
+                        end("foo_content").
+                        close()).
                 listen(8080);
         assertEquals(server, promise.future.get(10000));
         HttpClient client = vertx.createHttpClient(8080, "localhost");
@@ -121,7 +123,8 @@ shared test void testBinaryBody() {
 				requestHandler((HttpServerRequest req)
 				=> req.response.
 				contentType("text/plain").
-				end("ABC")).
+				end("ABC").
+				close()).
 				listen(8080);
 		assertEquals(server, promise.future.get(10000));
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
@@ -154,7 +157,8 @@ shared test void testBodyParserFailure() {
 				requestHandler((HttpServerRequest req)
 				=> req.response.
 				contentType("text/plain").
-				end("ABC")).
+				end("ABC").
+				close()).
 				listen(8080);
 		assertEquals(server, promise.future.get(10000));
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
