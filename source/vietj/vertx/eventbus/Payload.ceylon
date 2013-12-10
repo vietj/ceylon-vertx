@@ -1,3 +1,4 @@
+import ceylon.json { JSonArray=Array, JSonObject=Object }
 /*
  * Copyright 2013 Julien Viet
  *
@@ -14,20 +15,6 @@
  * limitations under the License.
  */
 
-"Represents a message on the event bus."
-by("Julien Viet")
-shared class Message<T>(
-		"The body of the message"
-        shared T body,
-		"The body of the message"
-        shared String? replyAddress,
-        Anything(Payload) doReply) {
+"Alias for the type of a message payload"
+shared alias Payload => String|JSonObject|JSonArray;
 
-    "Reply to this message. If the message was sent specifying a reply handler, that handler will be
-             called when it has received a reply. If the message wasn't sent specifying a receipt handler
-             this method does nothing."
-    shared void reply(Payload body) {
-        doReply(body);
-    }
-
-}

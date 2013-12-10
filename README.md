@@ -25,7 +25,7 @@ This will execute the sample [sample](https://github.com/vietj/ceylon-vertx/blob
     
     req.response.headers("Content-Type" -> "text/html; charset=UTF-8");
     
-or
+or 
     
     req.response.contentType("text/html");
 
