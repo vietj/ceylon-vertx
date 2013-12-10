@@ -61,33 +61,8 @@ import ceylon.json { JSonObject=Object, JSonArray=Array }
 by("Julien Viet")
 shared class EventBus(EventBus_ delegate) {
 
-	class HandlerAdapter<M>(Anything(Message<M>) handler)
-		  satisfies Handler_<Message_<Object>> {
-
-        shared actual void handle(Message_<Object> eventDelegate) {
-            String? replyAddress = eventDelegate.replyAddress();
-            Object body = eventDelegate.body();
-            void doReply(Payload body) {
-                switch(body)
-                case (is String) { eventDelegate.reply(body); }
-                case (is JSonObject) { eventDelegate.reply(fromObject(body)); }
-                else { }
-            }
-            if (is String_ body) {
-                if (is Anything(Message<String>) handler) {
-                    handler(Message<String>(body.string, replyAddress, doReply)); 
-                }
-            } else if (is JsonObject_ body) {
-                if (is Anything(Message<JSonObject>) handler) {
-                    handler(Message<JSonObject>(toObject(body), replyAddress, doReply)); 
-                }
-            }
-        }
-	}
-
-	class RegistrableHandlerAdapter<M>(String address, Anything(Message<M>) handler)
-			extends	HandlerAdapter<M>(handler)
-			satisfies Registration {
+	class RegistrableMessageAdapter<M>(String address, Anything(Message<M>) handler)
+			satisfies Registration & Handler_<Message_<Object>> {
 	
     	value resultHandler = HandlerPromise<Null, Void_>((Void_ s) => null);
     	shared actual Promise<Null> completed = resultHandler.promise;
@@ -100,6 +75,26 @@ shared class EventBus(EventBus_ delegate) {
     	
     	shared void register() {
     		registerHandler_(delegate, address, this, resultHandler);
+    	}
+
+    	shared actual void handle(Message_<Object> eventDelegate) {
+    		String? replyAddress = eventDelegate.replyAddress();
+    		Object body = eventDelegate.body();
+    		void doReply(Payload body) {
+    			switch(body)
+    			case (is String) { eventDelegate.reply(body); }
+    			case (is JSonObject) { eventDelegate.reply(fromObject(body)); }
+    			else { }
+    		}
+    		if (is String_ body) {
+    			if (is Anything(Message<String>) handler) {
+    				handler(Message<String>(body.string, replyAddress, doReply)); 
+    			}
+    		} else if (is JsonObject_ body) {
+    			if (is Anything(Message<JSonObject>) handler) {
+    				handler(Message<JSonObject>(toObject(body), replyAddress, doReply)); 
+    			}
+    		}
     	}
 	}
 	
@@ -196,7 +191,7 @@ shared class EventBus(EventBus_ delegate) {
             "The handler"
             Anything(Message<M>) handler) given M satisfies Object {
 
-        RegistrableHandlerAdapter<M> handlerAdapter = RegistrableHandlerAdapter<M>(address, handler);
+        RegistrableMessageAdapter<M> handlerAdapter = RegistrableMessageAdapter<M>(address, handler);
         handlerAdapter.register();
         return handlerAdapter;
     }
