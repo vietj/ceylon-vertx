@@ -17,7 +17,7 @@
 import org.vertx.java.core.eventbus { EventBus_=EventBus, Message_=Message }
 import org.vertx.java.core { Handler_=Handler }
 import org.vertx.java.core.json { JsonObject_=JsonObject }
-import vietj.promises { Promise }
+import vietj.promises { Promise, Deferred }
 import java.lang { String_=String, Void_=Void }
 import vietj.vertx.interop { EventBusAdapter { registerHandler_=registerHandler, unregisterHandler_=unregisterHandler } }
 import vietj.vertx { Registration }
@@ -102,33 +102,78 @@ shared class EventBus(EventBus_ delegate) {
     		registerHandler_(delegate, address, this, resultHandler);
     	}
 	}
+	
+	class MessageAdapter<M>() satisfies Handler_<Message_<Object>> {
+		shared Deferred<Message<M>> deferred = Deferred<Message<M>>();
+		shared actual void handle(Message_<Object> eventDelegate) {
+			String? replyAddress = eventDelegate.replyAddress();
+			Object body = eventDelegate.body();
+			void doReply(Payload body) {
+				switch(body)
+				case (is String) { eventDelegate.reply(body); }
+				case (is JSonObject) { eventDelegate.reply(fromObject(body)); }
+				else {}
+			}
+			if (is String_ body) {
+				if (is Deferred<Message<String>> deferred) {
+					Deferred<Message<String>> cast = deferred;
+					cast.resolve(Message<String>(body.string, replyAddress, doReply));
+				} else {
+					deferred.reject(Exception("Wrong promise type for reply ``body``"));
+				}
+			} else if (is JsonObject_ body) {
+				if (is Deferred<Message<JSonObject>> deferred) {
+					Deferred<Message<JSonObject>> cast = deferred;
+					cast.resolve(Message<JSonObject>(toObject(body), replyAddress, doReply));
+				} else {
+					deferred.reject(Exception("Wrong promise type for reply ``body``"));
+				}
+			} else {
+				deferred.reject(Exception("Unsupported reply type ``body``"));
+			}
+		} 
+	}
 
-	"Send a message"
-	shared EventBus send<M>(
+    // A promise of nothing
+    object promiseOfNothing extends Promise<Nothing>() {
+        shared actual Promise<Result> then__<Result>(
+            <Promise<Result>(Nothing)> onFulfilled,
+            <Promise<Result>(Exception)> onRejected) {
+            try {
+                return onRejected(Exception("No result expected"));
+            } catch(Exception e) {
+                return promiseOfNothing;
+            }
+        }
+    }
+
+	"Send a message via the event bus. The returned promise allows to receive any reply message from the recipient."
+	shared Promise<Message<M>> send<M = Nothing>(
     		"The address to send it to"
     		String address,
     		"The message"
-    		Payload message,
-    		"Reply handler will be called when any reply from the recipient is received"
-    		Anything(Message<M>)? replyHandler = null) {
+    		Payload message) {
 
-        if (exists replyHandler) {
-            HandlerAdapter<M> handlerAdapter = HandlerAdapter<M>(replyHandler);
-            switch (message)
-            case (is String) { delegate.send(address, message, handlerAdapter); }
-            case (is JSonObject) { delegate.send(address, fromObject(message), handlerAdapter); }
-            case (is JSonArray) { throw Exception(); }
-        } else {
+        //
+        if (`M` == `Nothing`) {
             switch (message)
             case (is String) { delegate.send(address, message); }
             case (is JSonObject) { delegate.send(address, fromObject(message)); }
             case (is JSonArray) { throw Exception(); }
+            return promiseOfNothing;
+        } else {
+            MessageAdapter<M> adapter = MessageAdapter<M>();
+            Handler_<Message_<Object>> handler = adapter;
+            switch (message)
+            case (is String) { delegate.send(address, message, handler); }
+            case (is JSonObject) { delegate.send(address, fromObject(message), handler); }
+            case (is JSonArray) { throw Exception(); }
+            return adapter.deferred.promise;
         }
-        return this;
 	}
 	
 	"Publish a message"
-	shared EventBus publish<M>(
+	shared void publish<M>(
     		"The address to send it to"
     		String address,
     		"The message"
@@ -140,7 +185,6 @@ shared class EventBus(EventBus_ delegate) {
 		case (is String) { delegate.publish(address, message); }
 		case (is JSonObject) { delegate.publish(address, fromObject(message)); }
 		case (is JSonArray) { throw Exception(); }
-		return this;
 	}
 
     "Registers a handler against the specified address. The method returns a registration whose:

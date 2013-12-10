@@ -60,7 +60,8 @@ void reply(EventBus bus) {
     Registration registration = bus.registerHandler("foo", (Message<String> msg) => msg.reply("foo_reply"));
     assertResolve(registration.completed);
     value deferred = Deferred<String>();
-    bus.send("foo", "foo_value", (Message<String> msg) => deferred.resolve(msg.body));
+    Promise<Message<String>> reply = bus.send<String>("foo", "foo_value");
+    reply.then_( (Message<String> msg) => deferred.resolve(msg.body));
     value payload = deferred.promise.future.get();	
     assertEquals("foo_reply", payload);
     Promise<Null> cancel = registration.cancel();
