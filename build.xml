@@ -7,6 +7,7 @@
     <property name="ceylon.home" value="/Users/julien/java/ceylon-1.0.0"/>
     <property name="ceylon.ant.lib" value="${ceylon.home}/lib/ceylon-ant.jar"/>
     <property name="source.encoding" value="UTF-8"/>
+    <property name="source.version" value="0.3.5"/>
 
     <path id="ant-tasks">
         <pathelement location="${ceylon.ant.lib}"/>
@@ -41,18 +42,18 @@
     </target>
 
     <target name="run" depends="compile">
-        <ceylon-run module="io.vertx.ceylon/0.3.5"/>
+        <ceylon-run module="io.vertx.ceylon/${source.version}"/>
     </target>
 
     <target name="run-js" depends="compile-js">
-        <ceylon-run-js module="io.vertx.ceylon/0.3.5"/>
+        <ceylon-run-js module="io.vertx.ceylon/${source.version}"/>
     </target>
 
    <target name="test" depends="compile">
        <ceylon-compile encoding="${source.encoding}" src="test-source">
            <module name="test.io.vertx.ceylon"/>
        </ceylon-compile>
-       <ceylon-run module="test.io.vertx.ceylon/0.3.5"/>
+       <ceylon-run module="test.io.vertx.ceylon/${source.version}"/>
    </target>
 
    <target name="clean">
