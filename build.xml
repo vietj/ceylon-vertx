@@ -24,35 +24,35 @@
         <ceylon-compile encoding="${source.encoding}" verbose="false">
           <!--
             <reposet refid="reposet.compile"/>-->
-            <module name="vietj.vertx"/>
+            <module name="io.vertx.ceylon"/>
         </ceylon-compile>
     </target>
 
     <target name="compile-js">
         <ceylon-compile-js encoding="${source.encoding}">
-            <module name="vietj.vertx"/>
+            <module name="io.vertx.ceylon"/>
         </ceylon-compile-js>
     </target>
 
     <target name="doc">
         <ceylon-doc encoding="${source.encoding}">
-            <module name="vietj.vertx"/>
+            <module name="io.vertx.ceylon"/>
         </ceylon-doc>
     </target>
 
     <target name="run" depends="compile">
-        <ceylon-run module="vietj.vertx/0.3.5"/>
+        <ceylon-run module="io.vertx.ceylon/0.3.5"/>
     </target>
 
     <target name="run-js" depends="compile-js">
-        <ceylon-run-js module="vietj.vertx/0.3.5"/>
+        <ceylon-run-js module="io.vertx.ceylon/0.3.5"/>
     </target>
 
    <target name="test" depends="compile">
        <ceylon-compile encoding="${source.encoding}" src="test-source">
-           <module name="test.vietj.vertx"/>
+           <module name="test.io.vertx.ceylon"/>
        </ceylon-compile>
-       <ceylon-run module="test.vietj.vertx/0.3.5"/>
+       <ceylon-run module="test.io.vertx.ceylon/0.3.5"/>
    </target>
 
    <target name="clean">
