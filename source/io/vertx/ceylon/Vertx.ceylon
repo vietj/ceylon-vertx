@@ -15,7 +15,6 @@
  */
 
 import org.vertx.java.core {
-	VertxFactory { newVertx },
 	Vertx_=Vertx
 }
 import io.vertx.ceylon.http { HttpServer, HttpClient }
@@ -32,7 +31,7 @@ import io.vertx.ceylon.eventbus { EventBus }
  
  Create a new Vertx instance. Instances of this class are thread-safe."
 by("Julien Viet")
-shared class Vertx(Vertx_ v = newVertx()) {
+shared class Vertx(Vertx_ v = VertxProvider.create()) {
 
     "The event bus"
     shared EventBus eventBus = EventBus(v.eventBus());
