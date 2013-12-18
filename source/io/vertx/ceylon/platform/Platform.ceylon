@@ -2,7 +2,7 @@ import org.vertx.java.platform { PlatformManager, PlatformLocator { f = factory 
 import ceylon.json { Object }
 import ceylon.promises { Promise }
 import org.vertx.java.core.json { JsonObject }
-import io.vertx.ceylon.util { fromObject, HandlerPromise }
+import io.vertx.ceylon.util { HandlerPromise }
 import java.lang { String_ = String }
 import io.vertx.ceylon { Vertx }
 
@@ -21,28 +21,19 @@ shared class Platform() {
 
 	PlatformManager manager = f.createPlatformManager();
 	
-	"Deploy a module. The returned promise will be resolved with the deploymentID or be rejected if it fails to deploy"
-	shared Promise<String> deploy(
+	"Deploy a module. The returned promise will be resolved with the deployment or be rejected if it fails to deploy"
+	shared Promise<Deployment> deploy(
 		"The name of the module to deploy"
 		String moduleName,
 		"Any JSON config to pass to the verticle, or null if none"
 		Object? conf, 
 		"fromObject(conf)"
 		Integer instances) {
-		JsonObject? vertxConf;
-		if (exists conf) {
-			vertxConf = fromObject(conf);
-		} else {
-			vertxConf = null;
+		JsonObject? vertxConf = toConf(conf);
+		void undeploy(String s) {
+			manager.undeploy(s, null);
 		}
-		String f(String_? a) {
-			if (exists a) {
-				return a.string;
-			} else {
-				throw Exception();
-			}
-		}
-		HandlerPromise<String, String_> a = HandlerPromise<String, String_>(f);
+		HandlerPromise<Deployment, String_> a = HandlerPromise<Deployment, String_>(fa(undeploy));
 		manager.deployModule(moduleName, vertxConf, instances, a);
 		return a.promise;
 	}
