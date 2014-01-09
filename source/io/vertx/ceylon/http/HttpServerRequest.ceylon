@@ -20,6 +20,7 @@ import ceylon.io { SocketAddress }
 import ceylon.collection { HashMap }
 import io.vertx.ceylon.util { combine, toMap }
 import ceylon.promises { Promise }
+import ceylon.net.http { Method, parseMethod }
 
 "Represents a server-side HTTP request. Each instance of this class is associated with a corresponding
  [[HttpServerResponse]] instance via the `response` field. Instances of this class are not thread-safe."
@@ -34,7 +35,7 @@ shared class HttpServerRequest(
     shared HttpServerResponse response = HttpServerResponse(delegate.response());
 
     "The request method"
-    shared String method => delegate.method();
+    shared Method method = parseMethod(delegate.method());
 
     "The request uri"
     shared Uri uri => parseUri(delegate.uri());

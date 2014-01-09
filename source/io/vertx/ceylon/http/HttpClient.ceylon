@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 import org.vertx.java.core.http { HttpClient_=HttpClient  }
+import ceylon.net.http { Method }
 
 "An HTTP client that maintains a pool of connections to a specific host, at a specific port. The client supports
  pipelining of requests.
@@ -80,7 +81,7 @@ shared class HttpClient(HttpClient_ delegate) {
      
      When an HTTP response is received from the server the promise `response`
      is resolved with the response."
-    shared HttpClientRequest request(String method, String uri) {
+    shared HttpClientRequest request(Method method, String uri) {
         return HttpClientRequest(delegate, method, uri);
     }
     

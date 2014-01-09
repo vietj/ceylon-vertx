@@ -19,6 +19,7 @@ import ceylon.promises { Deferred, Promise }
 import org.vertx.java.core { Handler_=Handler}
 import io.vertx.ceylon.interop { ExceptionSupportAdapter { handle } }
 import java.lang { Exception }
+import ceylon.net.http { Method }
 
 "Represents a client-side HTTP request.
  
@@ -48,7 +49,7 @@ import java.lang { Exception }
  
  Instances of HttpClientRequest are not thread-safe."
 by("Julien Viet")
-shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) extends HttpOutput<HttpClientRequest>() {
+shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) extends HttpOutput<HttpClientRequest>() {
 
     Deferred<HttpClientResponse> deferred = Deferred<HttpClientResponse>();
 
@@ -61,7 +62,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
         } 
     }
 
-    HttpClientRequest_ request = delegate.request(method, uri, valueHandler);
+    HttpClientRequest_ request = delegate.request(method.string, uri, valueHandler);
     handle(request, deferred);
 
     "Set's the amount of time after which if a response is not received `TimeoutException`

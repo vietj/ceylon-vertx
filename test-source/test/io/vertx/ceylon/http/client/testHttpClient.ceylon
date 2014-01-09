@@ -20,12 +20,13 @@ import ceylon.test { ... }
 import ceylon.io.charset { utf8, Charset }
 import ceylon.io.buffer { ByteBuffer }
 import org.vertx.java.core.buffer { Buffer }
+import ceylon.net.http { get }
 
 shared test void testTimeout() {
     Vertx vertx = Vertx();
     try {
         HttpClient client = vertx.createHttpClient(5000, "localhost");
-        HttpClientRequest req = client.request("GET", "/foo").timeout(100);
+        HttpClientRequest req = client.request(get, "/foo").timeout(100);
         HttpClientResponse|Exception f = req.response.future.get(10000);
         if (is HttpClientResponse f) {
             fail("Was expecting an exception");
@@ -44,7 +45,7 @@ shared test void testRequest() {
                 listen(8080);
         assertEquals(server, promise.future.get(10000));
         HttpClient client = vertx.createHttpClient(8080, "localhost");
-        HttpClientRequest req = client.request("GET", "/foo").contentType("text/plain").end("the_body");
+        HttpClientRequest req = client.request(get, "/foo").contentType("text/plain").end("the_body");
         HttpClientResponse|Exception ret = req.response.future.get(10000);
         if (is HttpClientResponse ret) {
             assertEquals(200, ret.status);
@@ -74,7 +75,7 @@ shared test void testResponse() {
 				listen(8080);
 		assertEquals(server, promise.future.get(10000));
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
-		HttpClientRequest req = client.request("GET", "/foo").end();
+		HttpClientRequest req = client.request(get, "/foo").end();
 		HttpClientResponse|Exception ret = req.response.future.get(10000);
 		if (is HttpClientResponse ret) {
 			assertEquals(200, ret.status);
@@ -99,7 +100,7 @@ shared test void testTextResponse() {
                 listen(8080);
         assertEquals(server, promise.future.get(10000));
         HttpClient client = vertx.createHttpClient(8080, "localhost");
-        HttpClientRequest req = client.request("GET", "/foo").end();
+        HttpClientRequest req = client.request(get, "/foo").end();
         HttpClientResponse|Exception ret = req.response.future.get(10000);
         if (is HttpClientResponse ret) {
             assertEquals(200, ret.status);
@@ -128,7 +129,7 @@ shared test void testBinaryBody() {
 				listen(8080);
 		assertEquals(server, promise.future.get(10000));
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
-		HttpClientRequest req = client.request("GET", "/foo").end();
+		HttpClientRequest req = client.request(get, "/foo").end();
 		HttpClientResponse|Exception ret = req.response.future.get(10000);
 		if (is HttpClientResponse ret) {
 			assertEquals(200, ret.status);
@@ -162,7 +163,7 @@ shared test void testBodyParserFailure() {
 				listen(8080);
 		assertEquals(server, promise.future.get(10000));
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
-		HttpClientRequest req = client.request("GET", "/foo").end();
+		HttpClientRequest req = client.request(get, "/foo").end();
 		HttpClientResponse|Exception ret = req.response.future.get(10000);
 		if (is HttpClientResponse ret) {
 			assertEquals(200, ret.status);
