@@ -56,7 +56,7 @@ shared class HttpServer(HttpServer_ delegate) {
 					delegate.pause();
 					
 					//
-					requestHandler(HttpServerRequest(delegate));
+					requestHandler(InternalHttpServerRequest(delegate));
 				}
 			}
 		}

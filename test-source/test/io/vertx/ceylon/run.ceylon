@@ -53,7 +53,7 @@ void run() {
     	`package test.io.vertx.ceylon.http.server`,
     	`package test.io.vertx.ceylon.eventbus`,
     	`package test.io.vertx.ceylon.http.client`
-    ]);
+    ], [SimpleLoggingListener()]);
     value result = runner.run();
     print(result);
 }

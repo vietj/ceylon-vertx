@@ -117,3 +117,7 @@ shared class HttpServerRequest(
     }
 
 }
+
+class InternalHttpServerRequest(shared HttpServerRequest_ delegate, Map<String, {String+}>? formParameters_ = null)
+    extends HttpServerRequest(delegate, formParameters_) {
+}
