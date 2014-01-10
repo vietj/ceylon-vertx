@@ -4,13 +4,13 @@ Provides a Ceylon API for the Vert.x framework.
 
 # Test Drive
 
-    ceylon run vietj.vertx/0.1.2
+    ceylon run vietj.vertx/0.3.8
 
 This will execute the sample [sample](https://github.com/vietj/ceylon-vertx/blob/master/source/vietj/vertx/run.ceylon) server.
 
-# What works
+# Features
 
-## Basic HTTP bridging
+## HTTP bridging
 
     Vertx().createHttpServer().requestHandler(
         (HttpServerRequest req) => req.response.contentType("text/html").end("Hello World)
@@ -28,6 +28,13 @@ This will execute the sample [sample](https://github.com/vietj/ceylon-vertx/blob
 or
     
     req.response.contentType("text/html");
+
+### RouteMatcher
+
+    value router = RouteMatcher();
+    router.get("/animal/dogs", (HttpServerRequest req) => req.response.end(“You requested dogs"));
+    router.get("/animal/cats", (HttpServerRequest req) => req.response.end(“You requested cats"));
+    server.requestHandler(router.handle).listen(8080);
 
 ## EventBus bridging
 
