@@ -1,6 +1,3 @@
-import ceylon.json { JSonArray=Array, JSonObject=Object }
-import java.lang { ByteArray }
-
 /*
  * Copyright 2013 Julien Viet
  *
@@ -17,6 +14,18 @@ import java.lang { ByteArray }
  * limitations under the License.
  */
 
-"Alias for the type of a message payload"
-shared alias Payload => String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray;
+import ceylon.promises { Promise }
 
+"A promise of nothing always rejected"
+by("Julien Viet")
+object promiseOfNothing extends Promise<Nothing>() {
+    shared actual Promise<Result> then__<Result>(
+        <Promise<Result>(Nothing)> onFulfilled,
+        <Promise<Result>(Exception)> onRejected) {
+        try {
+            return onRejected(Exception("No result expected"));
+        } catch(Exception e) {
+            return promiseOfNothing;
+        }
+    }
+}

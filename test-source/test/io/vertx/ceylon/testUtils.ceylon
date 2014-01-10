@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import io.vertx.ceylon.util { combine }
+import io.vertx.ceylon.util { ... }
+import ceylon.json { ... }
 import ceylon.collection { HashMap }
 import ceylon.test { ... }
+import org.vertx.java.core.json { JsonArray }
 
-test void testUtils() {
+shared test void testUtils() {
 
     HashMap<String, {String+}> src = HashMap<String, {String+}>({
         "foo" -> {"foo_value_2"},
@@ -31,4 +33,13 @@ test void testUtils() {
         "bar" -> {"bar_value"},
         "juu" -> {"juu_value"}}), combined);
 
+}
+
+shared test void testFromArray() {
+    Array a = Array({"abc"});
+    JsonArray b = fromArray(a);
+    assertEquals(1, b.size());
+    value i = b.iterator();
+    value abc = i.next();
+    assertEquals("abc", abc.string);
 }

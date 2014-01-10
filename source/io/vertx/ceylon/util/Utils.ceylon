@@ -15,9 +15,9 @@
  */
 
 import ceylon.collection { HashMap }
-import ceylon.json { Object }
+import ceylon.json { Object, Array }
 import org.vertx.java.core { MultiMap }
-import org.vertx.java.core.json { JsonObject }
+import org.vertx.java.core.json { JsonObject, JsonArray }
 import java.lang { String_=String }
 import java.util { Iterator_=Iterator }
 import io.vertx.ceylon.interop { JavaBridge { getFieldValue } }
@@ -67,35 +67,62 @@ shared Map<String, {String+}> toMap(MultiMap multiMap) {
 
 "Convert a ceylon.json.Object to a Vert.x JsonObject"
 shared JsonObject fromObject(Object obj) {
-    JsonObject jsonObject = JsonObject();
+    JsonObject o = JsonObject();
     for (field in obj) {
-        value v = field.item;
-
-        switch (v)
-        case (is String) { jsonObject.putString(field.key, v); }
-        case (is Object) { jsonObject.putObject(field.key, fromObject(v)); }
+        value val = field.item;
+        switch (val)
+        case (is String) { o.putString(field.key, val); }
+        case (is Object) { o.putObject(field.key, fromObject(val)); }
+        case (is Array) { o.putArray(field.key, fromArray(val)); }
         else { throw Exception("todo"); }
     }
-    return jsonObject;
+    return o;
+}
+
+"Convert a ceylon.json.Array to a Vert.x JsonArray"
+shared JsonArray fromArray(Array array) {
+    JsonArray jsonArray = JsonArray();
+    for (jsonElement in array) {
+        switch (jsonElement)
+        case (is String) { jsonArray.addString(jsonElement); }
+        case (is Object) { jsonArray.addObject(fromObject(jsonElement)); }
+        case (is Array) { jsonArray.addArray(fromArray(jsonElement)); }
+        else { throw Exception("todo"); }
+    }
+    return jsonArray;
 }
 
 "Convert a Vert.x JsonObject to a ceylon.json.Object"
 shared Object toObject(JsonObject jsonObject) {
     value obj = Object();
-    value fieldNameIterator = jsonObject.fieldNames.iterator();
-    while (fieldNameIterator.hasNext()) {
-        value nextFieldName = fieldNameIterator.next();
-        String fieldName = nextFieldName.string;
+    value iterator = jsonObject.fieldNames.iterator();
+    while (iterator.hasNext()) {
+        value next = iterator.next();
+        String fieldName = next.string;
         value fieldValue = getFieldValue(jsonObject, fieldName);
-        
         switch (fieldValue)
-        case (is JsonObject) { obj.put(fieldName, toObject(fieldValue)); }
         case (is String_) { obj.put(fieldName, fieldValue.string); }
-        else { throw Exception(); }
-        
+        case (is JsonObject) { obj.put(fieldName, toObject(fieldValue)); }
+        case (is JsonArray) { obj.put(fieldName, toArray(fieldValue)); }
+        else { throw Exception("todo"); }
     }
-    
     return obj;
 }
 
+"Convert a Vert.x JsonArray to a ceylon.json.Array"
+shared Array toArray(JsonArray jsonArray) {
+    value array = Array();
+    if (jsonArray.size() > 0) {
+        value iterator = jsonArray.iterator();
+        while (iterator.hasNext()) {
+            value element = iterator.next();
+            switch(element) 
+            case (is String_) { array.add(element.string); }
+            case (is JsonObject) { array.add(toObject(element)); }
+            case (is JsonArray) { array.add(toArray(element)); }
+            else { throw Exception("todo"); }
+        }
+    }
+    return array;
+}
 

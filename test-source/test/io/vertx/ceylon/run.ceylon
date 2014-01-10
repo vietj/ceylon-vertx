@@ -48,12 +48,7 @@ shared Response assertRequest(String uri, {<String->{String*}>*} headers = {}) {
 
 by("Julien Viet")
 void run() {
-    value runner = createTestRunner([
-    	`testUtils`,
-    	`package test.io.vertx.ceylon.http.server`,
-    	`package test.io.vertx.ceylon.eventbus`,
-    	`package test.io.vertx.ceylon.http.client`
-    ], [SimpleLoggingListener()]);
+    value runner = createTestRunner([`module test.io.vertx.ceylon`], [SimpleLoggingListener()]);
     value result = runner.run();
     print(result);
 }
