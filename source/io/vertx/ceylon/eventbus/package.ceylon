@@ -91,7 +91,7 @@
    
    ~~~
    value eb = vertx.eventBus();
-   value myHandler = ([[Message]] message) => print("I received a message ``message.body```);
+   function myHandler(Message message) => print("I received a message ``message.body``");
    eb.registerHandler("test.address", myHandler);
    ~~~
    
@@ -115,7 +115,7 @@
    If you know you'll always be receiving messages of a particular type you can use the specific type in your handler, e.g:
    
    ~~~
-   void myHandler([[Message]]<String> message) {
+   void myHandler(Message<String> message) {
       String body = message.body;
    }
    ~~~
