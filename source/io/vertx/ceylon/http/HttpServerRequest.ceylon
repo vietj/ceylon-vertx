@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest }
+import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest, HttpVersion_=HttpVersion { http_1_0_=HTTP_1_0} }
 import ceylon.net.uri { Uri, parseUri=parse, Query, Parameter }
 import ceylon.io { SocketAddress }
 import ceylon.collection { HashMap }
@@ -33,6 +33,9 @@ shared class HttpServerRequest(
     "The response. Each instance of this class has an [[HttpServerResponse]] instance attached to it.
      This is used to send the response back to the client."
     shared HttpServerResponse response = HttpServerResponse(delegate.response());
+    
+    "The HTTP version of the request."
+    shared HttpVersion version = delegate.version() == http_1_0_ then http_1_0 else http_1_1;
 
     "The request method"
     shared Method method = parseMethod(delegate.method());

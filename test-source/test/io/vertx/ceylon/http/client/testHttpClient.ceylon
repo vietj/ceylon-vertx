@@ -41,7 +41,7 @@ shared test void testRequest() {
     try {
         HttpServer server = vertx.createHttpServer();
         Promise<HttpServer> promise = server.
-                requestHandler((HttpServerRequest req) => req.response.headers("bar"->"bar_value").contentType("text/plain").end("foo_content").close()).
+                requestHandler((HttpServerRequest req) => req.response.headers{"bar"->"bar_value"}.contentType("text/plain").end("foo_content").close()).
                 listen(8080);
         assertEquals(server, promise.future.get(10000));
         HttpClient client = vertx.createHttpClient(8080, "localhost");
@@ -69,7 +69,7 @@ shared test void testResponse() {
 		Promise<HttpServer> promise = server.
 				requestHandler((HttpServerRequest req)
 				=> req.response.
-				headers("bar"->"bar_value").
+				headers{"bar"->"bar_value"}.
 				end().
 		        close()).
 				listen(8080);

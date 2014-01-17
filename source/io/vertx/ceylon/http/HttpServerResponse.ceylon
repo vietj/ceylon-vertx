@@ -29,20 +29,36 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
     "Set the status code."
     shared HttpServerResponse status(
             "the status code value"
-            Integer code) {
+            Integer code,
+            "the status message"
+            String? message = null) {
         delegate.setStatusCode(code);
+        if (exists message) {
+            delegate.setStatusMessage(message);
+        }
         return this;
     }
 
-    shared actual HttpServerResponse header(String headerName, String headerValue) {
-        delegate.putHeader(headerName, headerValue);
+    shared actual HttpServerResponse write(String|[String,String] chunk) {
+        switch (chunk) 
+        case (is String) {
+            delegate.write(chunk);
+        }
+        case (is [String,String]) {
+            delegate.write(chunk[0], chunk[1]);
+        }
         return this;
     }
 
-    shared actual HttpServerResponse end(String? chunk) {
-        if (exists chunk) {
+    shared actual HttpServerResponse end(<String|[String,String]>? chunk) {
+        switch (chunk) 
+        case (is String) {
             delegate.end(chunk);
-        } else {
+        }
+        case (is [String,String]) {
+            delegate.end(chunk[0], chunk[1]);
+        }
+        case (is Null) {
             delegate.end();
         }
         return this;
@@ -52,8 +68,23 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
     shared void close() {
         delegate.close();
     }
+    
+    """If `chunked` is `true`, this response will use HTTP chunked encoding, and each call to write to the body will correspond to a new
+       HTTP chunk sent on the wire.
+       
+       If chunked encoding is used the HTTP header {@code Transfer-Encoding} with a value of {@code Chunked} will be automatically
+       inserted in the response.
+       
+       If chunked is `false`, this response will not use HTTP chunked encoding, and therefore if any data is written the body of
+       the response, the total size of that data must be set in the {@code Content-Length} header <b>before</b> any data is written
+       to the response body.
+       
+       An HTTP chunked response is typically used when you do not know the total size of the request body up front.
+       """
+    shared Boolean chunked => delegate.chunked;
+    assign chunked => delegate.setChunked(chunked);
 
-    shared actual HttpServerResponse headers(<String-><String|{String+}>>* headers) {
+    shared actual HttpServerResponse headers({<String-><String|{String+}>>*} headers) {
         for (header_ in headers) {
             value item = header_.item;
             switch (item)
@@ -67,4 +98,17 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
         return this;
     }
 
+    shared HttpServerResponse trailers({<String-><String|{String+}>>*} trailers) {
+        for (trailer_ in trailers) {
+            value item = trailer_.item;
+            switch (item)
+            case (is String) {
+                delegate.putTrailer(trailer_.key, item);
+            }
+            case (is {String+}) { 
+                throw Exception("Cannot be implemented now : ambiguous reference to overloaded method or class: putHeader");
+            }
+        }
+        return this;
+    }
 }

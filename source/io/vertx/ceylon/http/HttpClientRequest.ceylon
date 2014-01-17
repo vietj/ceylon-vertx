@@ -75,16 +75,32 @@ shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) 
         return this;
     }
 
-    shared actual HttpClientRequest end(String? chunk) {
-        if (exists chunk) {
+    shared actual HttpClientRequest write(String|[String,String] chunk) {
+        switch (chunk) 
+        case (is String) {
+            request.write(chunk);
+        }
+        case (is [String,String]) {
+            request.write(chunk[0], chunk[1]);
+        }
+        return this;
+    }
+
+    shared actual HttpClientRequest end(<String|[String,String]>? chunk) {
+        switch (chunk) 
+        case (is String) {
             request.end(chunk);
-        } else {
+        }
+        case (is [String,String]) {
+            request.end(chunk[0], chunk[1]);
+        }
+        case (is Null) {
             request.end();
         }
         return this;
     }
 
-    shared actual HttpClientRequest headers(<String-><String|{String+}>>* headers) {
+    shared actual HttpClientRequest headers({<String-><String|{String+}>>*} headers) {
         for (header_ in headers) {
             value item = header_.item;
             switch (item)

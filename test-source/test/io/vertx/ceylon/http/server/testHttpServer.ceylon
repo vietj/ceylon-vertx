@@ -141,7 +141,7 @@ void ok(HttpServer server) {
     void f(HttpServerRequest req) {
         HttpServerResponse resp = req.response;
         resp.status(200);
-        resp.headers("foo"->"foo_value","bar"->"bar_value");
+        resp.headers{"foo"->"foo_value","bar"->"bar_value"};
         resp.contentType("text/html");
         resp.end("HELLO");
     }
