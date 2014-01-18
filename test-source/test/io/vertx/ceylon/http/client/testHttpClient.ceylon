@@ -45,15 +45,19 @@ shared test void testRequest() {
                 listen(8080);
         assertEquals(server, promise.future.get(10000));
         HttpClient client = vertx.createHttpClient(8080, "localhost");
-        HttpClientRequest req = client.request(get, "/foo").contentType("text/plain").end("the_body");
-        HttpClientResponse|Exception ret = req.response.future.get(10000);
-        if (is HttpClientResponse ret) {
-            assertEquals(200, ret.status);
-            assertEquals({"bar_value"}, ret.headers["bar"]);
-            assertEquals("text/plain", ret.mimeType);
-            assertEquals(utf8, ret.charset);
-            Promise<String> body = ret.parseBody(textBody);
-            assertEquals("foo_content", body.future.get(10000));
+        HttpClientRequest req = client.request(get, "/foo");
+        Promise<String> check(HttpClientResponse resp) {
+            assertEquals(200, resp.status);
+            assertEquals({"bar_value"}, resp.headers["bar"]);
+            assertEquals("text/plain", resp.mimeType);
+            assertEquals(utf8, resp.charset);
+            return resp.parseBody(textBody);
+        }
+        Promise<String> body = req.response.then__(check);
+        req.contentType("text/plain").end("the_body");
+        String|Exception ret = body.future.get(10000);
+        if (is String ret) {
+            assertEquals("foo_content", ret);
         } else {
             fail("Was expecting a response");
         }
@@ -100,14 +104,18 @@ shared test void testTextResponse() {
                 listen(8080);
         assertEquals(server, promise.future.get(10000));
         HttpClient client = vertx.createHttpClient(8080, "localhost");
-        HttpClientRequest req = client.request(get, "/foo").end();
-        HttpClientResponse|Exception ret = req.response.future.get(10000);
-        if (is HttpClientResponse ret) {
-            assertEquals(200, ret.status);
-            assertEquals("text/plain", ret.mimeType);
-            assertEquals(utf8, ret.charset);
-            Promise<String> body = ret.parseBody(textBody);
-            assertEquals("foo_content", body.future.get(10000));
+        HttpClientRequest req = client.request(get, "/foo");
+        Promise<String> check(HttpClientResponse resp) {
+            assertEquals(200, resp.status);
+            assertEquals("text/plain", resp.mimeType);
+            assertEquals(utf8, resp.charset);
+            return resp.parseBody(textBody);
+        }
+        Promise<String> body = req.response.then__(check);
+        req.end();
+        String|Exception ret = body.future.get(10000);
+        if (is String ret) {
+            assertEquals("foo_content", ret);
         } else {
             fail("Was expecting a response");
         }
@@ -129,19 +137,21 @@ shared test void testBinaryBody() {
 				listen(8080);
 		assertEquals(server, promise.future.get(10000));
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
-		HttpClientRequest req = client.request(get, "/foo").end();
-		HttpClientResponse|Exception ret = req.response.future.get(10000);
-		if (is HttpClientResponse ret) {
-			assertEquals(200, ret.status);
-			assertEquals("text/plain", ret.mimeType);
-			assertEquals(utf8, ret.charset);
-			Promise<ByteBuffer> body = ret.parseBody(binaryBody);
-			value buffer = body.future.get(10000);
-			assert(is ByteBuffer buffer);
-			assertEquals(3, buffer.size);
-			assertEquals(65, buffer.get());
-			assertEquals(66, buffer.get());
-			assertEquals(67, buffer.get());
+		HttpClientRequest req = client.request(get, "/foo");
+		Promise<ByteBuffer> check(HttpClientResponse resp) {
+			assertEquals(200, resp.status);
+			assertEquals("text/plain", resp.mimeType);
+			assertEquals(utf8, resp.charset);
+			return resp.parseBody(binaryBody);
+		}
+		Promise<ByteBuffer> body = req.response.then__(check);
+		req.end();
+		ByteBuffer|Exception ret = body.future.get(10000);
+		if (is ByteBuffer ret) {
+			assertEquals(3, ret.size);
+			assertEquals(65, ret.get());
+			assertEquals(66, ret.get());
+			assertEquals(67, ret.get());
 		} else {
 			fail("Was expecting a response");
 		}
@@ -163,24 +173,26 @@ shared test void testBodyParserFailure() {
 				listen(8080);
 		assertEquals(server, promise.future.get(10000));
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
-		HttpClientRequest req = client.request(get, "/foo").end();
-		HttpClientResponse|Exception ret = req.response.future.get(10000);
-		if (is HttpClientResponse ret) {
-			assertEquals(200, ret.status);
-			assertEquals("text/plain", ret.mimeType);
-			assertEquals(utf8, ret.charset);
+		HttpClientRequest req = client.request(get, "/foo");
+		Promise<String> check(HttpClientResponse resp) {
+			assertEquals(200, resp.status);
+			assertEquals("text/plain", resp.mimeType);
+			assertEquals(utf8, resp.charset);
 			object failingParser satisfies BodyType<String> {
 				shared actual Boolean accept(String mimeType) => true;
 				shared actual String parse(Charset? charset, Buffer data) {
 					throw Exception("the_failure");
 				}
 			}
-			Promise<String> body = ret.parseBody(failingParser);
-			value result = body.future.get(10000);
-			assert(is Exception result);
-			assertEquals("the_failure", result.message);
+			return resp.parseBody(failingParser);
+		}
+		Promise<String> body = req.response.then__(check);
+		req.end();
+		String|Exception ret = body.future.get(10000);
+		if (is Exception ret) {
+			assertEquals("the_failure", ret.message);
 		} else {
-			fail("Was expecting a response");
+			fail("Was expecting a failure");
 		}
 	} finally {
 		vertx.stop();

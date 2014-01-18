@@ -28,9 +28,6 @@ shared class HttpClientResponse(HttpClientResponse_ delegate)
     "The http headers"
     shared actual Map<String,{String+}> headers = toMap(delegate.headers());
 
-    // We must pause
-    delegate.pause();
-
     shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
         return doParseBody(parser, delegate.bodyHandler, delegate, charset);
     }

@@ -19,7 +19,7 @@ import org.vertx.java.core.buffer { Buffer }
 import org.vertx.java.core { Handler_=Handler }
 import org.vertx.java.core.streams { ReadStream }
 import ceylon.io.charset { Charset, getCharset }
-import io.vertx.ceylon.interop { ExceptionSupportAdapter { handle } }
+import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
 
 "Provides access for reading the http headers and the body of an [[HttpServerRequest]] or an [[HttpClientResponse]]."
 by("Julien Viet")
@@ -101,8 +101,7 @@ Promise<Body> doParseBody<Body, T>(
 
     // Set handlers and resume the paused handler
     setBodyHandler(valueHandler);
-    handle(stream, deferred);
-    stream.resume();
+    setErrorHandler(stream, deferred);
 
     //
     return deferred.promise;

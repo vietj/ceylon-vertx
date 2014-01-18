@@ -51,11 +51,6 @@ shared class HttpServer(HttpServer_ delegate) {
 					delegate.expectMultiPart(true);
 					delegate.endHandler(handler); 
 				} else {
-					
-					// We must pause
-					delegate.pause();
-					
-					//
 					requestHandler(InternalHttpServerRequest(delegate));
 				}
 			}

@@ -22,7 +22,7 @@ import ceylon.promises.Deferred;
 
 public class ExceptionSupportAdapter {
 	
-	public static <T, U> void handle(ExceptionSupport<T> es, final Deferred<U> deferred) {
+	public static <T, U> void setErrorHandler(ExceptionSupport<T> es, final Deferred<U> deferred) {
 		es.exceptionHandler(new Handler<Throwable>() {
 			@Override
 			public void handle(Throwable t) {

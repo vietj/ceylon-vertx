@@ -17,7 +17,7 @@
 import org.vertx.java.core.http { HttpClient_=HttpClient, HttpClientRequest_=HttpClientRequest, HttpClientResponse_=HttpClientResponse }
 import ceylon.promises { Deferred, Promise }
 import org.vertx.java.core { Handler_=Handler}
-import io.vertx.ceylon.interop { ExceptionSupportAdapter { handle } }
+import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
 import java.lang { Exception }
 import ceylon.net.http { Method }
 
@@ -53,9 +53,11 @@ shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) 
 
     Deferred<HttpClientResponse> deferred = Deferred<HttpClientResponse>();
 
-    "The response promise is resolved when the http client response is available."
+    """The response promise is resolved when the http client response is available.
+       
+       todo: consider provide an handler instead of having a Promise<Response>"""
     shared Promise<HttpClientResponse> response => deferred.promise;
-
+    
     object valueHandler satisfies Handler_<HttpClientResponse_> {
         shared actual void handle(HttpClientResponse_ response) {
             deferred.resolve(HttpClientResponse(response));
@@ -63,8 +65,8 @@ shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) 
     }
 
     HttpClientRequest_ request = delegate.request(method.string, uri, valueHandler);
-    handle(request, deferred);
-
+    setErrorHandler(request, deferred);
+    
     "Set's the amount of time after which if a response is not received `TimeoutException`
      will be sent to the exception handler of this request. Calling this method more than once
      has the effect of canceling any existing timeout and starting the timeout from scratch."
