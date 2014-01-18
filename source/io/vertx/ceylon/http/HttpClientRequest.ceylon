@@ -18,8 +18,10 @@ import org.vertx.java.core.http { HttpClient_=HttpClient, HttpClientRequest_=Htt
 import ceylon.promises { Deferred, Promise }
 import org.vertx.java.core { Handler_=Handler}
 import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
-import java.lang { Exception }
+import java.lang { Iterable_=Iterable, String_=String }
 import ceylon.net.http { Method }
+import io.vertx.ceylon.util { toIterableStrings }
+import io.vertx.ceylon { writeStream, WriteStream }
 
 "Represents a client-side HTTP request.
  
@@ -67,6 +69,8 @@ shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) 
     HttpClientRequest_ request = delegate.request(method.string, uri, valueHandler);
     setErrorHandler(request, deferred);
     
+    shared actual WriteStream stream = writeStream(request);
+    
     "Set's the amount of time after which if a response is not received `TimeoutException`
      will be sent to the exception handler of this request. Calling this method more than once
      has the effect of canceling any existing timeout and starting the timeout from scratch."
@@ -110,10 +114,10 @@ shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) 
                 request.putHeader(header_.key, item);
             }
             case (is {String+}) { 
-                throw Exception("Cannot be implemented now : ambiguous reference to overloaded method or class: putHeader");
+                Iterable_<String_> i = toIterableStrings(item);
+                request.putHeader(header_.key, i);
             }
         }
         return this;
     }
-
 }

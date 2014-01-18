@@ -17,9 +17,10 @@
 import ceylon.promises { Promise, Deferred }
 import org.vertx.java.core.buffer { Buffer }
 import org.vertx.java.core { Handler_=Handler }
-import org.vertx.java.core.streams { ReadStream }
+import org.vertx.java.core.streams { ReadStream_=ReadStream }
 import ceylon.io.charset { Charset, getCharset }
 import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
+import io.vertx.ceylon { ReadStream }
 
 "Provides access for reading the http headers and the body of an [[HttpServerRequest]] or an [[HttpClientResponse]]."
 by("Julien Viet")
@@ -74,6 +75,9 @@ shared abstract class HttpInput() {
 
     "Parse the input body, the returned promise is resolved with the body."
     shared formal Promise<Body> parseBody<Body>(BodyType<Body> parser);
+    
+    "The read stream of this request"
+    shared formal ReadStream stream;
 
 }
 
@@ -81,7 +85,7 @@ shared abstract class HttpInput() {
 Promise<Body> doParseBody<Body, T>(
         BodyType<Body> bodyType,
         Anything(Handler_<Buffer>) setBodyHandler,
-        ReadStream<T> stream,
+        ReadStream_<T> stream,
         Charset? charset) {
 
     //

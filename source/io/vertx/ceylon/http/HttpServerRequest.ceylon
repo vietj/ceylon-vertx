@@ -21,6 +21,7 @@ import ceylon.collection { HashMap }
 import io.vertx.ceylon.util { combine, toMap }
 import ceylon.promises { Promise }
 import ceylon.net.http { Method, parseMethod }
+import io.vertx.ceylon { ReadStream, readStream }
 
 "Represents a server-side HTTP request. Each instance of this class is associated with a corresponding
  [[HttpServerResponse]] instance via the `response` field. Instances of this class are not thread-safe."
@@ -36,6 +37,8 @@ shared class HttpServerRequest(
     
     "The HTTP version of the request."
     shared HttpVersion version = delegate.version() == http_1_0_ then http_1_0 else http_1_1;
+    
+    shared actual ReadStream stream = readStream(delegate);
 
     "The request method"
     shared Method method = parseMethod(delegate.method());
@@ -118,7 +121,6 @@ shared class HttpServerRequest(
         }
         return doParseBody(parser, delegate.bodyHandler, delegate, charset);
     }
-
 }
 
 class InternalHttpServerRequest(shared HttpServerRequest_ delegate, Map<String, {String+}>? formParameters_ = null)

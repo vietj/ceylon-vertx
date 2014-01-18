@@ -78,7 +78,7 @@
    
    ## Flow Control - Streams and Pumps
    
-   *Not yet implemented*
+   Implemented for Http package, documentation uses a net server, so not yet translated.
    
    ## Writing HTTP Servers and Clients
    

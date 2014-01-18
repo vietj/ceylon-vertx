@@ -23,7 +23,7 @@ import ceylon.promises { Promise, Deferred }
 import ceylon.collection { HashMap }
 import ceylon.io { newSocketConnector, SocketAddress }
 import ceylon.io.charset { ascii }
-import test.io.vertx.ceylon { assertRequest, assertResolve }
+import test.io.vertx.ceylon { assertRequest, assertResolve, assertSend }
 
 void run(Anything(HttpServer) test) {
 	value vertx = Vertx();
@@ -37,6 +37,7 @@ void run(Anything(HttpServer) test) {
 	}
 }
 
+shared test void testPump() => run(pump);
 shared test void testPath() => run(path);
 shared test void testRequestHeader() => run(requestHeaders);
 shared test void testQuery() => run(query);
@@ -124,15 +125,7 @@ void form(HttpServer server) {
         resp.end("HELLO");
     }
     assertResolve(server.requestHandler(f).listen(8080));
-    
-    // Do it by hand as the Ceylon client does not yet support POST
-    value request = "POST / HTTP/1.1\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 43\r\n\r\nfoo=foo_value&bar=bar_value1&bar=bar_value2";
-    value connector = newSocketConnector(SocketAddress("localhost", 8080));
-    value socket = connector.connect();
-    value buffer = ascii.encode(request);
-    socket.writeFully(buffer);
-    Parser(socket).parseResponse();
-    socket.close();
+    assertSend("POST / HTTP/1.1\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 43\r\n\r\nfoo=foo_value&bar=bar_value1&bar=bar_value2");
     value o = assertResolve(p);
     assertEquals(HashMap({"foo"->{"foo_value"},"bar"->{"bar_value1","bar_value2"}}), o);
 }
@@ -182,15 +175,20 @@ void parseBody(HttpServer server) {
         resp.end("HELLO");
     }
     assertResolve(server.requestHandler(f).listen(8080));
-    
-    // Do it by hand as the Ceylon client does not yet support POST
-    value request = "POST / HTTP/1.1\r\nContent-Type: text/plain\r\nContent-Length: 9\r\n\r\nsome_text";
-    value connector = newSocketConnector(SocketAddress("localhost", 8080));
-    value socket = connector.connect();
-    value buffer = ascii.encode(request);
-    socket.writeFully(buffer);
-    Parser(socket).parseResponse();
-    socket.close();
+    assertSend("POST / HTTP/1.1\r\nContent-Type: text/plain\r\nContent-Length: 9\r\n\r\nsome_text");
     value o = assertResolve(p);
     assertEquals("some_text", o);
+}
+
+void pump(HttpServer server) {
+    void f(HttpServerRequest req) {
+        HttpServerResponse resp = req.response;
+        resp.headers(req.headers);
+        req.stream.pump(resp.stream).start();
+        req.stream.endHandler(resp.close);
+    }
+    assertResolve(server.requestHandler(f).listen(8080));
+    value response = assertSend("POST / HTTP/1.1\r\nContent-Type: text/plain\r\nContent-Length: 9\r\n\r\nsome_text");
+    assertEquals("text/plain", response.contentType);
+    assertEquals("some_text", response.contents);
 }

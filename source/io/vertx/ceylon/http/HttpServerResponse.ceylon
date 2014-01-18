@@ -15,6 +15,9 @@
  */
 
 import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
+import io.vertx.ceylon { WriteStream, writeStream }
+import java.lang { Iterable_=Iterable, String_=String }
+import io.vertx.ceylon.util { toIterableStrings }
 
 "Represents a server-side HTTP response. Instances of this class are created and associated to every instance of
  [[HttpServerRequest]] that is created. It allows the developer to control the HTTP response that is sent back to the
@@ -25,6 +28,8 @@ import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
 by("Julien Viet")
 shared class HttpServerResponse(HttpServerResponse_ delegate)
         extends HttpOutput<HttpServerResponse>() {
+
+    shared actual WriteStream stream = writeStream(delegate);
 
     "Set the status code."
     shared HttpServerResponse status(
@@ -91,8 +96,9 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
             case (is String) {
                 delegate.putHeader(header_.key, item);
             }
-            case (is {String+}) { 
-                throw Exception("Cannot be implemented now : ambiguous reference to overloaded method or class: putHeader");
+            case (is {String+}) {
+                Iterable_<String_> i = toIterableStrings(item);
+                delegate.putHeader(header_.key, i);
             }
         }
         return this;
@@ -106,7 +112,8 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
                 delegate.putTrailer(trailer_.key, item);
             }
             case (is {String+}) { 
-                throw Exception("Cannot be implemented now : ambiguous reference to overloaded method or class: putHeader");
+                Iterable_<String_> i = toIterableStrings(item);
+                delegate.putTrailer(trailer_.key, i);
             }
         }
         return this;

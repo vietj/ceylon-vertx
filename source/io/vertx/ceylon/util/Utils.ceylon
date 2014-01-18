@@ -18,8 +18,8 @@ import ceylon.collection { HashMap }
 import ceylon.json { Object, Array }
 import org.vertx.java.core { MultiMap }
 import org.vertx.java.core.json { JsonObject, JsonArray }
-import java.lang { String_=String }
-import java.util { Iterator_=Iterator }
+import java.lang { String_=String, Iterable_=Iterable, arrays }
+import java.util { Iterator_=Iterator, ArrayList_=ArrayList, Arrays_=Arrays }
 import io.vertx.ceylon.interop { JavaBridge { getFieldValue } }
 
 by("Julien Viet")
@@ -124,5 +124,13 @@ shared Array toArray(JsonArray jsonArray) {
         }
     }
     return array;
+}
+
+shared Iterable_<String_> toIterableStrings({String*} strings) {
+    ArrayList_<String_> list = ArrayList_<String_>();
+    for (element in strings) {
+        list.add(String_(element));
+    }
+    return list;
 }
 

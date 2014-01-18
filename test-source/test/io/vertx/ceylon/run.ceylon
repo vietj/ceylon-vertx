@@ -17,10 +17,12 @@ import ceylon.promises { Promise, Deferred, Future }
 import ceylon.test { ... }
 
 import ceylon.net.uri { Uri, parseUri=parse }
-import ceylon.net.http.client { Request, Response }
+import ceylon.net.http.client { Request, Response, Parser }
 import test.io.vertx.ceylon.http.server { ... }
 import test.io.vertx.ceylon.http.client { ... }
 import test.io.vertx.ceylon.eventbus { ... }
+import ceylon.io.charset { ascii }
+import ceylon.io { newSocketConnector, SocketAddress }
 
 shared T assertResolve<T>(Promise<T>|Deferred<T> obj) {
     Future<T> future;
@@ -44,6 +46,17 @@ shared Response assertRequest(String uri, {<String->{String*}>*} headers = {}) {
         req.setHeader(header.key, *header.item);
     }
     return req.execute();
+}
+
+shared Response assertSend(String data) {
+    value connector = newSocketConnector(SocketAddress("localhost", 8080));
+    value socket = connector.connect();
+    value buffer = ascii.encode(data);
+    socket.writeFully(buffer);
+    value response = Parser(socket).parseResponse();
+    value contents = response.contents; // Read before we close
+    socket.close();
+    return response;
 }
 
 by("Julien Viet")

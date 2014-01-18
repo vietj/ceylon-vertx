@@ -1,3 +1,4 @@
+import io.vertx.ceylon { writeStream, WriteStream }
 /*
  * Copyright 2013 Julien Viet
  *
@@ -28,6 +29,10 @@ shared abstract class HttpOutput<O>() given O satisfies HttpOutput<O> {
            - when the argument is a `String` the `UTF-8` encoding is used
            - when the argument is a `[String,String]`, the first value is the chunk and the second is the encoding"""
         String|[String,String] chunk);
+    
+    "The write stream of this request"
+    shared formal WriteStream stream;
+
 
     "Ends the response. If no data has been written to the response body,
      the actual response won't get written until this method gets called.

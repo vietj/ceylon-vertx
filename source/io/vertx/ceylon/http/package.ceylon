@@ -326,8 +326,23 @@ import org.vertx.java.core.buffer { Buffer }
    
    #### Pumping Responses
    
-   Not yet implemented.
+   The [[HttpServerResponse.stream]] provides a [[io.vertx.ceylon::WriteStream]] you can pump to it from any
+   [[io.vertx.ceylon::ReadStream]], e.g. an AsyncFile (todo), NetSocket (todo), WebSocket (todo) or [[HttpServerRequest]].
    
+   Here's an example which echoes HttpRequest headers and body back in the HttpResponse. It uses a pump for the body,
+   so it will work even if the HTTP request body is much larger than can fit in memory at any one time:
+   
+   ~~~
+   HttpServer server = vertx.createHttpServer();
+   void handle(HttpServerRequest request) {
+     HttpServerResponse resp = req.response;
+     resp.headers(req.headers);
+     req.stream.pump(resp.stream).start();
+     req.stream.endHandler(resp.close);
+   }
+   server.requestHandler(handle).listen(8080, "localhost");
+   ~~~
+
    #### HTTP Compression
    
    Not yet available in 2.0.
