@@ -1,7 +1,3 @@
-import ceylon.promises { Promise }
-import ceylon.io.charset { Charset }
-import org.vertx.java.core.buffer { Buffer }
-import ceylon.io.buffer { ByteBuffer }
 /*
  * Copyright 2013 Julien Viet
  *
@@ -139,26 +135,26 @@ import ceylon.io.buffer { ByteBuffer }
    server.requestHandler(handle).listen(8080, "localhost);
    ~~~
    
-   #### Query params
+   #### Request params
    
-   Similarly to the headers, the request parameters are available using the [[HttpServerRequest.queryParameters]] attribute on
-   the request object. The returned object is an instance of `Map<String, {String+}>`. Request parameters are sent on the request URI,
-   after the path. For example if the URI was `/page.html?param1=abc&param2=xyz`, then the query params map would contain the following entries:
+   Similarly to the headers, the request parameters are available using the [[HttpServerRequest.params]] attribute on the request object.
+   Request parameters are sent on the request URI, after the path. For example if the URI was:
    
+   ~~~
+   /page.html?param1=abc&param2=xyz
+   ~~~
+
+   Then the params multimap would contain the following entries:
+      
    ~~~
    param1: 'abc'
    param2: 'xyz
    ~~~
    
-   #### Form params
+   #### Form attributes
    
    When the request is a post with the `application/x-www-form-urlencoded` mime type then the parameters are parsed and made available
-   using the [[HttpServerRequest.formParameters]] attribute. Note that this does not exist in the original Vert.x API.
-   
-   #### Request params
-   
-   The [[HttpServerRequest.parameters]] attribute is an aggregate of the [[HttpServerRequest.queryParameters]] and the [[HttpServerRequest.formParameters]]
-   attributes. Note that this does not exist in the original Vert.x API.
+   using the [[HttpServerRequest.formAttributes]] attribute. Note that this does not exist in the original Vert.x API.
    
    #### Remote Address
    
@@ -622,6 +618,113 @@ import ceylon.io.buffer { ByteBuffer }
    
    The scaling works in the same way as scaling a NetServer. Please see the chapter on scaling Net Servers for a detailed
    explanation of how this works.
+   
+   ## Routing HTTP requests with Pattern Matching
+   
+   Vert.x lets you route HTTP requests to different handlers based on pattern matching on the request path. It also enables you
+   to extract values from the path and use them as parameters in the request.
+   
+   This is particularly useful when developing REST-style web applications.
+   
+   To do this you simply create an instance of [[RouteMatcher]] and use it as handler in an HTTP server.
+   See the chapter on HTTP servers for more information on setting HTTP handlers. Here's an example:
+   
+   ~~~
+   value server = vertx.createHttpServer();
+   value routeMatcher = RouteMatcher();
+   server.requestHandler(routeMatcher.handle).listen { port = 8080; host = "localhost"; };
+   ~~~
+   
+   ### Specifying matches.
+   
+   You can then add different matches to the route matcher. For example, to send all GET requests with path `/animals/dogs` to
+   one handler and all GET requests with path `/animals/cats` to another handler you would do:
+   
+   ~~~
+   value server = vertx.createHttpServer();
+   value routeMatcher = RouteMatcher();
+   routerMarcher.get("/animals/dogs", (HttpServerRequest req) => req.response().end("You requested dogs"));
+   routerMarcher.get("/animals/cats", (HttpServerRequest req) => req.response().end("You requested cats"));
+   server.requestHandler(router.handle).listen { port = 8080; host = "localhost"; };
+   ~~~
+   
+   Corresponding methods exist for each HTTP method - `get`, `post`, `put`, `delete`, `head`, `options`, `trace`, `connect` and `patch`.
+
+   There's also an `all` method which applies the match to any HTTP request method.
+   
+   The handler specified to the method is just a normal HTTP server request handler, the same as you would supply to the
+   requestHandler method of the HTTP server.
+   
+   You can provide as many matches as you like and they are evaluated in the order you added them, the first matching
+   one will receive the request.
+
+   A request is sent to at most one handler.
+   
+   ### Extracting parameters from the path
+   
+   If you want to extract parameters from the path, you can do this too, by using the : (colon) character to denote
+   the name of a parameter. For example:
+
+   ~~~
+   value server = vertx.createHttpServer();
+   value routeMatcher = RouteMatcher();
+   routerMarcher.get {
+     pattern = "/:blogname/:post";
+     void handler(HttpServerRequest req) {
+       assert(exists blogName = req.params["blogname"]);
+       assert(exists post = req.params["post"]);
+       req.response.end("blogname is ``blogName`` post is ``post``");
+     }
+   };
+   server.requestHandler(router.handle).listen { port = 8080; host = "localhost"; };
+   ~~~
+   
+   Any params extracted by pattern matching are added to the map of request parameters.
+   
+   In the above example, a PUT request to `/myblog/post1 would result in the variable `blogName` getting the value `myblog` and the
+   variable `post` getting the value `post1`.
+   
+   Valid parameter names must start with a letter of the alphabet and be followed by any letters of the alphabet or digits or
+   the underscore character.
+   
+   ### Extracting params using Regular Expressions
+   
+   Regular Expressions can be used to extract more complex matches. In this case capture groups are used to capture any parameters.
+   
+   Since the capture groups are not named they are added to the request with names `param0`, `param1`, `param2`, etc.
+   
+   Corresponding methods exist for each HTTP method - [[RouteMatcher.getWithRegEx]], [[RouteMatcher.postWithRegEx]], [[RouteMatcher.putWithRegEx]],
+   [[RouteMatcher.deleteWithRegEx]], [[RouteMatcher.headWithRegEx]], [[RouteMatcher.optionsWithRegEx]], [[RouteMatcher.traceWithRegEx]],
+   [[RouteMatcher.connectWithRegEx]] and [[RouteMatcher.patchWithRegEx]].
+   
+   There's also an [[RouteMatcher.allWithRegEx]] method which applies the match to any HTTP request method.
+   
+   For example:
+
+   ~~~
+   value server = vertx.createHttpServer();
+   value routeMatcher = RouteMatcher();
+   routerMarcher.get {
+     pattern = "\\/([^\\/]+)\\/([^\\/]+)";
+     void handler(HttpServerRequest req) {
+       assert(exists first = req.params["param0"]);
+       assert(exists second = req.params["param1"]);
+       req.response.end("first is ``first`` and second is ``second``");
+     }
+   };
+   server.requestHandler(router.handle).listen { port = 8080; host = "localhost"; };
+   ~~~
+   
+   Run the above and point your browser at `http://localhost:8080/animals/cats`.
+   
+   ### Handling requests where nothing matches
+   
+   You can use the [[RouteMatcher.noMatch]] method to specify a handler that will be called if nothing matches.
+   If you don't specify a no match handler and nothing matches, a 404 will be returned.
+
+   ~~~
+   routeMatcher.noMatch((HttpServerRequest req) => req.response.end("Nothing matched"));
+   ~~~
    """
 by("Julien Viet")
 shared package io.vertx.ceylon.http;

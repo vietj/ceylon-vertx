@@ -97,7 +97,7 @@ void query(HttpServer server) {
     variable Map<String, {String+}>? parameters = null;
     void f(HttpServerRequest req) {
         query = req.query;
-        parameters = req.queryParameters;
+        parameters = req.params;
         HttpServerResponse resp = req.response;
         resp.status(200);
         resp.contentType("text/html");
@@ -113,7 +113,7 @@ void form(HttpServer server) {
     value parameters = Deferred<Map<String, {String+}>>();
     Promise<Map<String, {String+}>> p = parameters.promise;
     void f(HttpServerRequest req) {
-        value form = req.formParameters;
+        value form = req.formAttributes;
         if (exists form) {
             parameters.resolve(form);
         } else {
@@ -162,7 +162,7 @@ void parseBody(HttpServer server) {
     value parameters = Deferred<String>();
     Promise<String> p = parameters.promise;
     void f(HttpServerRequest req) {
-        value form = req.formParameters;
+        value form = req.formAttributes;
         if (exists form) {
             parameters.reject(Exception("Was not expecting parameters"));
         } else {

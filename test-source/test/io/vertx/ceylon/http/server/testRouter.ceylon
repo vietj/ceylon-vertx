@@ -1,10 +1,10 @@
 import ceylon.test { test, assertEquals }
-import io.vertx.ceylon.http { HttpServer, HttpServerRequest, HttpServerResponse, RouteMatcher }
-import ceylon.net.http { Header }
-import ceylon.net.http.client { Response }
+import io.vertx.ceylon.http { HttpServer, HttpServerRequest, RouteMatcher }
 import test.io.vertx.ceylon { assertRequest, assertResolve }
+import ceylon.collection { LinkedList, HashMap }
 
 shared test void testRouter() => run(router);
+shared test void testRouterParameters() => run(parameters);
 
 void router(HttpServer server) {
     variable Integer catsCount = 0;
@@ -27,4 +27,19 @@ void router(HttpServer server) {
     assertRequest("http://localhost:8080/animal/dogs");
     assertEquals(1, catsCount);
     assertEquals(1, dogsCount);
+}
+
+void parameters(HttpServer server) {
+    value router = RouteMatcher();
+    value params = LinkedList<Map<String, {String+}>>();
+    router.get {
+        pattern = "/:blogname/:post";
+        void handler(HttpServerRequest req) {
+            params.add(req.params);
+            req.response.status(200).end();
+        }
+    };
+    assertResolve(server.requestHandler(router.handle).listen(8080));
+    assertRequest("http://localhost:8080/blogname_value/post_value");
+    assertEquals(LinkedList { HashMap { "post"->["post_value"], "blogname"->["blogname_value"] } }, params);
 }

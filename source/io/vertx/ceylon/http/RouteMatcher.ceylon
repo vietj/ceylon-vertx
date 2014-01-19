@@ -15,7 +15,6 @@
  */
 import org.vertx.java.core.http { RouteMatcher_=RouteMatcher, HttpServerRequest_=HttpServerRequest }
 import org.vertx.java.core { Handler_=Handler }
-import java.lang { ThreadLocal }
 
 """This class allows you to do route requests based on the HTTP verb and the request URI, in a manner similar
    to [Sinatra](http://www.sinatrarb.com/) or [Express](http://expressjs.com/).
@@ -40,13 +39,14 @@ by("Julien Viet")
 shared class RouteMatcher() {
     
     value delegate = RouteMatcher_();
-    value current = ThreadLocal<HttpServerRequest>();
     
     Handler_<HttpServerRequest_> wrap(void handler(HttpServerRequest request)) {
         object impl satisfies Handler_<HttpServerRequest_> {
             shared actual void handle(HttpServerRequest_ e) {
-                value request = current.get();
-                handler(request);
+                // Rewrapper avoids to use thread local
+                // + it will compute the parameters again since they may have been modified
+                // by the router
+                handler(InternalHttpServerRequest(e));
             }
         }
         return impl;
@@ -54,12 +54,7 @@ shared class RouteMatcher() {
     
     shared void handle(HttpServerRequest request) {
         assert(is InternalHttpServerRequest request);
-        current.set(request);
-        try {
-            delegate.handle(request.delegate);
-        } finally {
-            current.set(null);
-         }
+        delegate.handle(request.delegate);
     }
     
     "Specify a handler that will be called for a matching HTTP GET"

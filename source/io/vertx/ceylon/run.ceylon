@@ -36,11 +36,11 @@ shared void run(){
                  <h2>Headers</h2>
                  <p>``req.headers``</p>
                  <h2>Parameters</h2>
-                 <p>``req.parameters``</p>
-                 <h2>Query parameter</h2>
-                 <p>``req.queryParameters``</p>
+                 <p>``req.params``</p>
+                 <h2>Query</h2>
+                 <p>``req.query``</p>
                  <h2>Form parameters</h2>
-                 <p>``req.formParameters else {}``</p>
+                 <p>``req.formAttributes else {}``</p>
  
                  <form action='/post' method='POST'>
                  <input type='text' name='foo'>

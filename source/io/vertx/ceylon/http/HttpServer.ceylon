@@ -43,8 +43,8 @@ shared class HttpServer(HttpServer_ delegate) {
 					// Need to parse form parameters
 					object handler satisfies Handler_<Void_> {
 						shared actual void handle(Void_ nothing) {
-							value attributes = delegate.formAttributes();
-							Map<String, {String+}> form = toMap(attributes);
+							value formAttributesMap = delegate.formAttributes();
+							Map<String, {String+}> form = toMap(formAttributesMap);
 							requestHandler(HttpServerRequest(delegate, form));
 						}
 					} 

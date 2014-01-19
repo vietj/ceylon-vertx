@@ -82,11 +82,11 @@
    
    ## Writing HTTP Servers and Clients
    
-   *Todo*
+   See [io.vertx.ceylon.http](http/index.html).
    
    ## Routing HTTP requests with Pattern Matching
    
-   *Todo*
+   See [io.vertx.ceylon.http](http/index.html).
    
    ## WebSockets
    

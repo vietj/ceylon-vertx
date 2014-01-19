@@ -15,10 +15,9 @@
  */
 
 import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest, HttpVersion_=HttpVersion { http_1_0_=HTTP_1_0} }
-import ceylon.net.uri { Uri, parseUri=parse, Query, Parameter }
+import ceylon.net.uri { Uri, parseUri=parse, Query }
 import ceylon.io { SocketAddress }
-import ceylon.collection { HashMap }
-import io.vertx.ceylon.util { combine, toMap }
+import io.vertx.ceylon.util { toMap }
 import ceylon.promises { Promise }
 import ceylon.net.http { Method, parseMethod }
 import io.vertx.ceylon { ReadStream, readStream }
@@ -28,7 +27,7 @@ import io.vertx.ceylon { ReadStream, readStream }
 by("Julien Viet")
 shared class HttpServerRequest(
     HttpServerRequest_ delegate,
-    Map<String, {String+}>? formParameters_ = null)
+    Map<String, {String+}>? formAttributesMap_ = null)
             extends HttpInput() {
         
     "The response. Each instance of this class has an [[HttpServerResponse]] instance attached to it.
@@ -52,8 +51,9 @@ shared class HttpServerRequest(
     "The query part of the request uri"
     shared Query query => uri.query;
 
-    "The form parameters when the request is a POST with a _application/x-www-form-urlencoded_ mime type" 
-    shared Map<String, {String+}>? formParameters = formParameters_;
+    "The form attributes when the request is a POST with a _application/x-www-form-urlencoded_ mime type" 
+    // Consider using a Promise for this instead
+    shared Map<String, {String+}>? formAttributes = formAttributesMap_;
 
     "The remote socket address"
     shared SocketAddress remoteAddress = SocketAddress {
@@ -61,46 +61,17 @@ shared class HttpServerRequest(
         port = delegate.remoteAddress().port;
     };
 
-    // Lazy query parameter map
-    variable Map<String, {String+}>? queryMap = null;
+    // Lazy params map
+    variable Map<String,{String+}>? paramsMap = null;
 
-    "Return the query parameters of this request"
-    shared Map<String, {String+}> queryParameters {
-        if (exists ret = queryMap) {
+    "Returns a map of all the parameters in the request."
+    shared Map<String, {String+}> params {
+        if (exists ret = paramsMap) {
             return ret;
         } else {
-            HashMap<String, {String+}> map = HashMap<String, {String+}>();
-            for (Parameter parameter in query.parameters.reversed) {
-                if (exists val = parameter.val) {
-                    variable {String+}? previous = map[parameter.name];
-                    {String+} values;
-                    if (exists rest = previous) {
-                        values = { val, *rest };
-                    } else {
-                        values = { val };
-                    }
-                    map.put(parameter.name, values);
-                } 
-            }
-            return queryMap = map;
-        }
-    }
-
-    // Lazy parameter map
-    variable Map<String,{String+}>? parameterMap = null;
-
-    "Returns all the parameters of this request. When the request is a POST request with an mime type
-      _application/x-www-form-urlencoded_ the form is decoded and the query and form parameters are aggregated
-      in the returned parameter map."
-    shared Map<String, {String+}> parameters {
-        if (exists ret = parameterMap) {
-            return ret;
-        } else {
-            if (exists formParameters) {
-                return parameterMap = combine(formParameters, combine(queryParameters));
-            } else {
-                return parameterMap = queryParameters;
-            }
+            value a = toMap(delegate.params());
+            paramsMap = a;
+            return a;
         }
     }
 
@@ -116,13 +87,13 @@ shared class HttpServerRequest(
     }
 
     shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
-        if (exists formParameters_) {
+        if (exists formAttributesMap_) {
             throw Exception("Form body cannot be parsed -> use formParameters instead");
         }
         return doParseBody(parser, delegate.bodyHandler, delegate, charset);
     }
 }
 
-class InternalHttpServerRequest(shared HttpServerRequest_ delegate, Map<String, {String+}>? formParameters_ = null)
-    extends HttpServerRequest(delegate, formParameters_) {
+class InternalHttpServerRequest(shared HttpServerRequest_ delegate, Map<String, {String+}>? formAttributesMap_ = null)
+    extends HttpServerRequest(delegate, formAttributesMap_) {
 }
