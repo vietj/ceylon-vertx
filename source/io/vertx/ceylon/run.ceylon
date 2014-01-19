@@ -39,8 +39,6 @@ shared void run(){
                  <p>``req.params``</p>
                  <h2>Query</h2>
                  <p>``req.query``</p>
-                 <h2>Form parameters</h2>
-                 <p>``req.formAttributes else {}``</p>
  
                  <form action='/post' method='POST'>
                  <input type='text' name='foo'>

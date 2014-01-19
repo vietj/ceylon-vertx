@@ -151,14 +151,13 @@
    param2: 'xyz
    ~~~
    
-   #### Form attributes
-   
-   When the request is a post with the `application/x-www-form-urlencoded` mime type then the parameters are parsed and made available
-   using the [[HttpServerRequest.formAttributes]] attribute. Note that this does not exist in the original Vert.x API.
-   
    #### Remote Address
    
    Use the [[HttpServerRequest.remoteAddress]] attribute to find out the address of the other side of the HTTP connection.
+   
+   #### Absolute URI
+   
+   Use the method [[HttpServerRequest.absoluteURI]] to return the absolute URI corresponding to the request.
 
    #### Reading Data from the Request Body
    
@@ -201,6 +200,22 @@
    
    Note that this API is different from the original Vert.x API. Also this current implementation will parse the full body before calling
    the body type object, in the future this will likely evolve to provide a finer granularity for body parsing.
+   
+   #### Handling Multipart Form Uploads
+   
+   todo
+   
+   #### Handling Multipart Form Attributes
+   
+   If the request corresponds to an HTML form that was submitted you can use the [[HttpServerRequest.formAttributes]] promise to access
+   the form attributes. This promise is resolved after all of the request has been read - this is because form attributes are encoded
+   in the request body not in the request headers.
+   
+   ~~~
+   req.formAttributes.then_((Map<String, {String+}> formAttributes) => print("Do something with them"));
+   ~~~
+   
+   When the request does not have form attributes the `formAttributes` promise is rejected.
    
    ### HTTP Server Responses
    

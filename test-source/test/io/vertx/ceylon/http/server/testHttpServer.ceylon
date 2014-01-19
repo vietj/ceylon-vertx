@@ -20,7 +20,7 @@ import ceylon.net.uri { Query, Parameter }
 import ceylon.net.http.client { Response, Parser }
 import ceylon.test { ... }
 import ceylon.promises { Promise, Deferred }
-import ceylon.collection { HashMap }
+import ceylon.collection { HashMap, LinkedList }
 import ceylon.io { newSocketConnector, SocketAddress }
 import ceylon.io.charset { ascii }
 import test.io.vertx.ceylon { assertRequest, assertResolve, assertSend }
@@ -113,12 +113,7 @@ void form(HttpServer server) {
     value parameters = Deferred<Map<String, {String+}>>();
     Promise<Map<String, {String+}>> p = parameters.promise;
     void f(HttpServerRequest req) {
-        value form = req.formAttributes;
-        if (exists form) {
-            parameters.resolve(form);
-        } else {
-            parameters.reject(Exception("No parameters"));
-        }
+        req.formAttributes.then_(parameters.resolve);
         HttpServerResponse resp = req.response;
         resp.status(200);
         resp.contentType("text/html");
@@ -161,14 +156,11 @@ void ok(HttpServer server) {
 void parseBody(HttpServer server) {
     value parameters = Deferred<String>();
     Promise<String> p = parameters.promise;
+    value formAttributes = LinkedList<Map<String, {String+}>|Exception>();
     void f(HttpServerRequest req) {
-        value form = req.formAttributes;
-        if (exists form) {
-            parameters.reject(Exception("Was not expecting parameters"));
-        } else {
-            value text = req.parseBody(textBody);
-            parameters.resolve(text);
-        }
+        value text = req.parseBody(textBody);
+        parameters.resolve(text);
+        req.formAttributes.always(formAttributes.add);
         HttpServerResponse resp = req.response;
         resp.status(200);
         resp.contentType("text/html");
@@ -178,6 +170,9 @@ void parseBody(HttpServer server) {
     assertSend("POST / HTTP/1.1\r\nContent-Type: text/plain\r\nContent-Length: 9\r\n\r\nsome_text");
     value o = assertResolve(p);
     assertEquals("some_text", o);
+    assertEquals(1, formAttributes.size);
+    value b = formAttributes.get(0);
+    assert(is Exception b);
 }
 
 void pump(HttpServer server) {

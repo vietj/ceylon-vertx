@@ -18,17 +18,16 @@ import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest, HttpVers
 import ceylon.net.uri { Uri, parseUri=parse, Query }
 import ceylon.io { SocketAddress }
 import io.vertx.ceylon.util { toMap }
-import ceylon.promises { Promise }
-import ceylon.net.http { Method, parseMethod }
+import ceylon.promises { Promise, Deferred }
+import ceylon.net.http { Method, parseMethod, post, put }
 import io.vertx.ceylon { ReadStream, readStream }
+import org.vertx.java.core { Handler_=Handler }
+import java.lang { Void_=Void }
 
 "Represents a server-side HTTP request. Each instance of this class is associated with a corresponding
  [[HttpServerResponse]] instance via the `response` field. Instances of this class are not thread-safe."
 by("Julien Viet")
-shared class HttpServerRequest(
-    HttpServerRequest_ delegate,
-    Map<String, {String+}>? formAttributesMap_ = null)
-            extends HttpInput() {
+shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() {
         
     "The response. Each instance of this class has an [[HttpServerResponse]] instance attached to it.
      This is used to send the response back to the client."
@@ -50,10 +49,38 @@ shared class HttpServerRequest(
 
     "The query part of the request uri"
     shared Query query => uri.query;
+    
+    "Get the absolute URI corresponding to the the HTTP request"
+    shared Uri absoluteURI => parseUri(delegate.absoluteURI().string);
 
+    variable Deferred<Map<String, {String+}>>? formDeferred = null;
+    
     "The form attributes when the request is a POST with a _application/x-www-form-urlencoded_ mime type" 
-    // Consider using a Promise for this instead
-    shared Map<String, {String+}>? formAttributes = formAttributesMap_;
+    shared Promise<Map<String, {String+}>> formAttributes {
+        if (exists t = formDeferred) {
+            return t.promise;
+        } else {
+            Deferred<Map<String, {String+}>> d = Deferred<Map<String, {String+}>>();
+            String? contentType = delegate.headers().get("Content-Type");
+            
+            if (exists contentType, contentType.lowercased.startsWith("application/x-www-form-urlencoded") &&
+                    (method == post || method == put || method.string == "PATCH")) {
+                object handler satisfies Handler_<Void_> {
+                    shared actual void handle(Void_ nothing) {
+                        value formAttributesMap = delegate.formAttributes();
+                        Map<String, {String+}> form = toMap(formAttributesMap);
+                        d.resolve(form);
+                    }
+                } 
+                delegate.expectMultiPart(true);
+                delegate.endHandler(handler); 
+                formDeferred = d;
+            } else {
+                d.reject(Exception("Request does not have an application/x-www-form-urlencoded body and is not among POST,PUT,PATCH"));
+            }
+            return d.promise;
+        }
+    }
 
     "The remote socket address"
     shared SocketAddress remoteAddress = SocketAddress {
@@ -87,13 +114,10 @@ shared class HttpServerRequest(
     }
 
     shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
-        if (exists formAttributesMap_) {
-            throw Exception("Form body cannot be parsed -> use formParameters instead");
-        }
         return doParseBody(parser, delegate.bodyHandler, delegate, charset);
     }
 }
 
-class InternalHttpServerRequest(shared HttpServerRequest_ delegate, Map<String, {String+}>? formAttributesMap_ = null)
-    extends HttpServerRequest(delegate, formAttributesMap_) {
+class InternalHttpServerRequest(shared HttpServerRequest_ delegate)
+    extends HttpServerRequest(delegate) {
 }

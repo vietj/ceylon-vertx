@@ -18,7 +18,7 @@ import org.vertx.java.core.http { HttpServer_=HttpServer, HttpServerRequest_=Htt
 import org.vertx.java.core { Handler_=Handler}
 import ceylon.promises { Promise }
 import java.lang { Void_=Void }
-import io.vertx.ceylon.util { HandlerPromise, toMap }
+import io.vertx.ceylon.util { HandlerPromise }
 
 "An HTTP and WebSockets server
 
@@ -36,23 +36,7 @@ shared class HttpServer(HttpServer_ delegate) {
 	shared HttpServer requestHandler(Anything(HttpServerRequest) requestHandler) {
 		object handler satisfies Handler_<HttpServerRequest_> {
 			shared actual void handle(HttpServerRequest_ delegate) {
-				
-				//
-				String? contentType = delegate.headers().get("Content-Type");
-				if (exists contentType, contentType.lowercased.startsWith("application/x-www-form-urlencoded")) {
-					// Need to parse form parameters
-					object handler satisfies Handler_<Void_> {
-						shared actual void handle(Void_ nothing) {
-							value formAttributesMap = delegate.formAttributes();
-							Map<String, {String+}> form = toMap(formAttributesMap);
-							requestHandler(HttpServerRequest(delegate, form));
-						}
-					} 
-					delegate.expectMultiPart(true);
-					delegate.endHandler(handler); 
-				} else {
-					requestHandler(InternalHttpServerRequest(delegate));
-				}
+				requestHandler(InternalHttpServerRequest(delegate));
 			}
 		}
 		delegate.requestHandler(handler);
