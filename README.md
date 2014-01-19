@@ -2,9 +2,13 @@
 
 Provides a Ceylon API for the Vert.x framework.
 
+# Documentation
+
+Documentation can be found [here](https://modules.ceylon-lang.org/repo/1/io/vertx/ceylon/0.3.9/module-doc/index.html)
+
 # Test Drive
 
-    ceylon run vietj.vertx/0.3.8
+    ceylon run vietj.vertx/0.3.9
 
 This will execute the sample [sample](https://github.com/vietj/ceylon-vertx/blob/master/source/vietj/vertx/run.ceylon) server.
 
