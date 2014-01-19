@@ -23,33 +23,34 @@ import ceylon.net.http { Method }
 import io.vertx.ceylon.util { toIterableStrings }
 import io.vertx.ceylon { writeStream, WriteStream }
 
-"Represents a client-side HTTP request.
+"""Represents a client-side HTTP request.
  
- Instances are created by an [[HttpClient]] instance, via one of the methods corresponding to the
- specific HTTP methods, or the generic `request` method. Once a request has been obtained, headers can be set on
- it, and data can be written to its body if required. Once you are ready to send the request, the `end()` method
- should be called.
+   Instances are created by an [[HttpClient]] instance, via one of the methods corresponding to the
+   specific HTTP methods, or the generic `request` method. Once a request has been obtained, headers can be set on
+   it, and data can be written to its body if required. Once you are ready to send the request, the `end()` method
+   should be called.
  
- Nothing is actually sent until the request has been internally assigned an HTTP connection. The [[HttpClient]]
- instance will return an instance of this class immediately, even if there are no HTTP connections available
- in the pool. Any requests sent before a connection is assigned will be queued internally and actually sent
- when an HTTP connection becomes available from the pool.
+   Nothing is actually sent until the request has been internally assigned an HTTP connection. The [[HttpClient]]
+   instance will return an instance of this class immediately, even if there are no HTTP connections available
+   in the pool. Any requests sent before a connection is assigned will be queued internally and actually sent
+   when an HTTP connection becomes available from the pool.
  
- The headers of the request are actually sent either when the `end()` method is called, or, when the first
- part of the body is written, whichever occurs first.
+   The headers of the request are actually sent either when the `end()` method is called, or, when the first
+   part of the body is written, whichever occurs first.
  
- This class supports both chunked and non-chunked HTTP.
+   This class supports both chunked and non-chunked HTTP.
  
- An example of using this class is as follows:
+   An example of using this class is as follows:
  
-     HttpClientRequest req = client.
-         request(\"POST\", \"/some-url\").
-         header(\"some-header\", \"hello\").
-         header(\"Content-Length\", \"5\").
-         end(\"hello\");
-     req.promise.then_((HttpClientResponse resp) => print(\"Got response \`resp.status\`\");
+   ~~~
+   HttpClientRequest req = client.
+     request(post, "/some-url").
+     headers { "some-header"->"hello", "Content-Length"->"5" };
+   req.promise.then_((HttpClientResponse resp) => print("Got response ``resp.status``"));
+   req.end("hello");
+   ~~~
  
- Instances of HttpClientRequest are not thread-safe."
+   Instances of HttpClientRequest are not thread-safe."""
 by("Julien Viet")
 shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) extends HttpOutput<HttpClientRequest>() {
 
@@ -120,4 +121,10 @@ shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) 
         }
         return this;
     }
+    
+    "Is the request chunked?"
+    shared Boolean chunked => request.chunked;
+    
+    "If chunked is true then the request will be set into HTTP chunked mode"
+    assign chunked => request.setChunked(chunked);
 }

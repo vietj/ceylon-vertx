@@ -24,7 +24,10 @@ shared class HttpClientResponse(HttpClientResponse_ delegate)
         extends HttpInput() {
 
     "The HTTP status code of the response"
-    shared Integer status => delegate.statusCode();
+    shared Integer statusCode => delegate.statusCode();
+
+    "The HTTP status code of the response"
+    shared String statusMessage => delegate.statusMessage();
 
     "The http headers"
     shared actual Map<String,{String+}> headers = toMap(delegate.headers());

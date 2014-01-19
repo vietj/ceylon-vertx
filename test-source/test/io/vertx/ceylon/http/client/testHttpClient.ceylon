@@ -47,7 +47,7 @@ shared test void testRequest() {
         HttpClient client = vertx.createHttpClient(8080, "localhost");
         HttpClientRequest req = client.request(get, "/foo");
         Promise<String> check(HttpClientResponse resp) {
-            assertEquals(200, resp.status);
+            assertEquals(200, resp.statusCode);
             assertEquals({"bar_value"}, resp.headers["bar"]);
             assertEquals("text/plain", resp.mimeType);
             assertEquals(utf8, resp.charset);
@@ -82,7 +82,7 @@ shared test void testResponse() {
 		HttpClientRequest req = client.request(get, "/foo").end();
 		HttpClientResponse|Exception ret = req.response.future.get(10000);
 		if (is HttpClientResponse ret) {
-			assertEquals(200, ret.status);
+			assertEquals(200, ret.statusCode);
 			assertEquals({"bar_value"}, ret.headers["bar"]);
 		} else {
 			fail("Was expecting a response");
@@ -106,7 +106,7 @@ shared test void testTextResponse() {
         HttpClient client = vertx.createHttpClient(8080, "localhost");
         HttpClientRequest req = client.request(get, "/foo");
         Promise<String> check(HttpClientResponse resp) {
-            assertEquals(200, resp.status);
+            assertEquals(200, resp.statusCode);
             assertEquals("text/plain", resp.mimeType);
             assertEquals(utf8, resp.charset);
             return resp.parseBody(textBody);
@@ -139,7 +139,7 @@ shared test void testBinaryBody() {
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
 		HttpClientRequest req = client.request(get, "/foo");
 		Promise<ByteBuffer> check(HttpClientResponse resp) {
-			assertEquals(200, resp.status);
+			assertEquals(200, resp.statusCode);
 			assertEquals("text/plain", resp.mimeType);
 			assertEquals(utf8, resp.charset);
 			return resp.parseBody(binaryBody);
@@ -175,7 +175,7 @@ shared test void testBodyParserFailure() {
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
 		HttpClientRequest req = client.request(get, "/foo");
 		Promise<String> check(HttpClientResponse resp) {
-			assertEquals(200, resp.status);
+			assertEquals(200, resp.statusCode);
 			assertEquals("text/plain", resp.mimeType);
 			assertEquals(utf8, resp.charset);
 			object failingParser satisfies BodyType<String> {

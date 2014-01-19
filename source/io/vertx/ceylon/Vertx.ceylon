@@ -46,7 +46,7 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
         "the client port"
         Integer? port = null,
         "the client host"
-    String? host = null) {
+        String? host = null) {
         value client = v.createHttpClient();
         if (exists port) {
             client.setPort(port);

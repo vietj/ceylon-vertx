@@ -14,7 +14,16 @@
  * limitations under the License.
  */
 import org.vertx.java.core.http { HttpClient_=HttpClient  }
-import ceylon.net.http { Method }
+import ceylon.net.http { Method,
+    get_=get,
+    post_=post,
+    options_=options,
+    head_=head,
+    put_=put,
+    delete_=delete,
+    trace_=trace,
+    connect_=connect, AbstractMethod, parseMethod
+}
 
 "An HTTP client that maintains a pool of connections to a specific host, at a specific port. The client supports
  pipelining of requests.
@@ -85,9 +94,40 @@ shared class HttpClient(HttpClient_ delegate) {
         return HttpClientRequest(delegate, method, uri);
     }
     
+    """This method returns an [[HttpClientRequest]] instance which represents an HTTP GET request with the specified `uri`."""
+    shared HttpClientRequest get(String uri) => request(get_, uri);
+
+    """This method returns an [[HttpClientRequest]] instance which represents an HTTP POST request with the specified `uri`."""
+    shared HttpClientRequest post(String uri) => request(post_, uri);
+
+    """This method returns an [[HttpClientRequest]] instance which represents an HTTP OPTIONS request with the specified `uri`."""
+    shared HttpClientRequest options(String uri) => request(options_, uri);
+
+    """This method returns an [[HttpClientRequest]] instance which represents an HTTP HEAD request with the specified `uri`."""
+    shared HttpClientRequest head(String uri) => request(head_, uri);
+
+    """This method returns an [[HttpClientRequest]] instance which represents an HTTP TRACE request with the specified `uri`."""
+    shared HttpClientRequest trace(String uri) => request(trace_, uri);
+
+    """This method returns an [[HttpClientRequest]] instance which represents an HTTP PUT request with the specified `uri`."""
+    shared HttpClientRequest put(String uri) => request(put_, uri);
+
+    """This method returns an [[HttpClientRequest]] instance which represents an HTTP DELETE request with the specified `uri`."""
+    shared HttpClientRequest delete(String uri) => request(delete_, uri);
+
+    """This method returns an [[HttpClientRequest]] instance which represents an HTTP CONNECT request with the specified `uri`."""
+    shared HttpClientRequest connect(String uri) => request(connect_, uri);
+    
+    """This method returns an [[HttpClientRequest]] instance which represents an HTTP PATCH request with the specified `uri`."""
+    shared HttpClientRequest patch(String uri) => request(patchMethod, uri);
+
     "Close the HTTP client. This will cause any pooled HTTP connections to be closed."
     shared void close() {
         delegate.close();
     }
     
 }
+
+"Missing in ceylon.net"
+Method patchMethod = parseMethod("PATCH");
+

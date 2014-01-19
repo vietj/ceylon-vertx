@@ -1,6 +1,7 @@
 import ceylon.promises { Promise }
 import ceylon.io.charset { Charset }
 import org.vertx.java.core.buffer { Buffer }
+import ceylon.io.buffer { ByteBuffer }
 /*
  * Copyright 2013 Julien Viet
  *
@@ -349,7 +350,278 @@ import org.vertx.java.core.buffer { Buffer }
    
    ### Writing HTTP Clients
    
-   Todo.
+   #### Creating an HTTP Client
+   
+   To create an HTTP client you call the [[io.vertx.ceylon::Vertx.createHttpClient]] method on your vertx instance:
+   
+   ~~~
+   HttpClient client = vertx.createHttpClient();
+   ~~~
+   
+   You set the port and hostname (or ip address) that the client will connect to using the [[HttpClient.host]] and [[HttpClient.port]] attributes:
+   
+   ~~~
+   HttpClient client = vertx.createHttpClient();
+   client.port = 8181;
+   client.host = "foo.com";
+   ~~~
+   
+   You can also set the port and host when creating the client:
+   
+   ~~~
+   HttpClient client = vertx.createHttpClient {
+     port = 8181;
+     host = "foo.com";
+   };
+   ~~~
+
+   A single [[HttpClient]] always connects to the same host and port. If you want to connect to different servers, create more instances.
+
+   The default port is `80` and the default host is `localhost`. So if you don't explicitly set these values that's what the client
+   will attempt to connect to.
+   
+   #### Pooling and Keep Alive
+   
+   By default the [[HttpClient]] pools HTTP connections. As you make requests a connection is borrowed from the pool and returned
+   when the HTTP response has ended.
+   
+   If you do not want connections to be pooled you can set [[HttpClient.keepAlive]] to false:
+   
+   ~~~
+   HttpClient client = vertx.createHttpClient();
+   client.port = 8181;
+   client.host = "foo.com";
+   client.keepAlive = false;
+   ~~~
+   
+   In this case a new connection will be created for each HTTP request and closed once the response has ended.
+   
+   You can set the maximum number of connections that the client will pool as follows:
+   
+   ~~~
+   HttpClient client = vertx.createHttpClient();
+   client.port = 8181;
+   client.host = "foo.com";
+   client.maxPoolSize = 10;
+   ~~~
+   
+   The default value is `1`.
+   
+   #### Closing the client
+   
+   Any HTTP clients created in a verticle are automatically closed for you when the verticle is stopped, however if you want to close
+   it explicitly you can:
+   
+   ~~~
+   client.close();
+   ~~~
+   
+   #### Making Requests
+   
+   To make a request using the client you invoke one the methods named after the HTTP method that you want to invoke.
+   
+   For example, to make a `POST` request:
+   
+   ~~~
+   value client = vertx.createHttpClient{ host = "foo.com" };
+   HttpClientRequest request = client.post("/some-path"/);
+   request.response.then_((HttpClientResponse resp) => print("Got a response: ``resp.status``"));
+   request.end();
+   ~~~
+   
+   To make a PUT request use the [[HttpClient.put]] method, to make a GET request use the [[HttpClient.get]] method, etc.
+
+   Legal request methods are: [[HttpClient.get]], [[HttpClient.put]], [[HttpClient.post]], [[HttpClient.delete]], [[HttpClient.head]],
+   [[HttpClient.options]], [[HttpClient.connect]], [[HttpClient.trace]] and [[HttpClient.patch]].
+   
+   The general modus operandi is you invoke the appropriate method passing in the request URI. The `Promise<HttpClientResponse` [[HttpClientRequest.response]]]
+   attribute will be resolved when the corresponding response arrives. Note that the response promise should be used before the [[HttpClientRequest.end]]
+   method is called, so the promise will be resolved by the Vert.x thread.
+   
+   The value specified in the request URI corresponds to the Request-URI as specified in
+   [Section 5.1.2 of the HTTP specification](http://www.w3.org/Protocols/rfc2616/rfc2616-sec5.html). _In most cases it will be a relative URI_.
+   
+   _Please note that the domain/port that the client connects to is determined by [[HttpClient.port]] and [[HttpClient.host]], and is not parsed
+   from the uri._
+   
+   The return value from the appropriate request method is an instance of [[HttpClientRequest]]. You can use this to add headers to the request,
+   and to write to the request body. The request object implements [[io.vertx.ceylon::WriteStream]].
+
+   Once you have finished with the request you must call the [[HttpClientRequest.end]] method.
+
+   If you don't know the name of the request method in advance there is a general [[HttpClient.request]] method which takes the HTTP
+   method as a parameter:
+         
+   ~~~
+   value client = vertx.createHttpClient{ host = "foo.com" };
+   value request = client.request(post, "/some-path/");
+   request.response.then_((HttpClientResponse resp) => print("Got a response: ``resp.status``"));
+   request.end();
+   ~~~
+
+   ##### Handling exceptions
+   
+   The [[HttpClientRequest.response]] promise will be rejected when the request fails.
+   
+   ##### Writing to the request body
+   
+   Writing to the client request body has a very similar API to writing to the server response body.
+   
+   To write data to an [[HttpClientRequest]] object, you invoke the [[HttpClientRequest.write]] function. This function can be called multiple times
+   before the request has ended. It can be invoked in a few ways:
+   
+   With a single buffer: (todo)
+   
+   A string. In this case the string will encoded using UTF-8 and the result written to the wire:
+   
+   ~~~
+   request.write("hello");
+   ~~~
+   
+   A string and an encoding. In this case the string will encoded using the specified encoding and the result written to the wire.
+   
+   ~~~
+   request.write("hello", "UTF-16");
+   ~~~
+   
+   The [[HttpClientRequest.write]] function is asynchronous and always returns immediately after the write has been queued.
+   The actual write might complete some time later.
+   
+   If you are just writing a single string or Buffer to the HTTP request you can write it
+   and end the request in a single call to the end function.
+
+   The first call to `write` will result in the request headers being written to the request. Consequently, if you are not
+   using HTTP chunking then you must set the `Content-Length` header before writing to the request, since it will be too
+   late otherwise. If you are using HTTP chunking you do not have to worry.
+
+   ##### Ending HTTP requests
+   
+   Once you have finished with the HTTP request you must call the [[HttpClientRequest.end]] function on it.
+   
+   This function can be invoked in several ways:
+   
+   With no arguments, the request is simply ended.
+   
+   ~~~
+   request.end();
+   ~~~
+   
+   The function can also be called with a string or Buffer in the same way `write` is called. In this case it's just the
+   same as calling write with a string or Buffer followed by calling `end` with no arguments.
+   
+   ##### Writing Request Headers
+   
+   To write headers to the request, add them using the [[HttpClientRequest.headers]] method:
+   
+   ~~~
+   value client = vertx.createHttpClient{ host = "foo.com" };
+   value request = client.request(post, "/some-path/");
+   request.response.then_((HttpClientResponse resp) => print("Got a response: ``resp.status``"));
+   request.headers { "Some-Header"->"Some-Value" };
+   request.end();
+   ~~~
+   
+   ##### Request timeouts
+   
+   You can set a timeout for specific Http Request using the [[HttpClientRequest.timeout]] attribute. If the request does not
+   return any data within the timeout period the [[HttpClientRequest.response]] will be rejected and the request will be closed.
+   
+   ##### HTTP chunked requests
+   
+   Vert.x supports [HTTP Chunked Transfer Encoding](http://en.wikipedia.org/wiki/Chunked_transfer_encoding) for requests. This allows the
+   HTTP request body to be written in chunks, and is normally used when a large request body is being streamed to the server,
+   whose size is not known in advance.
+   
+   You put the HTTP request into chunked mode as follows:
+   
+   ~~~
+   request.chunked = true;
+   ~~~
+   
+   Default is non-chunked. When in chunked mode, each call to request.write(...) will result in a new HTTP chunk being written out.
+
+   #### HTTP Client Responses
+   
+   Client responses are received as an argument to the response handler that is passed into one of the request methods on the HTTP client.
+   
+   The response object provides a [[HttpClientResponse.stream]] attribute, so it can be pumped to a
+   [[io.vertx.ceylon::WriteStream]] like any other [[io.vertx.ceylon::ReadStream]].
+   
+   To query the status code of the response use the [[HttpClientResponse.statusMessage]] attribute. The
+   [[HttpClientResponse.statusMessage]] attribute contains the status message. For example:
+
+   ~~~
+   value client = vertx.createHttpClient{ host = "foo.com" };
+   value request = client.request(post, "/some-path/");
+   void handle(HttpClientResponse resp) {
+     print("server returned status code: ``resp.statusCode``");
+     print("server returned status message: ``resp.statusMessage``");
+   }
+   request.response.then_(handle);
+   request.end();
+   ~~~
+   
+   ##### Reading Data from the Response Body
+   
+   The API for reading an HTTP client response body is very similar to the API for reading a HTTP server request body.
+   
+   Sometimes an HTTP response contains a body that we want to read. Like an HTTP request, the client response promise
+   is resolved when all the response headers have arrived, not when the entire response body has arrived.
+   
+   To receive the response body, you use the [[HttpClientResponse.parseBody]] on the response object which returns a `Promise<Body>`
+   that is resolved when the response body has been parsed. Here's an example:
+   
+   ~~~
+   value client = vertx.createHttpClient{ host = "foo.com" };
+   value request = client.request(post, "/some-path/");
+   request.then_((HttpClientResponse resp) => resp.parseBody(binaryBody).then_((ByteBuffer body) => print("I received  + ``body.size`` + bytes")));
+   request.end();
+   ~~~
+   
+   The response object provides the [[HttpClientResponse.stream]] interface so you can pump the response body to a
+   [[io.vertx.ceylon::WriteStream]]. See the chapter on streams and pump for a detailed explanation.
+   
+   ##### Reading cookies
+   
+   todo
+   
+   #### 100-Continue Handling
+   
+   todo
+   
+   #### HTTP Compression
+   
+   Not provided by the 2.0 API
+   
+   ### Pumping Requests and Responses
+   
+   The HTTP client and server requests and responses all implement either [[io.vertx.ceylon::ReadStream]] or [[io.vertx.ceylon::ReadStream]].
+   This means you can pump between them and any other read and write streams.
+
+   ### HTTPS Servers
+   
+   todo
+   
+   ### HTTPS Clients
+   
+   todo
+   
+   ### Scaling HTTP servers
+   
+   Scaling an HTTP or HTTPS server over multiple cores is as simple as deploying more instances of the verticle. For example:
+
+   ~~~
+   vertx runmod com.mycompany~my-mod~1.0 -instance 20
+   ~~~
+   
+   Or, for a raw verticle:
+
+   ~~~
+   vertx run foo.MyServer -instances 20
+   ~~~
+   
+   The scaling works in the same way as scaling a NetServer. Please see the chapter on scaling Net Servers for a detailed
+   explanation of how this works.
    """
 by("Julien Viet")
 shared package io.vertx.ceylon.http;
