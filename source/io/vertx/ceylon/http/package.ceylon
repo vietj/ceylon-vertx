@@ -594,7 +594,7 @@
    
    ##### Reading cookies
    
-   todo
+   You can read the list of cookies from the response using the [[HttpClientResponse.cookies]] attribute.
    
    #### 100-Continue Handling
    
