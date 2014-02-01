@@ -18,8 +18,8 @@ import ceylon.promises { Promise, Deferred }
 import io.vertx.ceylon.eventbus { Message, EventBus, Payload }
 import ceylon.test { ... }
 import ceylon.json { JSonObject=Object, JSonArray=Array }
-import test.io.vertx.ceylon{ assertResolve }
-import java.lang { ByteArray, arrays }
+import test.io.vertx.ceylon{ assertResolve, toByteArray  }
+import java.lang { ByteArray }
 
 void run(Anything(EventBus) test) {
 	Vertx vertx = Vertx();
@@ -36,7 +36,7 @@ shared test void testBooleanEvent() => run(send(true));
 shared test void testStringEvent() => run(send("foo_msg"));
 shared test void testJSonObjectEvent() => run(send(JSonObject({"juu"->"juu_value"})));
 shared test void testJSonArrayEvent() => run(send(JSonArray({"juu","daa"})));
-shared test void testByteArray() => run(send(arrays.toByteArray({0,1,2})));
+shared test void testByteArray() => run(send(toByteArray({0,1,2})));
 
 shared test void testFloatReply() => run(reply(4.4));
 shared test void testIntegerReply() => run(reply(4));
@@ -44,7 +44,7 @@ shared test void testBooleanReply() => run(reply(true));
 shared test void testStringReply() => run(reply("foo_msg"));
 shared test void testJSonObjectReply() => run(reply(JSonObject({"juu"->"juu_value"})));
 shared test void testJSonArrayReply() => run(reply(JSonArray({"juu","daa"})));
-shared test void testByteArrayReply() => run(reply(arrays.toByteArray({0,1,2})));
+shared test void testByteArrayReply() => run(reply(toByteArray({0,1,2})));
 
 shared test void testFloatReplyToReply() => run(replyToReply(4.4));
 shared test void testIntegerReplyToReply() => run(replyToReply(4));
@@ -52,7 +52,7 @@ shared test void testBooleanReplyToReply() => run(replyToReply(true));
 shared test void testStringReplyToReply() => run(replyToReply("foo_msg"));
 shared test void testJSonObjectReplyToReply() => run(replyToReply(JSonObject({"juu"->"juu_value"})));
 shared test void testJSonArrayReplyToReply() => run(replyToReply(JSonArray({"juu","daa"})));
-shared test void testByteArrayReplyToReply() => run(replyToReply(arrays.toByteArray({0,1,2})));
+shared test void testByteArrayReplyToReply() => run(replyToReply(toByteArray({0,1,2})));
 
 
 void send<M>(M msg)(EventBus bus) given M of String|JSonObject|Boolean|Integer|Float|JSonArray|ByteArray {

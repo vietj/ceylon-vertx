@@ -23,6 +23,7 @@ import test.io.vertx.ceylon.http.client { ... }
 import test.io.vertx.ceylon.eventbus { ... }
 import ceylon.io.charset { ascii }
 import ceylon.io { newSocketConnector, SocketAddress }
+import java.lang { ByteArray }
 
 shared T assertResolve<T>(Promise<T>|Deferred<T> obj) {
     Future<T> future;
@@ -57,6 +58,28 @@ shared Response assertSend(String data) {
     value contents = response.contents; // Read before we close
     socket.close();
     return response;
+}
+
+shared ByteArray toByteArray({Integer*} seq) {
+    value array = ByteArray(seq.size);
+    variable Integer ptr = 0;
+    for (i in seq) {
+        array.set(ptr++, i);
+    }
+    return array;
+}
+
+shared Boolean byteArrayEquals(ByteArray ba1, ByteArray ba2) {
+    if (ba1.size == ba2.size) {
+        for (i in 0..ba1.size-1) {
+            if (ba1.get(i) != ba2.get(i)) {
+                return false;
+            }
+        }
+        return true;
+    } else {
+        return false;
+    }
 }
 
 by("Julien Viet")

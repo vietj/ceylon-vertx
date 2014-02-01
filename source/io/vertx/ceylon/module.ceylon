@@ -54,7 +54,7 @@
    
    ## Shared Data
    
-   *Not yet implemented*
+   See [io.vertx.ceylon.shareddata](shareddata/index.html).
    
    ## Buffers
    

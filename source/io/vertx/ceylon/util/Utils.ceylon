@@ -18,7 +18,7 @@ import ceylon.collection { HashMap }
 import ceylon.json { Object, Array }
 import org.vertx.java.core { MultiMap }
 import org.vertx.java.core.json { JsonObject, JsonArray }
-import java.lang { String_=String, Iterable_=Iterable, arrays }
+import java.lang { String_=String, Iterable_=Iterable }
 import java.util { Iterator_=Iterator, ArrayList_=ArrayList, Arrays_=Arrays }
 import io.vertx.ceylon.interop { JavaBridge { getFieldValue } }
 

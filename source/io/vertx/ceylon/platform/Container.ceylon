@@ -39,7 +39,7 @@ shared class Container(Container_ delegate) {
     }
     
     "Get an umodifiable map of system, environment variables."
-    shared Map<String, String> env = LazyMap(tmp);
+    shared Map<String, String> env = HashMap(tmp);
 
     "Get the verticle configuration"
     JsonObject? config_ = delegate.config();

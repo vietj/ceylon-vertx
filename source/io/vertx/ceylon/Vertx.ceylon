@@ -19,6 +19,7 @@ import org.vertx.java.core {
 }
 import io.vertx.ceylon.http { HttpServer, HttpClient }
 import io.vertx.ceylon.eventbus { EventBus }
+import io.vertx.ceylon.shareddata { SharedData }
 
 "The control centre of the Vert.x Core API.
  
@@ -36,6 +37,9 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
     "The event bus"
     shared EventBus eventBus = EventBus(v.eventBus());
 
+    "The shared data object"
+    shared SharedData sharedData = SharedData(v.sharedData());
+    
     "Create a new http server and returns it"
     shared HttpServer createHttpServer() {
         return HttpServer(v.createHttpServer());
