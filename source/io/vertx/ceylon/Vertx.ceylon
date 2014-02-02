@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import org.vertx.java.core {
-	Vertx_=Vertx
-}
+import org.vertx.java.core { Vertx_=Vertx }
 import io.vertx.ceylon.http { HttpServer, HttpClient }
 import io.vertx.ceylon.eventbus { EventBus }
 import io.vertx.ceylon.shareddata { SharedData }
+import java.lang { Long_=Long }
 
 "The control centre of the Vert.x Core API.
  
@@ -59,6 +58,26 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
             client.setHost(host);
         }
         return HttpClient(client);
+    }
+    
+    """Set a one-shot timer to fire after [[delay]] milliseconds, at which point [[handle]] will be called with
+       the id of the timer.
+       """
+    shared Integer setTimer(Integer delay, void handle(Integer timerId)) {
+        return v.setTimer(Long_(delay).longValue(), TimerProxy(handle));
+    }
+    
+    """Set a periodic timer to fire every [[delay]] milliseconds, at which point [[handle]] will be called with
+       the id of the timer.
+       """
+    shared Integer setPeriodic(Integer delay, void handle(Integer timerId)) {
+        return v.setPeriodic(Long_(delay).longValue(), TimerProxy(handle));
+    }
+
+    """Cancel the timer with the specified [[id]]. Returns `true` true if the timer was successfully cancelled, or
+       `false` if the timer does not exist."""
+    shared Boolean cancelTimer(Integer id) {
+        return v.cancelTimer(Long_(id).longValue());
     }
     
     "Stop Vertx"

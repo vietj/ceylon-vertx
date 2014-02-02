@@ -66,8 +66,67 @@
    
    ## Delayed and Periodic Tasks
    
-   * Not yet implemented*
+   It's very common in Vert.x to want to perform an action after a delay, or periodically.
    
+   In standard verticles you can't just make the thread sleep to introduce a delay, as that will block the event loop
+   thread.
+   
+   Instead you use Vert.x timers. Timers can be _one-shot_ or _periodic_. We'll discuss both
+   
+   ### One-shot Timers
+   
+   A one shot timer calls an event handler after a certain delay, expressed in milliseconds.
+
+   To set a timer to fire once you use the [[Vertx.setTimer]] method passing in the delay and a handler
+   
+   ~~~
+   value timerId = vertx.setTimer(1000, (Integer timerId) => print("And one second later this is printed"));
+   
+   print("First this is printed");
+   ~~~
+   
+   The return value is a unique timer id which can later be used to cancel the timer. The handler is also passed the timer id.
+   
+   ### Periodic Timers
+   
+   You can also set a timer to fire periodically by using the [[Vertx.setPeriodic]] method. There will be an initial
+   delay equal to the period. The return value of [[Vertx.setPeriodic]] is a unique timer id
+   (long). This can be later used if the timer needs to be cancelled. The argument passed into the timer
+   event handler is also the unique timer id:
+
+   ~~~
+   value timerId = vertx.setTimer(1000, (Integer timerId) => print("And every second this is printed"));
+   
+   print("First this is printed");
+   ~~~
+   
+   ### Cancelling timers
+   
+   To cancel a periodic timer, call the [[Vertx.cancelTimer]] method specifying the timer id. For example:
+
+   ~~~
+   value timerId = vertx.setTimer(1000, (Integer timerId) => print("Should not be printed"));
+   
+   // And immediately cancel it
+   
+   vertx.cancelTimer(timerID);
+   ~~~
+   
+   Or you can cancel it from inside the event handler. The following example cancels the timer after it has fired 10 times.
+
+   ~~~
+   variable Integer count = 0;
+   vertx.setTimer {
+     delay = 1000;
+     void handle(Integer timerId) {
+       print("In event handler ``count``");
+       if (++count == 10) {
+         vertx.cancelTimer(timerId);
+       }
+     }
+   };
+   ~~~
+
    ## Writing TCP Servers and Clients
    
    * Not yet implemented *
