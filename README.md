@@ -4,28 +4,28 @@ Provides a Ceylon API for the Vert.x framework.
 
 # Documentation
 
-Documentation can be found [here](https://modules.ceylon-lang.org/repo/1/io/vertx/ceylon/0.3.9/module-doc/index.html)
+Documentation can be found [here](https://modules.ceylon-lang.org/repo/1/io/vertx/ceylon/0.3.10/module-doc/index.html)
 
 # Test Drive
 
-    ceylon run vietj.vertx/0.3.9
+    ceylon run vietj.vertx/0.3.10
 
 This will execute the sample [sample](https://github.com/vietj/ceylon-vertx/blob/master/source/vietj/vertx/run.ceylon) server.
 
 # Features
 
-## HTTP bridging
+## HTTP
 
     Vertx().createHttpServer().requestHandler(
         (HttpServerRequest req) => req.response.contentType("text/html").end("Hello World)
     ).listen(8080);
 
-### HTTP Request bridge
+### HTTP Request
 
     Map<String, {String+}> headers = req.headers;
     Map<String, {String+}> parameters = req.parameters;
     
-### HTTP Response bridge
+### HTTP Response
     
     req.response.headers("Content-Type" -> "text/html; charset=UTF-8");
     
@@ -40,7 +40,31 @@ or
     router.get("/animal/cats", (HttpServerRequest req) => req.response.end(“You requested cats"));
     server.requestHandler(router.handle).listen(8080);
 
-## EventBus bridging
+## Shared Data
+
+### Shared maps
+
+    SharedMap<String, Integer> map = vertx.sharedData.getMap("demo.mymap");
+    map.put("some-key", 123);
+
+### Shared sets
+
+    SharedSet<String> set = vertx.sharedData.getSet("demo.myset");
+    set.add("some-value");
+
+## Timers
+
+### One shot timers
+
+    value timerId = vertx.setTimer(1000, (Integer timerId) => print("And one second later this is printed"));
+    print("First this is printed");
+
+### Periodic timers
+
+    value timerId = vertx.setTimer(1000, (Integer timerId) => print("And every second this is printed"));
+    print("First this is printed");
+
+## EventBus
 
     EventBus bus = Vertx().eventBus();
 

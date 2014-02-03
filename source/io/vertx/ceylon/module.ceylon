@@ -170,7 +170,7 @@
    """
 by("Julien Viet")
 license("ASL2")
-module io.vertx.ceylon "0.3.10" {
+module io.vertx.ceylon "0.3.11" {
 
     import io.netty "4.0.10.Final";
     import com.fasterxml.jackson.annotations "2.2.2";
