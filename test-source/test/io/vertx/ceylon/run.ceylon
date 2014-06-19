@@ -15,6 +15,7 @@
  */
 import ceylon.promises { Promise, Deferred, Future }
 import ceylon.test { ... }
+import ceylon.test.core { DefaultLoggingListener }
 
 import ceylon.net.uri { Uri, parseUri=parse }
 import ceylon.net.http.client { Request, Response, Parser }
@@ -30,7 +31,7 @@ shared T assertResolve<T>(Promise<T>|Deferred<T> obj) {
     switch (obj)
     case (is Promise<T>) { future = obj.future; }
     case (is Deferred<T>) { future = obj.promise.future; }
-    T|Exception r = future.get(20000);
+    T|Throwable r = future.get(20000);
     if (is T r) {
         return r;
     } else if (is Exception r) {
@@ -84,7 +85,7 @@ shared Boolean byteArrayEquals(ByteArray ba1, ByteArray ba2) {
 
 by("Julien Viet")
 void run() {
-    value runner = createTestRunner([`module test.io.vertx.ceylon`], [SimpleLoggingListener()]);
+    value runner = createTestRunner([`module test.io.vertx.ceylon`], [DefaultLoggingListener()]);
     value result = runner.run();
     print(result);
 }

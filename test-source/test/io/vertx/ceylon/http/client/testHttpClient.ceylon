@@ -27,7 +27,7 @@ shared test void testTimeout() {
     try {
         HttpClient client = vertx.createHttpClient(5000, "localhost");
         HttpClientRequest req = client.request(get, "/foo").timeout(100);
-        HttpClientResponse|Exception f = req.response.future.get(10000);
+        HttpClientResponse|Throwable f = req.response.future.get(10000);
         if (is HttpClientResponse f) {
             fail("Was expecting an exception");
         }
@@ -48,14 +48,14 @@ shared test void testRequest() {
         HttpClientRequest req = client.request(get, "/foo");
         Promise<String> check(HttpClientResponse resp) {
             assertEquals(200, resp.statusCode);
-            assertEquals({"bar_value"}, resp.headers["bar"]);
+            assertEquals(["bar_value"], resp.headers["bar"]);
             assertEquals("text/plain", resp.mimeType);
             assertEquals(utf8, resp.charset);
             return resp.parseBody(textBody);
         }
         Promise<String> body = req.response.then__(check);
         req.contentType("text/plain").end("the_body");
-        String|Exception ret = body.future.get(10000);
+        String|Throwable ret = body.future.get(10000);
         if (is String ret) {
             assertEquals("foo_content", ret);
         } else {
@@ -80,10 +80,10 @@ shared test void testResponse() {
 		assertEquals(server, promise.future.get(10000));
 		HttpClient client = vertx.createHttpClient(8080, "localhost");
 		HttpClientRequest req = client.request(get, "/foo").end();
-		HttpClientResponse|Exception ret = req.response.future.get(10000);
+		HttpClientResponse|Throwable ret = req.response.future.get(10000);
 		if (is HttpClientResponse ret) {
 			assertEquals(200, ret.statusCode);
-			assertEquals({"bar_value"}, ret.headers["bar"]);
+			assertEquals(["bar_value"], ret.headers["bar"]);
 		} else {
 			fail("Was expecting a response");
 		}
@@ -113,7 +113,7 @@ shared test void testTextResponse() {
         }
         Promise<String> body = req.response.then__(check);
         req.end();
-        String|Exception ret = body.future.get(10000);
+        String|Throwable ret = body.future.get(10000);
         if (is String ret) {
             assertEquals("foo_content", ret);
         } else {
@@ -146,7 +146,7 @@ shared test void testBinaryBody() {
 		}
 		Promise<ByteBuffer> body = req.response.then__(check);
 		req.end();
-		ByteBuffer|Exception ret = body.future.get(10000);
+		ByteBuffer|Throwable ret = body.future.get(10000);
 		if (is ByteBuffer ret) {
 			assertEquals(3, ret.size);
 			assertEquals(65, ret.get());
@@ -188,8 +188,8 @@ shared test void testBodyParserFailure() {
 		}
 		Promise<String> body = req.response.then__(check);
 		req.end();
-		String|Exception ret = body.future.get(10000);
-		if (is Exception ret) {
+		String|Throwable ret = body.future.get(10000);
+		if (is Throwable ret) {
 			assertEquals("the_failure", ret.message);
 		} else {
 			fail("Was expecting a failure");

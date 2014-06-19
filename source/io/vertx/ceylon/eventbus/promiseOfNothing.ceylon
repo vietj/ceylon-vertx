@@ -21,7 +21,7 @@ by("Julien Viet")
 object promiseOfNothing extends Promise<Nothing>() {
     shared actual Promise<Result> then__<Result>(
         <Promise<Result>(Nothing)> onFulfilled,
-        <Promise<Result>(Exception)> onRejected) {
+        <Promise<Result>(Throwable)> onRejected) {
         try {
             return onRejected(Exception("No result expected"));
         } catch(Exception e) {

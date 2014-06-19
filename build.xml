@@ -4,27 +4,22 @@
 -->
 <project name="vietj.vertx" default="run">
 
-    <property name="ceylon.home" value="/Users/julien/java/ceylon-1.0.0"/>
+	<property environment="env"/>
+    <property name="ceylon.home" value="${env.CEYLON_HOME}"/>
     <property name="ceylon.ant.lib" value="${ceylon.home}/lib/ceylon-ant.jar"/>
     <property name="source.encoding" value="UTF-8"/>
-    <property name="source.version" value="0.3.10"/>
+    <property name="source.version" value="0.4.0"/>
 
     <path id="ant-tasks">
         <pathelement location="${ceylon.ant.lib}"/>
     </path>
     <typedef resource="com/redhat/ceylon/ant/antlib.xml" classpathref="ant-tasks"/>
-	
-    <reposet id="reposet.compile">
-<!--        <repo url="mvn:http://repository.jboss.org/nexus/content/repositories/releases"/> -->
-    </reposet>
 
-    <target name="default" depends="doc, run">
+	<target name="default" depends="doc, run">
     </target>
 
     <target name="compile">
         <ceylon-compile encoding="${source.encoding}" verbose="false">
-          <!--
-            <reposet refid="reposet.compile"/>-->
             <module name="io.vertx.ceylon"/>
         </ceylon-compile>
     </target>

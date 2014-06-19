@@ -67,6 +67,7 @@ shared object jsonBody satisfies BodyType<JSONObject> {
 	shared actual JSONObject parse(Charset? charset, Buffer data) {
 		String s = textBody.parse(charset, data);
 		value parsed = parseJSON(s);
+		assert(is JSONObject parsed);
 		return parsed;
 	}
 }

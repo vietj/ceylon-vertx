@@ -31,10 +31,10 @@ shared class HttpClientResponse(HttpClientResponse_ delegate)
     shared String statusMessage => delegate.statusMessage();
 
     "The http headers"
-    shared actual Map<String,{String+}> headers = toMap(delegate.headers());
+    shared actual Map<String,[String+]> headers = toMap(delegate.headers());
     
     "The http trailers"
-    shared Map<String,{String+}> trailers = toMap(delegate.trailers());
+    shared Map<String,[String+]> trailers = toMap(delegate.trailers());
 
     "The Set-Cookie headers (including trailers)"
     shared {String*} cookies {

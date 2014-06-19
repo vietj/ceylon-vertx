@@ -38,8 +38,9 @@ shared class Container(Container_ delegate) {
         tmp.put(entry.key.string, entry.\ivalue.string);
     }
     
-    "Get an umodifiable map of system, environment variables."
-    shared Map<String, String> env = HashMap(tmp);
+    // 
+    "Get an unmodifiable map of system, environment variables."
+    shared Map<String, String> env = tmp;
 
     "Get the verticle configuration"
     JsonObject? config_ = delegate.config();

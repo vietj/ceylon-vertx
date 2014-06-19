@@ -68,7 +68,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
                 object handler satisfies Handler_<Void_> {
                     shared actual void handle(Void_ nothing) {
                         value formAttributesMap = delegate.formAttributes();
-                        Map<String, {String+}> form = toMap(formAttributesMap);
+                        Map<String, [String+]> form = toMap(formAttributesMap);
                         d.resolve(form);
                     }
                 } 
@@ -89,10 +89,10 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     };
 
     // Lazy params map
-    variable Map<String,{String+}>? paramsMap = null;
+    variable Map<String,[String+]>? paramsMap = null;
 
     "Returns a map of all the parameters in the request."
-    shared Map<String, {String+}> params {
+    shared Map<String, [String+]> params {
         if (exists ret = paramsMap) {
             return ret;
         } else {
@@ -103,8 +103,8 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     }
 
     // Lazy header map
-    variable Map<String,{String+}>? headerMap = null;
-    shared actual Map<String,{String+}> headers {
+    variable Map<String,[String+]>? headerMap = null;
+    shared actual Map<String,[String+]> headers {
         if (exists ret = headerMap) {
             return ret;
         } else {

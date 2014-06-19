@@ -19,14 +19,13 @@ import ceylon.json { Object, Array }
 import org.vertx.java.core { MultiMap }
 import org.vertx.java.core.json { JsonObject, JsonArray }
 import java.lang { String_=String, Iterable_=Iterable }
-import java.util { Iterator_=Iterator, ArrayList_=ArrayList, Arrays_=Arrays }
+import java.util { Iterator_=Iterator, ArrayList_=ArrayList }
 import io.vertx.ceylon.interop { JavaBridge { getFieldValue } }
 
 by("Julien Viet")
-shared HashMap<String, {String+}> combine(
-        Map<String, {String+}> src,
-        HashMap<String,
-        {String+}> dst = HashMap<String, {String+}>()) {
+shared HashMap<String, [String+]> combine(
+        Map<String, [String+]> src,
+        HashMap<String, [String+]> dst = HashMap<String, [String+]>()) {
 
     for (entry in src) {
         value name = entry.key;
@@ -34,7 +33,7 @@ shared HashMap<String, {String+}> combine(
         value previous = dst[name];
         if (exists previous) {
             for (i in previous) {
-                val = {i, *val};
+                val = [i, *val];
             }
         }
         dst.put(name, val);
@@ -43,20 +42,20 @@ shared HashMap<String, {String+}> combine(
 }
 
 "Convert a Vert.x MultiMap to a Ceylon map"
-shared Map<String, {String+}> toMap(MultiMap multiMap) {
-    HashMap<String, {String+}> map = HashMap<String, {String+}>();
+shared Map<String, [String+]> toMap(MultiMap multiMap) {
+    HashMap<String, [String+]> map = HashMap<String, [String+]>();
     value keyIterator = multiMap.names().iterator();
     while (keyIterator.hasNext()) {
         value nextKey = keyIterator.next();
         String key = nextKey.string;
 
         // Recurse to build the values in correct order 
-        {String+} read(Iterator_<String_> i) {
+        [String+] read(Iterator_<String_> i) {
             value val = i.next().string;
             if (i.hasNext()) {
-                return { val, *read(i) };
+                return [ val, *read(i) ];
             } else {
-                return { val };
+                return [ val ];
             }
         }
         value values = read(multiMap.getAll(key).iterator());

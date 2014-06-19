@@ -89,7 +89,7 @@ void requestHeaders(HttpServer server) {
 	socket.close();
 	
 	Map<String, {String+}> a = assertResolve(headers);
-	assertEquals(HashMap({"foo"->{"foo_value1","foo_value2"}}), a);
+	assertEquals(HashMap{"foo"->["foo_value1","foo_value2"]}, a);
 }
 
 void query(HttpServer server) {
@@ -106,7 +106,7 @@ void query(HttpServer server) {
     assertResolve(server.requestHandler(f).listen(8080));
     assertRequest("http://localhost:8080/?foo=foo_value&bar=bar_value1&bar=bar_value2");
     assertEquals(Query(Parameter("foo", "foo_value"),  Parameter("bar", "bar_value1"), Parameter("bar", "bar_value2")), query);
-    assertEquals(HashMap({"foo"->{"foo_value"},"bar"->{"bar_value1","bar_value2"}}), parameters);
+    assertEquals(HashMap{"foo"->["foo_value"],"bar"->["bar_value1","bar_value2"]}, parameters);
 }
 
 void form(HttpServer server) {
@@ -122,7 +122,7 @@ void form(HttpServer server) {
     assertResolve(server.requestHandler(f).listen(8080));
     assertSend("POST / HTTP/1.1\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 43\r\n\r\nfoo=foo_value&bar=bar_value1&bar=bar_value2");
     value o = assertResolve(p);
-    assertEquals(HashMap({"foo"->{"foo_value"},"bar"->{"bar_value1","bar_value2"}}), o);
+    assertEquals(HashMap{"foo"->["foo_value"],"bar"->["bar_value1","bar_value2"]}, o);
 }
 
 void ok(HttpServer server) {
@@ -141,13 +141,13 @@ void ok(HttpServer server) {
     assertEquals("HELLO", resp.contents);
     Header? foo = resp.headersByName["foo"];
     if (exists foo) {
-        assertEquals({"foo_value"}, foo.values);
+        assertEquals(["foo_value"], foo.values);
     } else {
         fail("Was expecting the foo header");
     }
     Header? bar = resp.headersByName["bar"];
     if (exists bar) {
-        assertEquals({"bar_value"}, bar.values);
+        assertEquals(["bar_value"], bar.values);
     } else {
         fail("Was expecting the bar header");
     }
@@ -156,7 +156,7 @@ void ok(HttpServer server) {
 void parseBody(HttpServer server) {
     value parameters = Deferred<String>();
     Promise<String> p = parameters.promise;
-    value formAttributes = LinkedList<Map<String, {String+}>|Exception>();
+    value formAttributes = LinkedList<Map<String, {String+}>|Throwable>();
     void f(HttpServerRequest req) {
         value text = req.parseBody(textBody);
         parameters.resolve(text);
