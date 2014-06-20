@@ -24,12 +24,6 @@
         </ceylon-compile>
     </target>
 
-    <target name="compile-js">
-        <ceylon-compile-js encoding="${source.encoding}">
-            <module name="io.vertx.ceylon"/>
-        </ceylon-compile-js>
-    </target>
-
     <target name="doc">
         <ceylon-doc encoding="${source.encoding}">
             <module name="io.vertx.ceylon"/>
@@ -40,19 +34,21 @@
         <ceylon-run module="io.vertx.ceylon/${source.version}"/>
     </target>
 
-    <target name="run-js" depends="compile-js">
-        <ceylon-run-js module="io.vertx.ceylon/${source.version}"/>
+    <target name="test" depends="compile">
+        <ceylon-compile encoding="${source.encoding}" src="test-source">
+            <module name="test.io.vertx.ceylon"/>
+        </ceylon-compile>
+        <ceylon-run module="test.io.vertx.ceylon/${source.version}"/>
     </target>
 
-   <target name="test" depends="compile">
-       <ceylon-compile encoding="${source.encoding}" src="test-source">
-           <module name="test.io.vertx.ceylon"/>
-       </ceylon-compile>
-       <ceylon-run module="test.io.vertx.ceylon/${source.version}"/>
-   </target>
-
-   <target name="clean">
-        <delete dir="modules"/>
+    <target name="install" depends="test">
+	    <ceylon-compile out="+USER" encoding="${source.encoding}">
+	        <module name="io.vertx.ceylon"/>
+	    </ceylon-compile>
+    </target>
+	
+    <target name="clean">
+         <delete dir="modules"/>
     </target>
 
 </project>
