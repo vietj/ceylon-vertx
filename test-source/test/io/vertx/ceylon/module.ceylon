@@ -18,8 +18,8 @@ by("Julien Viet")
 license("ASL2")
 module test.io.vertx.ceylon "0.4.0" {
 
-    import io.netty "4.0.10.Final";
     import ceylon.promises "0.6.0";
+    import io.netty "4.0.20.Final";
     shared import io.vertx.ceylon "0.4.0";
     import java.base "7";
     import ceylon.net "1.1.0";

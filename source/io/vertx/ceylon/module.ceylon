@@ -172,12 +172,12 @@ by("Julien Viet")
 license("ASL2")
 module io.vertx.ceylon "0.4.0" {
 
-    import io.netty "4.0.10.Final";
+    import io.netty "4.0.20.Final";
     import com.fasterxml.jackson.annotations "2.2.2";
     import com.fasterxml.jackson.core "2.2.2";
     import com.fasterxml.jackson.databind "2.2.2";
-    shared import io.vertx.core "2.0.2-final";
-    shared import io.vertx.platform "2.0.2-final";
+    shared import io.vertx.core "2.1.1";
+    shared import io.vertx.platform "2.1.1";
     shared import java.base "7";
     shared import ceylon.promises "0.6.0";
     shared import ceylon.net "1.1.0";
