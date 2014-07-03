@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ceylon.promises { Promise }
+import ceylon.promise { Promise }
 import io.vertx.ceylon { Vertx }
 import io.vertx.ceylon.http { ... }
 import ceylon.test { ... }
@@ -53,7 +53,7 @@ shared test void testRequest() {
             assertEquals(utf8, resp.charset);
             return resp.parseBody(textBody);
         }
-        Promise<String> body = req.response.then__(check);
+        Promise<String> body = req.response.compose<String>(check);
         req.contentType("text/plain").end("the_body");
         String|Throwable ret = body.future.get(10000);
         if (is String ret) {
@@ -111,7 +111,7 @@ shared test void testTextResponse() {
             assertEquals(utf8, resp.charset);
             return resp.parseBody(textBody);
         }
-        Promise<String> body = req.response.then__(check);
+        Promise<String> body = req.response.compose<String>(check);
         req.end();
         String|Throwable ret = body.future.get(10000);
         if (is String ret) {
@@ -144,7 +144,7 @@ shared test void testBinaryBody() {
 			assertEquals(utf8, resp.charset);
 			return resp.parseBody(binaryBody);
 		}
-		Promise<ByteBuffer> body = req.response.then__(check);
+		Promise<ByteBuffer> body = req.response.compose<ByteBuffer>(check);
 		req.end();
 		ByteBuffer|Throwable ret = body.future.get(10000);
 		if (is ByteBuffer ret) {
@@ -186,7 +186,7 @@ shared test void testBodyParserFailure() {
 			}
 			return resp.parseBody(failingParser);
 		}
-		Promise<String> body = req.response.then__(check);
+		Promise<String> body = req.response.compose<String>(check);
 		req.end();
 		String|Throwable ret = body.future.get(10000);
 		if (is Throwable ret) {

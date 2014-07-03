@@ -17,7 +17,7 @@
 import io.vertx.ceylon.util { HandlerPromise }
 import org.vertx.java.core { Handler_=Handler }
 import ceylon.json { JSonArray=Array, JSonObject=Object }
-import ceylon.promises { Promise }
+import ceylon.promise { Promise }
 import io.vertx.ceylon { Registration }
 import java.lang { Void_=Void, ByteArray }
 import org.vertx.java.core.eventbus { Message_=Message, EventBus_=EventBus }

@@ -15,7 +15,7 @@
  */
 
 import io.vertx.ceylon.http { ... }
-import ceylon.promises { ... }
+import ceylon.promise { ... }
 import io.vertx.ceylon.eventbus { ... }
 
 by("Julien Viet")
@@ -52,11 +52,11 @@ shared void run(){
 
     // Bind http server
     Promise<HttpServer> http = server.requestHandler(handle).listen(8080);
-    http.then_((HttpServer arg) => print("Http server bound on 8080"));
+    http.compose((HttpServer arg) => print("Http server bound on 8080"));
 
     // Register event bus for logging messages
     Registration registration = vertx.eventBus.registerHandler("foo", (Message<String> msg) => print(msg.body));
-    registration.completed.then_((Null arg) => print("Event handler registered"));
+    registration.completed.compose((Null arg) => print("Event handler registered"));
 
     // Wait until both conditions are met to say we are fully started
     // registration.completed.and(http).then_((HttpServer server, Null n) => print("Application started"));

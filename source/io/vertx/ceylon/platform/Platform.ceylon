@@ -1,6 +1,6 @@
 import org.vertx.java.platform { PlatformManager, PlatformLocator { f = factory } }
 import ceylon.json { Object }
-import ceylon.promises { Promise }
+import ceylon.promise { Promise }
 import org.vertx.java.core.json { JsonObject }
 import io.vertx.ceylon.util { HandlerPromise }
 import java.lang { String_ = String }

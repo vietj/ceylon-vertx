@@ -18,7 +18,7 @@ package io.vertx.ceylon.interop;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.streams.ExceptionSupport;
 
-import ceylon.promises.Deferred;
+import ceylon.promise.Deferred;
 
 public class ExceptionSupportAdapter {
 	

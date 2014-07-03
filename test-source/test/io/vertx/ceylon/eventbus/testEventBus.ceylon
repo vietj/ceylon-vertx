@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import io.vertx.ceylon { Vertx, Registration }
-import ceylon.promises { Promise, Deferred }
+import ceylon.promise { Promise, Deferred }
 import io.vertx.ceylon.eventbus { Message, EventBus, Payload }
 import ceylon.test { ... }
 import ceylon.json { JSonObject=Object, JSonArray=Array }
@@ -58,7 +58,7 @@ shared test void testByteArrayReplyToReply() => run(replyToReply(toByteArray({0,
 void send<M>(M msg)(EventBus bus) given M of String|JSonObject|Boolean|Integer|Float|JSonArray|ByteArray {
     assert(is Payload msg);
     value deferred = Deferred<M>();
-    Registration registration = bus.registerHandler("foo", (Message<M> msg) => deferred.resolve(msg.body));
+    Registration registration = bus.registerHandler("foo", (Message<M> msg) => deferred.fulfill(msg.body));
     assertResolve(registration.completed);
     bus.send("foo", msg);
     value payload = deferred.promise.future.get(1000);	
@@ -80,7 +80,7 @@ void reply<M>(M msg)(EventBus bus) given M of String|JSonObject|Boolean|Integer|
     assertResolve(registration.completed);
     value deferred = Deferred<M>();
     Promise<Message<M>> reply = bus.send<M>("foo", "whatever");
-    reply.then_( (Message<M> msg) => deferred.resolve(msg.body));
+    reply.compose( (Message<M> msg) => deferred.fulfill(msg.body));
     value payload = deferred.promise.future.get(1000);	
     assert(exists payload);
     if (is ByteArray msg) {
@@ -99,10 +99,10 @@ void replyToReply<M>(M msg)(EventBus bus) given M of String|JSonObject|Boolean|I
     value deferred = Deferred<M>();
     Registration registration = bus.registerHandler("foo",
         (Message<String> whateverMsg) => whateverMsg.reply<M>("whatever_reply").
-            then_((Message<M> whateverReplyMsg) => deferred.resolve(whateverReplyMsg.body)));
+            compose((Message<M> whateverReplyMsg) => deferred.fulfill(whateverReplyMsg.body)));
     assertResolve(registration.completed);
     Promise<Message<String>> whateverReply = bus.send<String>("foo", "whatever");
-    whateverReply.then_( (Message<String> whateverReplyMsg) => whateverReplyMsg.reply(msg));
+    whateverReply.compose( (Message<String> whateverReplyMsg) => whateverReplyMsg.reply(msg));
     value payload = deferred.promise.future.get(1000);	
     assert(exists payload);
     if (is ByteArray msg) {

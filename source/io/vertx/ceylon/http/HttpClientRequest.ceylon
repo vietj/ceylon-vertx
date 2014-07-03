@@ -15,7 +15,7 @@
  */
 
 import org.vertx.java.core.http { HttpClient_=HttpClient, HttpClientRequest_=HttpClientRequest, HttpClientResponse_=HttpClientResponse }
-import ceylon.promises { Deferred, Promise }
+import ceylon.promise { Deferred, Promise }
 import org.vertx.java.core { Handler_=Handler}
 import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
 import java.lang { Iterable_=Iterable, String_=String }
@@ -63,7 +63,7 @@ shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) 
     
     object valueHandler satisfies Handler_<HttpClientResponse_> {
         shared actual void handle(HttpClientResponse_ response) {
-            deferred.resolve(HttpClientResponse(response));
+            deferred.fulfill(HttpClientResponse(response));
         } 
     }
 

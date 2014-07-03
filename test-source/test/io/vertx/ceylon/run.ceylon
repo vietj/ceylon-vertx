@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import ceylon.promises { Promise, Deferred, Future }
+import ceylon.promise { Promise, Deferred, Future }
 import ceylon.test { ... }
 import ceylon.test.core { DefaultLoggingListener }
 

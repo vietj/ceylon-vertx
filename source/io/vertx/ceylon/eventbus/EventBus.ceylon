@@ -15,7 +15,7 @@
  */
 
 import org.vertx.java.core.eventbus { EventBus_=EventBus, Message_=Message }
-import ceylon.promises { Promise }
+import ceylon.promise { Promise }
 import io.vertx.ceylon { Registration }
 import io.vertx.ceylon.util { fromObject, fromArray }
 import ceylon.json { JSonObject=Object, JSonArray=Array }

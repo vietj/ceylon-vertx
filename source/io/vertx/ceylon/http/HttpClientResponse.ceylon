@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import io.vertx.ceylon.util { toMap }
-import ceylon.promises { Promise }
+import ceylon.promise { Promise }
 import org.vertx.java.core.http { HttpClientResponse_=HttpClientResponse }
 import io.vertx.ceylon { ReadStream, readStream }
 import ceylon.collection { LinkedList }

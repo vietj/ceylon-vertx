@@ -18,7 +18,7 @@ import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest, HttpVers
 import ceylon.net.uri { Uri, parseUri=parse, Query }
 import ceylon.io { SocketAddress }
 import io.vertx.ceylon.util { toMap }
-import ceylon.promises { Promise, Deferred }
+import ceylon.promise { Promise, Deferred }
 import ceylon.net.http { Method, parseMethod, post, put }
 import io.vertx.ceylon { ReadStream, readStream }
 import org.vertx.java.core { Handler_=Handler }
@@ -69,7 +69,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
                     shared actual void handle(Void_ nothing) {
                         value formAttributesMap = delegate.formAttributes();
                         Map<String, [String+]> form = toMap(formAttributesMap);
-                        d.resolve(form);
+                        d.fulfill(form);
                     }
                 } 
                 delegate.expectMultiPart(true);

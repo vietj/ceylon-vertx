@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import ceylon.promises { Promise }
+import ceylon.promise { Promise }
 
 "A registration, the `completed` promise is resolved when the registration is completed, the `cancel()` method
  can be used to cancel the registration."

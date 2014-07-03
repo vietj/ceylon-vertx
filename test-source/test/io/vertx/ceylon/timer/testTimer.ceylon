@@ -1,6 +1,6 @@
 import ceylon.test { ... }
 import io.vertx.ceylon { Vertx }
-import ceylon.promises { Deferred }
+import ceylon.promise { Deferred }
 
 void run(Anything(Vertx) test) {
     value vertx = Vertx();
@@ -16,7 +16,7 @@ shared test void testPeriodicTimer() => run(periodicTimer);
 
 void timer(Vertx vertx) {
     value deferred = Deferred<Integer>();
-    value id1 = vertx.setTimer(100, deferred.resolve);
+    value id1 = vertx.setTimer(100, deferred.fulfill);
     value id2 = deferred.promise.future.get(300);
     assertEquals(id1, id2);
 }
@@ -28,9 +28,9 @@ void periodicTimer(Vertx vertx) {
     value id1 = vertx.setPeriodic(10, void (Integer timerId) {
         if (count == 10) {
             vertx.cancelTimer(timerId);
-            deferred.resolve(timerId);
+            deferred.fulfill(timerId);
         } else if (count > 10) {
-            a.resolve(null);
+            a.fulfill(null);
         }
         count++;
     });

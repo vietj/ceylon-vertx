@@ -19,7 +19,7 @@ import ceylon.net.http { Header }
 import ceylon.net.uri { Query, Parameter }
 import ceylon.net.http.client { Response, Parser }
 import ceylon.test { ... }
-import ceylon.promises { Promise, Deferred }
+import ceylon.promise { Promise, Deferred }
 import ceylon.collection { HashMap, LinkedList }
 import ceylon.io { newSocketConnector, SocketAddress }
 import ceylon.io.charset { ascii }
@@ -65,7 +65,7 @@ void requestHeaders(HttpServer server) {
     value headers = Deferred<Map<String, {String+}>>();
     void f(HttpServerRequest req) {
         path = req.path;
-        headers.resolve(req.headers);
+        headers.fulfill(req.headers);
         HttpServerResponse resp = req.response;
         resp.status(200);
         resp.contentType("text/html");
@@ -113,7 +113,7 @@ void form(HttpServer server) {
     value parameters = Deferred<Map<String, {String+}>>();
     Promise<Map<String, {String+}>> p = parameters.promise;
     void f(HttpServerRequest req) {
-        req.formAttributes.then_(parameters.resolve);
+        req.formAttributes.compose(parameters.fulfill);
         HttpServerResponse resp = req.response;
         resp.status(200);
         resp.contentType("text/html");
@@ -159,7 +159,7 @@ void parseBody(HttpServer server) {
     value formAttributes = LinkedList<Map<String, {String+}>|Throwable>();
     void f(HttpServerRequest req) {
         value text = req.parseBody(textBody);
-        parameters.resolve(text);
+        parameters.fulfill(text);
         req.formAttributes.always(formAttributes.add);
         HttpServerResponse resp = req.response;
         resp.status(200);

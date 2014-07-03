@@ -2,7 +2,7 @@ import ceylon.json { JSonArray=Array, JSonObject=Object }
 import org.vertx.java.core.eventbus { Message_=Message }
 import io.vertx.ceylon.util { fromObject, fromArray }
 import org.vertx.java.core { Handler_=Handler }
-import ceylon.promises { Promise }
+import ceylon.promise { Promise }
 import java.lang { Double_ = Double, Long_ = Long, Boolean_ = Boolean, ByteArray }
 
 /*

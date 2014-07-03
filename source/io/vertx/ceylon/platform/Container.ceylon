@@ -3,7 +3,7 @@ import org.vertx.java.core.json { JsonObject }
 import ceylon.json { Object }
 import io.vertx.ceylon.util { fromObject, toObject, HandlerPromise }
 import java.lang { String_=String }
-import ceylon.promises { Promise }
+import ceylon.promise { Promise }
 import ceylon.collection { HashMap }
 
 JsonObject? toConf(Object? c) {

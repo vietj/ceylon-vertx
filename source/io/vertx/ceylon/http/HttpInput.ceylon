@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import ceylon.promises { Promise, Deferred }
+import ceylon.promise { Promise, Deferred }
 import org.vertx.java.core.buffer { Buffer }
 import org.vertx.java.core { Handler_=Handler }
 import org.vertx.java.core.streams { ReadStream_=ReadStream }
@@ -36,12 +36,9 @@ shared abstract class HttpInput() {
             Charset? charset;
             if (exists contentType = headers["Content-Type"]) {
                 if (exists pos = contentType.first.firstOccurrence(';')) {
-                    mimeType = contentType.first.segment(0, pos).trimmed;
+                    mimeType = contentType.first[0:pos].trimmed;
                     if (exists charsetPos = contentType.first.lastOccurrence('=')) {
-                        value name = contentType.first.segment {
-                            from =  charsetPos + 1;
-                            length = contentType.first.size;
-                        };
+                        value name = contentType.first[charsetPos+1:contentType.first.size];
                         charset = getCharset(name);
                     } else {
                         charset = null;
@@ -96,7 +93,7 @@ Promise<Body> doParseBody<Body, T>(
         shared actual void handle(Buffer buffer) {
             try {
                 Body body = bodyType.parse(charset, buffer);
-                deferred.resolve(body);
+                deferred.fulfill(body);
             } catch(Exception e) {
                 deferred.reject(e);
             }

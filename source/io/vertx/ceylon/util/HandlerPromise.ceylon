@@ -15,7 +15,7 @@
  */
 
 import org.vertx.java.core { Handler_=Handler, AsyncResult_=AsyncResult }
-import ceylon.promises { Deferred, Promise }
+import ceylon.promise { Deferred, Promise }
 
 by("Julien Viet")
 shared class HandlerPromise<Value, Result>(Value(Result) transform)
@@ -29,7 +29,7 @@ shared class HandlerPromise<Value, Result>(Value(Result) transform)
             value result = asyncResult.result();
             try {
                 value val = transform(result);
-                deferred.resolve(val);
+                deferred.fulfill(val);
             } catch(Exception e) {
                 deferred.reject(e);
             }

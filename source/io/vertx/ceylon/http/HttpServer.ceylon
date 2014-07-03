@@ -16,7 +16,7 @@
 
 import org.vertx.java.core.http { HttpServer_=HttpServer, HttpServerRequest_=HttpServerRequest }
 import org.vertx.java.core { Handler_=Handler}
-import ceylon.promises { Promise }
+import ceylon.promise { Promise }
 import java.lang { Void_=Void }
 import io.vertx.ceylon.util { HandlerPromise }
 
