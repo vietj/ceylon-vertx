@@ -50,7 +50,7 @@ shared ByteArray toByteArray({Integer*} seq) {
     value array = ByteArray(seq.size);
     variable Integer ptr = 0;
     for (i in seq) {
-        array.set(ptr++, i);
+        array.set(ptr++, i.byte);
     }
     return array;
 }

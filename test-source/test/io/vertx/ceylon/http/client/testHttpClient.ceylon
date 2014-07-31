@@ -134,9 +134,9 @@ shared test void testBinaryBody() {
 		ByteBuffer|Throwable ret = body.future.get(10000);
 		if (is ByteBuffer ret) {
 			assertEquals(3, ret.size);
-			assertEquals(65, ret.get());
-			assertEquals(66, ret.get());
-			assertEquals(67, ret.get());
+			assertEquals(Byte(65), ret.get());
+			assertEquals(Byte(66), ret.get());
+			assertEquals(Byte(67), ret.get());
 		} else {
 			fail("Was expecting a response");
 		}

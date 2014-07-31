@@ -25,7 +25,7 @@ shared object binaryBody satisfies BodyType<ByteBuffer> {
 		ByteBuffer buff = newByteBuffer(size);
 		variable Integer index = 0;
 		while (index < size) {
-			Integer byte = data.getByte(index++);
+			Byte byte = data.getByte(index++);
 			buff.put(byte);
 		}
 		buff.flip();
