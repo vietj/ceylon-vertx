@@ -1,7 +1,7 @@
 import io.vertx.ceylon { Vertx }
 import io.vertx.ceylon.http { HttpServer, HttpServerRequest, HttpServerResponse, textBody }
 import ceylon.net.http { Header }
-import ceylon.net.uri { Query, Parameter }
+import ceylon.net.uri { Query, Parameter, parse }
 import ceylon.net.http.client { Response, Parser }
 import ceylon.test { ... }
 import ceylon.promise { Promise, Deferred }
@@ -78,7 +78,7 @@ void requestHeaders(HttpServer server) {
 }
 
 void query(HttpServer server) {
-    variable Query? query = null;
+    variable String? query = null;
     variable Map<String, {String+}>? parameters = null;
     void f(HttpServerRequest req) {
         query = req.query;
@@ -90,7 +90,7 @@ void query(HttpServer server) {
     }
     assertResolve(server.requestHandler(f).listen(8080));
     assertRequest("http://localhost:8080/?foo=foo_value&bar=bar_value1&bar=bar_value2");
-    assertEquals(Query(Parameter("foo", "foo_value"),  Parameter("bar", "bar_value1"), Parameter("bar", "bar_value2")), query);
+    assertEquals("foo=foo_value&bar=bar_value1&bar=bar_value2", query);
     assertEquals(HashMap{"foo"->["foo_value"],"bar"->["bar_value1","bar_value2"]}, parameters);
 }
 

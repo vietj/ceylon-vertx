@@ -3,7 +3,6 @@ import ceylon.promise { Deferred, Promise }
 import org.vertx.java.core { Handler_=Handler}
 import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
 import java.lang { Iterable_=Iterable, String_=String }
-import ceylon.net.http { Method }
 import io.vertx.ceylon.util { toIterableStrings }
 import io.vertx.ceylon { writeStream, WriteStream }
 
@@ -36,7 +35,7 @@ import io.vertx.ceylon { writeStream, WriteStream }
  
    Instances of HttpClientRequest are not thread-safe."""
 by("Julien Viet")
-shared class HttpClientRequest(HttpClient_ delegate, Method method, String uri) extends HttpOutput<HttpClientRequest>() {
+shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) extends HttpOutput<HttpClientRequest>() {
 
     Deferred<HttpClientResponse> deferred = Deferred<HttpClientResponse>();
 

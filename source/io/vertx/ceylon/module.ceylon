@@ -164,9 +164,8 @@ module io.vertx.ceylon "0.4.0" {
     shared import io.vertx.platform "2.1.1";
     shared import java.base "7";
     shared import ceylon.promise "1.1.0";
-    shared import ceylon.net "1.1.0";
     shared import ceylon.json "1.1.0";
-    import ceylon.io "1.1.0";
+    shared import ceylon.io "1.1.0";
     import ceylon.collection "1.1.0";
 
 } 

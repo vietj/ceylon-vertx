@@ -2,8 +2,11 @@ import io.vertx.ceylon.http { ... }
 import ceylon.promise { ... }
 import io.vertx.ceylon.eventbus { ... }
 
+shared void run() {
+}
+
 by("Julien Viet")
-shared void run(){
+shared void run2(){
 	value vertx = Vertx();
 	value server = vertx.createHttpServer();
 
