@@ -11,5 +11,6 @@ module test.io.vertx.ceylon "0.4.0" {
     import ceylon.io "1.1.0";
     import ceylon.collection "1.1.0";
     import ceylon.test "1.1.0";
+    import fooverticle "1.0.0";
 
 }
