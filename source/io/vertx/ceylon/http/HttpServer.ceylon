@@ -17,10 +17,11 @@ shared class HttpServer(HttpServer_ delegate) {
 	
 	"Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
      instances of [[HttpServerRequest]] will be created and passed to this handler."
-	shared HttpServer requestHandler(Anything(HttpServerRequest) requestHandler) {
+	shared HttpServer requestHandler(void handle(HttpServerRequest req)) {
+		Anything(HttpServerRequest) handleRef = handle;
 		object handler satisfies Handler_<HttpServerRequest_> {
 			shared actual void handle(HttpServerRequest_ delegate) {
-				requestHandler(InternalHttpServerRequest(delegate));
+				handleRef(InternalHttpServerRequest(delegate));
 			}
 		}
 		delegate.requestHandler(handler);
