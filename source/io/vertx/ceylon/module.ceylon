@@ -160,8 +160,8 @@ module io.vertx.ceylon "0.4.0" {
     import com.fasterxml.jackson.annotations "2.2.2";
     import com.fasterxml.jackson.core "2.2.2";
     import com.fasterxml.jackson.databind "2.2.2";
-    shared import io.vertx.core "2.1.1";
-    shared import io.vertx.platform "2.1.1";
+    shared import io.vertx.core "2.1.2";
+    shared import io.vertx.platform "2.1.2";
     shared import java.base "7";
     shared import ceylon.promise "1.1.0";
     shared import ceylon.json "1.1.0";
