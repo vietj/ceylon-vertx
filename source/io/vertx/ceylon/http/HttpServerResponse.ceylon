@@ -1,7 +1,11 @@
 import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
-import io.vertx.ceylon { WriteStream, writeStream }
+import io.vertx.ceylon { WriteStream, wrapWriteStream }
 import java.lang { Iterable_=Iterable, String_=String }
-import io.vertx.ceylon.util { toIterableStrings }
+import io.vertx.ceylon.util { toStringIterable,
+  voidAsyncResult }
+import ceylon.promise {
+  Promise
+}
 
 "Represents a server-side HTTP response. Instances of this class are created and associated to every instance of
  [[HttpServerRequest]] that is created. It allows the developer to control the HTTP response that is sent back to the
@@ -13,7 +17,7 @@ by("Julien Viet")
 shared class HttpServerResponse(HttpServerResponse_ delegate)
         extends HttpOutput<HttpServerResponse>() {
 
-    shared actual WriteStream stream = writeStream(delegate);
+    shared actual WriteStream stream = wrapWriteStream(delegate);
 
     "Set the status code."
     shared HttpServerResponse status(
@@ -70,7 +74,7 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
        
        An HTTP chunked response is typically used when you do not know the total size of the request body up front.
        """
-    shared Boolean chunked => delegate.chunked;
+    shared actual Boolean chunked => delegate.chunked;
     assign chunked => delegate.setChunked(chunked);
 
     shared actual HttpServerResponse headers({<String-><String|{String+}>>*} headers) {
@@ -81,7 +85,7 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
                 delegate.putHeader(header_.key, item);
             }
             case (is {String+}) {
-                Iterable_<String_> i = toIterableStrings(item);
+                Iterable_<String_> i = toStringIterable(item);
                 delegate.putHeader(header_.key, i);
             }
         }
@@ -96,10 +100,25 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
                 delegate.putTrailer(trailer_.key, item);
             }
             case (is {String+}) { 
-                Iterable_<String_> i = toIterableStrings(item);
+                Iterable_<String_> i = toStringIterable(item);
                 delegate.putTrailer(trailer_.key, i);
             }
         }
         return this;
     }
+    
+    """Tell the kernel to stream a file as specified by [[fileName]]] directly, from disk to the
+       outgoing connection, bypassing userspace altogether (where supported by the underlying
+       operating system. This is a very efficient way to serve files. It also takes the path [[notFoundFile]]
+       to a resource to serve if the resource is not found"""
+    shared Promise<Null> sendFile(String fileName, String? notFoundFile = null) {
+      value result = voidAsyncResult();
+      if (exists notFoundFile) {
+        delegate.sendFile(fileName, notFoundFile, result);
+      } else {
+        delegate.sendFile(fileName, result);
+      }
+      return result.promise;
+    }
+    
 }

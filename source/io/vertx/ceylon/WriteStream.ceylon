@@ -6,7 +6,7 @@ import io.vertx.ceylon.interop { Utils { rawWriteStream } }
 
 "Create a write stream"
 by("Julien Viet")
-shared WriteStream writeStream<T>(WriteStream_<T> stream) given T satisfies Object {
+shared WriteStream wrapWriteStream<T>(WriteStream_<T> stream) given T satisfies Object {
     return WriteStream(rawWriteStream(stream));
 }
 

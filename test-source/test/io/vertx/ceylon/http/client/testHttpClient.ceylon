@@ -5,7 +5,6 @@ import ceylon.test { ... }
 import ceylon.io.charset { utf8, Charset }
 import ceylon.io.buffer { ByteBuffer }
 import org.vertx.java.core.buffer { Buffer }
-import ceylon.net.http { get }
 
 shared test void testTimeout() {
     Vertx vertx = Vertx();

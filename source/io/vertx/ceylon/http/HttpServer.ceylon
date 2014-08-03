@@ -1,8 +1,8 @@
-import org.vertx.java.core.http { HttpServer_=HttpServer, HttpServerRequest_=HttpServerRequest }
-import org.vertx.java.core { Handler_=Handler}
+import org.vertx.java.core.http { HttpServer_=HttpServer }
 import ceylon.promise { Promise }
-import java.lang { Void_=Void }
-import io.vertx.ceylon.util { HandlerPromise }
+import io.vertx.ceylon.util { AsyncResultPromise,
+  FunctionalHandler,
+  voidAsyncResult }
 
 "An HTTP and WebSockets server
 
@@ -18,13 +18,7 @@ shared class HttpServer(HttpServer_ delegate) {
 	"Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
      instances of [[HttpServerRequest]] will be created and passed to this handler."
 	shared HttpServer requestHandler(void handle(HttpServerRequest req)) {
-		Anything(HttpServerRequest) handleRef = handle;
-		object handler satisfies Handler_<HttpServerRequest_> {
-			shared actual void handle(HttpServerRequest_ delegate) {
-				handleRef(InternalHttpServerRequest(delegate));
-			}
-		}
-		delegate.requestHandler(handler);
+		delegate.requestHandler(FunctionalHandler(InternalHttpServerRequest, handle));
 		return this;
 	}
 
@@ -33,8 +27,7 @@ shared class HttpServer(HttpServer_ delegate) {
      The returned promise is resolved when the server is listening"
     shared Promise<HttpServer> listen(Integer port, String? hostName = null) {
         value server = this;
-        value handler = HandlerPromise<HttpServer, HttpServer_>(
-            (HttpServer_ s) => server);
+        value handler = AsyncResultPromise((HttpServer_ s) => server);
         if (exists hostName) {
             delegate.listen(port, hostName, handler);
         } else {
@@ -46,9 +39,8 @@ shared class HttpServer(HttpServer_ delegate) {
     "Close the server. Any open HTTP connections will be closed.
      The returned promise is resolved when the close is complete."	
     shared Promise<Null> close() {
-        value handler = HandlerPromise<Null, Void_>((Void_ v) => null);
+        value handler = voidAsyncResult();
         delegate.close(handler);
         return handler.promise;
     }
-
 }

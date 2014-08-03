@@ -2,7 +2,7 @@ import org.vertx.java.platform { PlatformManager, PlatformLocator { f = factory 
 import ceylon.json { Object }
 import ceylon.promise { Promise }
 import org.vertx.java.core.json { JsonObject }
-import io.vertx.ceylon.util { HandlerPromise }
+import io.vertx.ceylon.util { AsyncResultPromise }
 import java.lang { String_ = String }
 import io.vertx.ceylon { Vertx }
 
@@ -33,7 +33,7 @@ shared class Platform() {
 		void undeploy(String s) {
 			manager.undeploy(s, null);
 		}
-		HandlerPromise<Deployment, String_> a = HandlerPromise<Deployment, String_>(fa(undeploy));
+		AsyncResultPromise<Deployment, String_> a = AsyncResultPromise<Deployment, String_>(fa(undeploy));
 		manager.deployModule(moduleName, vertxConf, instances, a);
 		return a.promise;
 	}

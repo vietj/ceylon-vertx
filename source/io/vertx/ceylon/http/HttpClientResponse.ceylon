@@ -1,7 +1,7 @@
 import io.vertx.ceylon.util { toMap }
 import ceylon.promise { Promise }
 import org.vertx.java.core.http { HttpClientResponse_=HttpClientResponse }
-import io.vertx.ceylon { ReadStream, readStream }
+import io.vertx.ceylon { ReadStream, wrapReadStream }
 import ceylon.collection { LinkedList }
 
 "Represents a client-side HTTP response. Instances of this class are not thread-safe."
@@ -31,7 +31,7 @@ shared class HttpClientResponse(HttpClientResponse_ delegate)
         return b;
     }
 
-    shared actual ReadStream stream = readStream(delegate);
+    shared actual ReadStream stream = wrapReadStream(delegate);
 
     shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
         return doParseBody(parser, delegate.bodyHandler, delegate, charset);

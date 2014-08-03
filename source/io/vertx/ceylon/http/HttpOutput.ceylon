@@ -17,6 +17,9 @@ shared abstract class HttpOutput<O>() given O satisfies HttpOutput<O> {
     
     "The write stream of this request"
     shared formal WriteStream stream;
+    
+    
+    shared formal Boolean chunked;
 
 
     "Ends the response. If no data has been written to the response body,

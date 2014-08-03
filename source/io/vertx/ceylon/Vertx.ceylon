@@ -1,8 +1,11 @@
-import org.vertx.java.core { Vertx_=Vertx }
+import org.vertx.java.core { Vertx_=Vertx, Handler_=Handler }
 import io.vertx.ceylon.http { HttpServer, HttpClient }
 import io.vertx.ceylon.eventbus { EventBus }
 import io.vertx.ceylon.shareddata { SharedData }
-import java.lang { Long_=Long }
+import java.lang { Long_=Long, Void_=Void }
+import io.vertx.ceylon.file {
+  FileSystem
+}
 
 "The control centre of the Vert.x Core API.
  
@@ -22,6 +25,9 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
 
     "The shared data object"
     shared SharedData sharedData = SharedData(v.sharedData());
+    
+    "The File system object"
+    shared FileSystem fileSystem = FileSystem(v.fileSystem());
     
     "Create a new http server and returns it"
     shared HttpServer createHttpServer() {
@@ -56,6 +62,18 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
        """
     shared Integer setPeriodic(Integer delay, void handle(Integer timerId)) {
         return v.setPeriodic(Long_(delay).longValue(), TimerProxy(handle));
+    }
+    
+    "Put the handler on the event queue for the current loop (or worker context) so it will be run asynchronously
+     ASAP after this event has
+     been processed"
+    shared void runOnContext(void task()) {
+      object adapter satisfies Handler_<Void_> {
+        shared actual void handle(Void_? e) {
+          task();
+        }
+      }
+      v.runOnContext(adapter);
     }
 
     """Cancel the timer with the specified [[id]]. Returns `true` true if the timer was successfully cancelled, or

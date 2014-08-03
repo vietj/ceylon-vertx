@@ -3,8 +3,8 @@ import ceylon.promise { Deferred, Promise }
 import org.vertx.java.core { Handler_=Handler}
 import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
 import java.lang { Iterable_=Iterable, String_=String }
-import io.vertx.ceylon.util { toIterableStrings }
-import io.vertx.ceylon { writeStream, WriteStream }
+import io.vertx.ceylon.util { toStringIterable }
+import io.vertx.ceylon { wrapWriteStream, WriteStream }
 
 """Represents a client-side HTTP request.
  
@@ -53,7 +53,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
     HttpClientRequest_ request = delegate.request(method.string, uri, valueHandler);
     setErrorHandler(request, deferred);
     
-    shared actual WriteStream stream = writeStream(request);
+    shared actual WriteStream stream = wrapWriteStream(request);
     
     "Set's the amount of time after which if a response is not received `TimeoutException`
      will be sent to the exception handler of this request. Calling this method more than once
@@ -98,7 +98,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
                 request.putHeader(header_.key, item);
             }
             case (is {String+}) { 
-                Iterable_<String_> i = toIterableStrings(item);
+                Iterable_<String_> i = toStringIterable(item);
                 request.putHeader(header_.key, i);
             }
         }
@@ -106,7 +106,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
     }
     
     "Is the request chunked?"
-    shared Boolean chunked => request.chunked;
+    shared actual Boolean chunked => request.chunked;
     
     "If chunked is true then the request will be set into HTTP chunked mode"
     assign chunked => request.setChunked(chunked);

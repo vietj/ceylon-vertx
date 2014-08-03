@@ -1,8 +1,9 @@
 import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest, HttpVersion_=HttpVersion { http_1_0_=HTTP_1_0} }
 import ceylon.io { SocketAddress }
-import io.vertx.ceylon.util { toMap }
+import io.vertx.ceylon.util { toMap,
+  FunctionalHandler }
 import ceylon.promise { Promise, Deferred }
-import io.vertx.ceylon { ReadStream, readStream }
+import io.vertx.ceylon { ReadStream, wrapReadStream }
 import org.vertx.java.core { Handler_=Handler }
 import java.lang { Void_=Void }
 
@@ -18,7 +19,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     "The HTTP version of the request."
     shared HttpVersion version = delegate.version() == http_1_0_ then http_1_0 else http_1_1;
     
-    shared actual ReadStream stream = readStream(delegate);
+    shared actual ReadStream stream = wrapReadStream(delegate);
 
     "The request method"
     shared String method = delegate.method();
@@ -98,6 +99,17 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
         return doParseBody(parser, delegate.bodyHandler, delegate, charset);
     }
+    
+    shared HttpServerRequest expectMultiPart(Boolean expect) {
+      delegate.expectMultiPart(expect);
+      return this;
+    }
+    
+    shared HttpServerRequest uploadHandler(void handle(HttpServerFileUpload upload)) {
+      delegate.uploadHandler(FunctionalHandler(HttpServerFileUpload, handle));
+      return this;
+    }
+    
 }
 
 class InternalHttpServerRequest(shared HttpServerRequest_ delegate)

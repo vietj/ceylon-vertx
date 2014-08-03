@@ -1,4 +1,4 @@
-import io.vertx.ceylon.util { HandlerPromise }
+import io.vertx.ceylon.util { AsyncResultPromise }
 import org.vertx.java.core { Handler_=Handler }
 import ceylon.json { JSonArray=Array, JSonObject=Object }
 import ceylon.promise { Promise }
@@ -13,11 +13,11 @@ class HandlerRegistration<M>(EventBus_ delegate, String address, Anything(Messag
         satisfies Registration & Handler_<Message_<Object>>
         given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray {
     
-    value resultHandler = HandlerPromise<Null, Void_>((Void_ s) => null);
+    value resultHandler = AsyncResultPromise<Null, Void_>((Void_ s) => null);
     shared actual Promise<Null> completed = resultHandler.promise;
     
     shared actual Promise<Null> cancel() {
-        value resultHandler = HandlerPromise<Null, Void_>((Void_ s) => null);
+        value resultHandler = AsyncResultPromise<Null, Void_>((Void_ s) => null);
         unregisterHandler_(delegate, address, this, resultHandler);
         return resultHandler.promise;
     }

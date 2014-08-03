@@ -2,7 +2,8 @@ import ceylon.collection { HashMap }
 import ceylon.json { Object, Array }
 import org.vertx.java.core { MultiMap }
 import org.vertx.java.core.json { JsonObject, JsonArray }
-import java.lang { String_=String, Iterable_=Iterable }
+import java.lang { String_=String, Iterable_=Iterable,
+  ObjectArray_=ObjectArray }
 import java.util { Iterator_=Iterator, ArrayList_=ArrayList }
 import io.vertx.ceylon.interop { JavaBridge { getFieldValue } }
 
@@ -109,7 +110,7 @@ shared Array toArray(JsonArray jsonArray) {
     return array;
 }
 
-shared Iterable_<String_> toIterableStrings({String*} strings) {
+shared Iterable_<String_> toStringIterable({String*} strings) {
     ArrayList_<String_> list = ArrayList_<String_>();
     for (element in strings) {
         list.add(String_(element));
@@ -117,3 +118,6 @@ shared Iterable_<String_> toIterableStrings({String*} strings) {
     return list;
 }
 
+shared {String*} fromStringArray(ObjectArray_<String_> v) {
+  return v.iterable.coalesced.map((String_ s) => s.string);
+}

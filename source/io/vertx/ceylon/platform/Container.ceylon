@@ -1,7 +1,7 @@
 import org.vertx.java.platform { Container_ = Container }
 import org.vertx.java.core.json { JsonObject }
 import ceylon.json { Object }
-import io.vertx.ceylon.util { fromObject, toObject, HandlerPromise }
+import io.vertx.ceylon.util { fromObject, toObject, AsyncResultPromise }
 import java.lang { String_=String }
 import ceylon.promise { Promise }
 import ceylon.collection { HashMap }
@@ -70,7 +70,7 @@ shared class Container(Container_ delegate) {
         void undeploy(String s) {
             delegate.undeployVerticle(s);
         }
-        HandlerPromise<Deployment, String_> a = HandlerPromise<Deployment, String_>(fa(undeploy));
+        AsyncResultPromise<Deployment, String_> a = AsyncResultPromise<Deployment, String_>(fa(undeploy));
         delegate.deployWorkerVerticle(main, conf_, instance, multiThreaded, a);
         return a.promise;
     }
@@ -87,7 +87,7 @@ shared class Container(Container_ delegate) {
         void undeploy(String s) {
             delegate.undeployModule(s);
         }
-        HandlerPromise<Deployment, String_> a = HandlerPromise<Deployment, String_>(fa(undeploy));
+        AsyncResultPromise<Deployment, String_> a = AsyncResultPromise<Deployment, String_>(fa(undeploy));
         delegate.deployModule(moduleName, conf_, instance, a);
         return a.promise;
     }
@@ -104,7 +104,7 @@ shared class Container(Container_ delegate) {
         void undeploy(String s) {
             delegate.undeployVerticle(s);
         }
-        HandlerPromise<Deployment, String_> a = HandlerPromise<Deployment, String_>(fa(undeploy));
+        AsyncResultPromise<Deployment, String_> a = AsyncResultPromise<Deployment, String_>(fa(undeploy));
         delegate.deployVerticle(main, conf_, instance, a);
         return a.promise;
     }

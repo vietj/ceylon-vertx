@@ -1,7 +1,6 @@
 import io.vertx.ceylon { Vertx }
 import io.vertx.ceylon.http { HttpServer, HttpServerRequest, HttpServerResponse, textBody }
 import ceylon.net.http { Header }
-import ceylon.net.uri { Query, Parameter, parse }
 import ceylon.net.http.client { Response, Parser }
 import ceylon.test { ... }
 import ceylon.promise { Promise, Deferred }

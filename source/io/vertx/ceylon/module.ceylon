@@ -145,7 +145,7 @@
    
    ## File System
    
-   *Not yet implemented*
+   See [io.vertx.ceylon.file](file/index.html).
    
    ## DNS Client
    
@@ -166,6 +166,7 @@ module io.vertx.ceylon "0.4.0" {
     shared import ceylon.promise "1.1.0";
     shared import ceylon.json "1.1.0";
     shared import ceylon.io "1.1.0";
+    shared import ceylon.time "1.1.0";
     import ceylon.collection "1.1.0";
 
 } 

@@ -6,7 +6,7 @@ import io.vertx.ceylon.interop { Utils { rawReadStream } }
 
 "Create a read stream"
 by("Julien Viet")
-shared ReadStream readStream<T>(ReadStream_<T> stream) given T satisfies Object {
+shared ReadStream wrapReadStream<T>(ReadStream_<T> stream) given T satisfies Object {
     return ReadStream(rawReadStream(stream));
 }
 
