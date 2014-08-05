@@ -1,9 +1,8 @@
 import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest, HttpVersion_=HttpVersion { http_1_0_=HTTP_1_0} }
 import ceylon.io { SocketAddress }
-import io.vertx.ceylon.util { toMap,
-  FunctionalHandlerAdapter }
+import io.vertx.ceylon.util { toMap, FunctionalHandlerAdapter }
 import ceylon.promise { Promise, Deferred }
-import io.vertx.ceylon { ReadStream, wrapReadStream }
+import io.vertx.ceylon.stream { ReadStream, wrapReadStream }
 import org.vertx.java.core { Handler_=Handler }
 import java.lang { Void_=Void }
 

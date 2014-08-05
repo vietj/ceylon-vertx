@@ -1,7 +1,7 @@
 import io.vertx.ceylon.util { toMap }
 import ceylon.promise { Promise }
 import org.vertx.java.core.http { HttpClientResponse_=HttpClientResponse }
-import io.vertx.ceylon { ReadStream, wrapReadStream }
+import io.vertx.ceylon.stream { ReadStream, wrapReadStream }
 import ceylon.collection { LinkedList }
 
 "Represents a client-side HTTP response. Instances of this class are not thread-safe."

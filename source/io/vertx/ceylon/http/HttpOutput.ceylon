@@ -1,4 +1,4 @@
-import io.vertx.ceylon { WriteStream }
+import io.vertx.ceylon.stream { WriteStream }
 
 "Provides access for writing the headers and  content of an
  [[HttpClientRequest]] or an [[HttpServerResponse]]."

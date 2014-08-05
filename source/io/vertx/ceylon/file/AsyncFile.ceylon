@@ -1,4 +1,4 @@
-import io.vertx.ceylon { ReadStream, WriteStream, wrapReadStream, wrapWriteStream }
+import io.vertx.ceylon.stream { ReadStream, WriteStream, wrapReadStream, wrapWriteStream }
 import ceylon.promise { Promise }
 import org.vertx.java.core.buffer { Buffer }
 import org.vertx.java.core.file { AsyncFile_=AsyncFile }
@@ -12,7 +12,7 @@ import io.vertx.ceylon.util {
 """Represents a file on the file-system which can be read from, or written to asynchronously.
    
    This class also provides a [[readStream]] and a [[writeStream]]. This allows the data to be pumped to and from
-   other streams, e.g. an [[io.vertx.ceylon.http::HttpClientRequest]] instance using the [[io.vertx.ceylon::Pump]]
+   other streams, e.g. an [[io.vertx.ceylon.http::HttpClientRequest]] instance using the [[io.vertx.ceylon.stream::Pump]]
    class.
    
    Instances of AsyncFile are not thread-safe"""

@@ -4,7 +4,7 @@ import org.vertx.java.core { Handler_=Handler}
 import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
 import java.lang { Iterable_=Iterable, String_=String }
 import io.vertx.ceylon.util { toStringIterable }
-import io.vertx.ceylon { wrapWriteStream, WriteStream }
+import io.vertx.ceylon.stream { wrapWriteStream, WriteStream }
 
 """Represents a client-side HTTP request.
  

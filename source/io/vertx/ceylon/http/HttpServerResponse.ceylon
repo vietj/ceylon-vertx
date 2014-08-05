@@ -1,5 +1,5 @@
 import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
-import io.vertx.ceylon { WriteStream, wrapWriteStream }
+import io.vertx.ceylon.stream { WriteStream, wrapWriteStream }
 import java.lang { Iterable_=Iterable, String_=String }
 import io.vertx.ceylon.util { toStringIterable,
   voidAsyncResult }

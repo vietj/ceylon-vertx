@@ -322,8 +322,8 @@
    
    #### Pumping Responses
    
-   The [[HttpServerResponse.stream]] provides a [[io.vertx.ceylon::WriteStream]] you can pump to it from any
-   [[io.vertx.ceylon::ReadStream]], e.g. an AsyncFile (todo), NetSocket (todo), WebSocket (todo) or [[HttpServerRequest]].
+   The [[HttpServerResponse.stream]] provides a [[io.vertx.ceylon.stream::WriteStream]] you can pump to it from any
+   [[io.vertx.ceylon.stream::ReadStream]], e.g. an AsyncFile (todo), NetSocket (todo), WebSocket (todo) or [[HttpServerRequest]].
    
    Here's an example which echoes HttpRequest headers and body back in the HttpResponse. It uses a pump for the body,
    so it will work even if the HTTP request body is much larger than can fit in memory at any one time:
@@ -440,7 +440,7 @@
    from the uri._
    
    The return value from the appropriate request method is an instance of [[HttpClientRequest]]. You can use this to add headers to the request,
-   and to write to the request body. The request object implements [[io.vertx.ceylon::WriteStream]].
+   and to write to the request body. The request object implements [[io.vertx.ceylon.stream::WriteStream]].
 
    Once you have finished with the request you must call the [[HttpClientRequest.end]] method.
 
@@ -540,7 +540,7 @@
    Client responses are received as an argument to the response handler that is passed into one of the request methods on the HTTP client.
    
    The response object provides a [[HttpClientResponse.stream]] attribute, so it can be pumped to a
-   [[io.vertx.ceylon::WriteStream]] like any other [[io.vertx.ceylon::ReadStream]].
+   [[io.vertx.ceylon.stream::WriteStream]] like any other [[io.vertx.ceylon.stream::ReadStream]].
    
    To query the status code of the response use the [[HttpClientResponse.statusMessage]] attribute. The
    [[HttpClientResponse.statusMessage]] attribute contains the status message. For example:
@@ -575,7 +575,7 @@
    ~~~
    
    The response object provides the [[HttpClientResponse.stream]] interface so you can pump the response body to a
-   [[io.vertx.ceylon::WriteStream]]. See the chapter on streams and pump for a detailed explanation.
+   [[io.vertx.ceylon.stream::WriteStream]]. See the chapter on streams and pump for a detailed explanation.
    
    ##### Reading cookies
    
@@ -591,7 +591,7 @@
    
    ### Pumping Requests and Responses
    
-   The HTTP client and server requests and responses all implement either [[io.vertx.ceylon::ReadStream]] or [[io.vertx.ceylon::ReadStream]].
+   The HTTP client and server requests and responses all implement either [[io.vertx.ceylon.stream::ReadStream]] or [[io.vertx.ceylon.stream::ReadStream]].
    This means you can pump between them and any other read and write streams.
 
    ### HTTPS Servers

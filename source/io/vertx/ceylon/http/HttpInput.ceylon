@@ -4,7 +4,7 @@ import org.vertx.java.core { Handler_=Handler }
 import org.vertx.java.core.streams { ReadStream_=ReadStream }
 import ceylon.io.charset { Charset, getCharset }
 import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
-import io.vertx.ceylon { ReadStream }
+import io.vertx.ceylon.stream { ReadStream }
 
 "Provides access for reading the http headers and the body of an [[HttpServerRequest]] or an [[HttpClientResponse]]."
 by("Julien Viet")

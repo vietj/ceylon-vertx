@@ -1,10 +1,6 @@
-import io.vertx.ceylon {
-  ReadStream, createReadStream=wrapReadStream
-}
+import io.vertx.ceylon.stream { ReadStream, createReadStream=wrapReadStream }
 import org.vertx.java.core.http { HttpServerFileUpload_=HttpServerFileUpload }
-import ceylon.io.charset {
-  Charset, getCharset
-}
+import ceylon.io.charset { Charset, getCharset }
 
 "Represents an upload from an HTML form."
 shared class HttpServerFileUpload(HttpServerFileUpload_ delegate) {
