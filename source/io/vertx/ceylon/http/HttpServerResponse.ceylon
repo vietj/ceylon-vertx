@@ -6,6 +6,9 @@ import io.vertx.ceylon.util { toStringIterable,
 import ceylon.promise {
   Promise
 }
+import org.vertx.java.core.buffer {
+  Buffer
+}
 
 "Represents a server-side HTTP response. Instances of this class are created and associated to every instance of
  [[HttpServerRequest]] that is created. It allows the developer to control the HTTP response that is sent back to the
@@ -32,7 +35,7 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
         return this;
     }
 
-    shared actual HttpServerResponse write(String|[String,String] chunk) {
+    shared actual HttpServerResponse write(String|[String,String]|Buffer chunk) {
         switch (chunk) 
         case (is String) {
             delegate.write(chunk);
@@ -40,16 +43,22 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
         case (is [String,String]) {
             delegate.write(chunk[0], chunk[1]);
         }
+        case (is Buffer) {
+          delegate.write(chunk);
+        }
         return this;
     }
 
-    shared actual HttpServerResponse end(<String|[String,String]>? chunk) {
+    shared actual HttpServerResponse end(<String|[String,String]|Buffer>? chunk) {
         switch (chunk) 
         case (is String) {
             delegate.end(chunk);
         }
         case (is [String,String]) {
             delegate.end(chunk[0], chunk[1]);
+        }
+        case (is Buffer) {
+          delegate.end(chunk);
         }
         case (is Null) {
             delegate.end();

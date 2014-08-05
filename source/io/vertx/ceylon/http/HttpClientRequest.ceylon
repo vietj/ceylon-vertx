@@ -5,6 +5,9 @@ import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
 import java.lang { Iterable_=Iterable, String_=String }
 import io.vertx.ceylon.util { toStringIterable }
 import io.vertx.ceylon.stream { wrapWriteStream, WriteStream }
+import org.vertx.java.core.buffer {
+  Buffer
+}
 
 """Represents a client-side HTTP request.
  
@@ -65,7 +68,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
         return this;
     }
 
-    shared actual HttpClientRequest write(String|[String,String] chunk) {
+    shared actual HttpClientRequest write(String|[String,String]|Buffer chunk) {
         switch (chunk) 
         case (is String) {
             request.write(chunk);
@@ -73,16 +76,22 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
         case (is [String,String]) {
             request.write(chunk[0], chunk[1]);
         }
+        case (is Buffer) {
+          request.write(chunk);
+        }
         return this;
     }
 
-    shared actual HttpClientRequest end(<String|[String,String]>? chunk) {
+    shared actual HttpClientRequest end(<String|[String,String]|Buffer>? chunk) {
         switch (chunk) 
         case (is String) {
             request.end(chunk);
         }
         case (is [String,String]) {
             request.end(chunk[0], chunk[1]);
+        }
+        case (is Buffer) {
+          request.end(chunk);
         }
         case (is Null) {
             request.end();

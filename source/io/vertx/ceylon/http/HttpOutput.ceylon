@@ -1,4 +1,7 @@
 import io.vertx.ceylon.stream { WriteStream }
+import org.vertx.java.core.buffer {
+  Buffer
+}
 
 "Provides access for writing the headers and  content of an
  [[HttpClientRequest]] or an [[HttpServerResponse]]."
@@ -13,7 +16,7 @@ shared abstract class HttpOutput<O>() given O satisfies HttpOutput<O> {
         """The data chunk to write:
            - when the argument is a `String` the `UTF-8` encoding is used
            - when the argument is a `[String,String]`, the first value is the chunk and the second is the encoding"""
-        String|[String,String] chunk);
+        String|[String,String]|Buffer chunk);
     
     "The write stream of this request"
     shared formal WriteStream stream;
@@ -29,7 +32,7 @@ shared abstract class HttpOutput<O>() given O satisfies HttpOutput<O> {
         """The optional data chunk to write as the response content:
            - when the argument is a `String` the `UTF-8` encoding is used
            - when the argument is a `[String,String]`, the first value is the chunk and the second is the encoding"""
-        <String|[String,String]>? chunk = null);
+        <String|[String,String]|Buffer>? chunk = null);
 
     "Set the content type of the response."
     shared default O contentType(String mimeType, String charset = "UTF-8") {
