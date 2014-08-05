@@ -21,7 +21,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
   variable ReadStream? readStream_ = null;
   variable WriteStream? writeStream_ = null;
   
-  shared ReadStream readStream() {
+  shared ReadStream readStream {
     if (exists ret = readStream_) {
       return ret;
     } else {
@@ -31,7 +31,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
     }
   }
   
-  shared WriteStream writeStream() {
+  shared WriteStream writeStream {
     if (exists ret = writeStream_) {
       return ret;
     } else {

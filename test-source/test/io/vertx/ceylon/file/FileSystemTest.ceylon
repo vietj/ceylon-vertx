@@ -271,9 +271,9 @@ shared class FileSystemTest() {
         value fs = vertx.fileSystem;
         value src = fs.openSync("work/foo.txt");
         value dst = fs.openSync("work/bar.txt");
-        value pump = src.readStream().pump(dst.writeStream());
+        value pump = src.readStream.pump(dst.writeStream);
         pump.start();
-        src.readStream().endHandler(void () {
+        src.readStream.endHandler(void () {
           dst.close();
           d.fulfill(null);
         });
