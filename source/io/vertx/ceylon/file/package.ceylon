@@ -32,7 +32,7 @@
    
    `copy(source, destination, recursive)`
 
-   Recursive copy. source is the source file name. destination is the destination file name. `recursiv is a
+   Recursive copy. source is the source file name. destination is the destination file name. `recursive` is a
    boolean flag - if true and source is a directory, then a recursive copy of the directory and all its
    contents will be attempted.
    
@@ -73,7 +73,7 @@
    
    `chmod(file, perms, dirPerms)`
    
-   Recursively change permissionson a directory. `file` is the directory name. `perms` is a Unix style permissions
+   Recursively change permissions on a directory. `file` is the directory name. `perms` is a Unix style permissions
    to apply recursively to any files in the directory. `dirPerms` is a Unix style permissions string to apply to the directory and any other child directories recursively.
    
    ## props
@@ -104,10 +104,10 @@
    
    ## lprops
    
-   Retrieve properties of a link. This is like `props` but should be used when you want to retrieve properties of a
+   Retrieve properties of a link. This is like [[FileSystem.props]] but should be used when you want to retrieve properties of a
    link itself without following it.
    
-   It takes the same arguments and provides the same results as `props`.
+   It takes the same arguments and provides the same results as [[FileSystem.props]].
    
    ## link
    
@@ -340,14 +340,14 @@
    Instances of [[AsyncFile]] are returned from calls to `open` and you use them to read from and write to
    files asynchronously. They allow asynchronous random file access.
    
-   [[AsyncFile]] implements `ReadStream` and `WriteStream` so you can pump files to and from other stream
-   objects such as net sockets, http requests and responses, and WebSockets.
+   [[AsyncFile]] implements [[io.vertx.ceylon.stream::ReadStream]] and [[io.vertx.ceylon.stream::WriteStream]] so you
+   can pump files to and from other stream objects such as net sockets, http requests and responses, and WebSockets.
    
    They also allow you to read and write directly to them.
    
    ## Random access writes
    
-   To use an [[AsyncFile]] for random access writing you use the `write` method.
+   To use an [[AsyncFile]] for random access writing you use the [[AsyncFile.write]] method.
    
    `write(buffer, position)`
    
@@ -378,7 +378,7 @@
    
    ## Random access reads
    
-   To use an [[AsyncFile]] for random access reads you use the read method.
+   To use an [[AsyncFile]] for random access reads you use the [[AsyncFile.read]] method.
    
    `read(buffer, offset, position, length)`.
    
@@ -420,8 +420,8 @@
    
    ## Using AsyncFile as ReadStream and WriteStream
    
-   [[AsyncFile]] implements `ReadStream` and `WriteStream`. You can then use them with a pump to
-   pump data to and from other read and write streams.
+   [[AsyncFile]] implements [[io.vertx.ceylon.stream::ReadStream]] and [[io.vertx.ceylon.stream::WriteStream]]. You can then use them
+   with a pump to pump data to and from other read and write streams.
    
    Here's an example of pumping data from a file on a client to a HTTP request:
    
