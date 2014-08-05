@@ -3,6 +3,9 @@ import org.vertx.java.core.streams { ReadStream_=ReadStream }
 import org.vertx.java.core { Handler_=Handler }
 import java.lang { Void_=Void }
 import io.vertx.ceylon.interop { Utils { rawReadStream } }
+import io.vertx.ceylon.util {
+  functionalHandler
+}
 
 "Create a read stream"
 by("Julien Viet")
@@ -18,12 +21,12 @@ shared class ReadStream(shared ReadStream_<Object> delegate) {
     
     "Set a data handler. As data is read, the handler will be called with the data."
     shared void dataHandler(void handleData(Buffer buffer)) {
-        object dataHandler satisfies Handler_<Buffer> {
-            shared actual void handle(Buffer buffer) {
-                handleData(buffer);
-            }
-        }
-        delegate.dataHandler(dataHandler);
+        delegate.dataHandler(functionalHandler(handleData));
+    }
+    
+    "Set an exception handler."
+    shared void exceptionHandler(void handleException(Throwable t)) {
+      delegate.exceptionHandler(functionalHandler(handleException));
     }
     
     "Set an end handler. Once the stream has ended, and there is no more data to be read, this handler will be called."

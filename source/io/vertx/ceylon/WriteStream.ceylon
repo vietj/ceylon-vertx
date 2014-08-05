@@ -3,6 +3,9 @@ import org.vertx.java.core.streams { WriteStream_=WriteStream }
 import org.vertx.java.core { Handler_=Handler }
 import java.lang { Void_=Void }
 import io.vertx.ceylon.interop { Utils { rawWriteStream } }
+import io.vertx.ceylon.util {
+  functionalHandler
+}
 
 "Create a write stream"
 by("Julien Viet")
@@ -38,5 +41,10 @@ shared class WriteStream(shared WriteStream_<Object> delegate) {
             }
         }
         delegate.drainHandler(drainHandler);
+    }
+
+    "Set an exception handler."
+    shared void exceptionHandler(void handleException(Throwable t)) {
+      delegate.exceptionHandler(functionalHandler(handleException));
     }
 }

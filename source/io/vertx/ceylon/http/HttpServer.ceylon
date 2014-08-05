@@ -1,7 +1,7 @@
 import org.vertx.java.core.http { HttpServer_=HttpServer }
 import ceylon.promise { Promise }
 import io.vertx.ceylon.util { AsyncResultPromise,
-  FunctionalHandler,
+  FunctionalHandlerAdapter,
   voidAsyncResult }
 
 "An HTTP and WebSockets server
@@ -18,7 +18,7 @@ shared class HttpServer(HttpServer_ delegate) {
 	"Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
      instances of [[HttpServerRequest]] will be created and passed to this handler."
 	shared HttpServer requestHandler(void handle(HttpServerRequest req)) {
-		delegate.requestHandler(FunctionalHandler(InternalHttpServerRequest, handle));
+		delegate.requestHandler(FunctionalHandlerAdapter(InternalHttpServerRequest, handle));
 		return this;
 	}
 

@@ -1,7 +1,7 @@
 import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest, HttpVersion_=HttpVersion { http_1_0_=HTTP_1_0} }
 import ceylon.io { SocketAddress }
 import io.vertx.ceylon.util { toMap,
-  FunctionalHandler }
+  FunctionalHandlerAdapter }
 import ceylon.promise { Promise, Deferred }
 import io.vertx.ceylon { ReadStream, wrapReadStream }
 import org.vertx.java.core { Handler_=Handler }
@@ -106,7 +106,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     }
     
     shared HttpServerRequest uploadHandler(void handle(HttpServerFileUpload upload)) {
-      delegate.uploadHandler(FunctionalHandler(HttpServerFileUpload, handle));
+      delegate.uploadHandler(FunctionalHandlerAdapter(HttpServerFileUpload, handle));
       return this;
     }
     
