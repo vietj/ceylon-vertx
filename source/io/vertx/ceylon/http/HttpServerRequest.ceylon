@@ -37,7 +37,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
 
     variable Deferred<Map<String, {String+}>>? formDeferred = null;
     
-    "The form attributes when the request is a POST with a _application/x-www-form-urlencoded_ mime type" 
+    "The form attributes when the request is a POST/PUT/PATCH with a _application/x-www-form-urlencoded_ or _multipart/form-data_ mime type" 
     shared Promise<Map<String, {String+}>> formAttributes {
         if (exists t = formDeferred) {
             return t.promise;
@@ -45,8 +45,10 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
             Deferred<Map<String, {String+}>> d = Deferred<Map<String, {String+}>>();
             String? contentType = delegate.headers().get("Content-Type");
             
-            if (exists contentType, contentType.lowercased.startsWith("application/x-www-form-urlencoded") &&
-                    (method == "POST" || method == "PUT" || method == "PATCH")) {
+            if (exists contentType,
+              (contentType.lowercased.startsWith("application/x-www-form-urlencoded") ||
+               contentType.lowercased.startsWith("multipart/form-data")
+              ) && (method == "POST" || method == "PUT" || method == "PATCH")) {
                 object handler satisfies Handler_<Void_> {
                     shared actual void handle(Void_ nothing) {
                         value formAttributesMap = delegate.formAttributes();
