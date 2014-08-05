@@ -34,7 +34,7 @@
 
    ~~~
    server.listen(8080, "myhost").
-      then_(
+      onComplete(
         (HttpServer server) => print("Listen succeeded"),
         (Exception e) => print("Listen failed")
       );
@@ -156,7 +156,7 @@
    value server = vertx.createHttpServer();
    void handle(HttpServerRequest request) {
      Promise<ByteBuffer> p = request.parseBody(binaryBody);
-     p.then_((ByteBuffer body) => print("I received ``body.size`` bytes"));
+     p.onComplete((ByteBuffer body) => print("I received ``body.size`` bytes"));
    }
    server.requestHandler(handle).listen(8080, "localhost");
    ~~~
@@ -196,7 +196,7 @@
    in the request body not in the request headers.
    
    ~~~
-   req.formAttributes.then_((Map<String, {String+}> formAttributes) => print("Do something with them"));
+   req.formAttributes.onComplete((Map<String, {String+}> formAttributes) => print("Do something with them"));
    ~~~
    
    When the request does not have form attributes the `formAttributes` promise is rejected.
@@ -420,7 +420,7 @@
    ~~~
    value client = vertx.createHttpClient{ host = "foo.com" };
    HttpClientRequest request = client.post("/some-path"/);
-   request.response.then_((HttpClientResponse resp) => print("Got a response: ``resp.status``"));
+   request.response.onComplete((HttpClientResponse resp) => print("Got a response: ``resp.status``"));
    request.end();
    ~~~
    
@@ -450,7 +450,7 @@
    ~~~
    value client = vertx.createHttpClient{ host = "foo.com" };
    value request = client.request(post, "/some-path/");
-   request.response.then_((HttpClientResponse resp) => print("Got a response: ``resp.status``"));
+   request.response.onComplete((HttpClientResponse resp) => print("Got a response: ``resp.status``"));
    request.end();
    ~~~
 
@@ -511,7 +511,7 @@
    ~~~
    value client = vertx.createHttpClient{ host = "foo.com" };
    value request = client.request(post, "/some-path/");
-   request.response.then_((HttpClientResponse resp) => print("Got a response: ``resp.status``"));
+   request.response.onComplete((HttpClientResponse resp) => print("Got a response: ``resp.status``"));
    request.headers { "Some-Header"->"Some-Value" };
    request.end();
    ~~~
@@ -548,11 +548,12 @@
    ~~~
    value client = vertx.createHttpClient{ host = "foo.com" };
    value request = client.request(post, "/some-path/");
-   void handle(HttpClientResponse resp) {
-     print("server returned status code: ``resp.statusCode``");
-     print("server returned status message: ``resp.statusMessage``");
-   }
-   request.response.then_(handle);
+   request.response.onComplete {
+     void onFulfilled(HttpClientResponse resp) {
+       print("server returned status code: ``resp.statusCode``");
+       print("server returned status message: ``resp.statusMessage``");
+     }
+   };
    request.end();
    ~~~
    
@@ -569,7 +570,7 @@
    ~~~
    value client = vertx.createHttpClient{ host = "foo.com" };
    value request = client.request(post, "/some-path/");
-   request.then_((HttpClientResponse resp) => resp.parseBody(binaryBody).then_((ByteBuffer body) => print("I received  + ``body.size`` + bytes")));
+   request.response.onComplete((HttpClientResponse resp) => resp.parseBody(binaryBody).onComplete((ByteBuffer body) => print("I received  + ``body.size`` + bytes")));
    request.end();
    ~~~
    

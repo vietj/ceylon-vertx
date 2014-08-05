@@ -29,7 +29,7 @@ import io.vertx.ceylon { wrapWriteStream, WriteStream }
    HttpClientRequest req = client.
      request(post, "/some-url").
      headers { "some-header"->"hello", "Content-Length"->"5" };
-   req.promise.then_((HttpClientResponse resp) => print("Got response ``resp.status``"));
+   req.response.onComplete((HttpClientResponse resp) => print("Got response ``resp.status``"));
    req.end("hello");
    ~~~
  

@@ -117,8 +117,8 @@
 
    ~~~
    value registration = eb.registerHandler("test.address", myHandler);
-   registration.completed.then_(
-    (Registration registration) => print("The handler has been registered across the cluster",
+   registration.completed.onComplete(
+    (Null n) => print("The handler has been registered across the cluster",
     (Exception failure) => print("The handler has not been registered across the cluster: ``failure.message`"
    );
    ~~~
@@ -169,7 +169,7 @@
    The sender:
    ~~~
    value reply = eb.send<String>("test.address", "This is a message");
-   reply.then_((Message<String> message) => println("I received a reply ``message.body``"));
+   reply.onComplete((Message<String> message) => println("I received a reply ``message.body``"));
    ~~~
    
    It is legal also to send an empty reply or a null reply (*todo*).

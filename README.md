@@ -87,5 +87,5 @@ Now supports String and JSON.
 ## Uses Promises
 
     Promise<Registration> promise = bus.registerHandler(...);
-    promise.then_((Registration reg) => print("Registered"), (Exception e) => print("Failed"));
+    promise.onComplete((Registration reg) => print("Registered"), (Exception e) => print("Failed"));
 
