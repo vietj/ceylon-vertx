@@ -39,7 +39,8 @@
             <module name="fooverticle"/>
             <module name="test.io.vertx.ceylon"/>
         </ceylon-compile>
-        <ceylon-run module="test.io.vertx.ceylon/${source.version}"/>
+        <ceylon-run module="test.io.vertx.ceylon/${source.version}">
+        </ceylon-run>
     </target>
 
     <target name="install" depends="test">

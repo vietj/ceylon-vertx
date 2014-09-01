@@ -1,7 +1,6 @@
 import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
 import io.vertx.ceylon.stream { WriteStream, wrapWriteStream }
-import java.lang { Iterable_=Iterable, String_=String }
-import io.vertx.ceylon.util { toStringIterable, voidAsyncResult }
+import io.vertx.ceylon.util { voidAsyncResult, putAll }
 import ceylon.promise { Promise }
 import org.vertx.java.core.buffer { Buffer }
 import io.vertx.ceylon { Chunk }
@@ -83,32 +82,12 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
     assign chunked => delegate.setChunked(chunked);
 
     shared actual HttpServerResponse headers({<String-><String|{String+}>>*} headers) {
-        for (header_ in headers) {
-            value item = header_.item;
-            switch (item)
-            case (is String) {
-                delegate.putHeader(header_.key, item);
-            }
-            case (is {String+}) {
-                Iterable_<String_> i = toStringIterable(item);
-                delegate.putHeader(header_.key, i);
-            }
-        }
+        putAll(headers, delegate.headers());
         return this;
     }
 
     shared HttpServerResponse trailers({<String-><String|{String+}>>*} trailers) {
-        for (trailer_ in trailers) {
-            value item = trailer_.item;
-            switch (item)
-            case (is String) {
-                delegate.putTrailer(trailer_.key, item);
-            }
-            case (is {String+}) { 
-                Iterable_<String_> i = toStringIterable(item);
-                delegate.putTrailer(trailer_.key, i);
-            }
-        }
+        putAll(trailers, delegate.trailers());
         return this;
     }
     

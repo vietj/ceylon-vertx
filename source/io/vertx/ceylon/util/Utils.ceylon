@@ -49,6 +49,21 @@ shared MultiMap toMap(MultiMap_ multiMap) {
     return map;
 }
 
+"Put the entries in the provided Vert.x MultiMap"
+shared void putAll({<String-><String|{String+}>>*} entries, MultiMap_ multiMap) {
+  for (entry in entries) {
+    value item = entry.item;
+    switch (item)
+    case (is String) {
+      multiMap.set(entry.key, item);
+    }
+    case (is {String+}) {
+      Iterable_<String_> i = toStringIterable(item);
+      multiMap.set(entry.key, i);
+    }
+  }
+}
+
 "Convert a ceylon.json.Object to a Vert.x JsonObject"
 shared JsonObject fromObject(Object obj) {
     JsonObject o = JsonObject();

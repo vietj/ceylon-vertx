@@ -2,12 +2,9 @@ import org.vertx.java.core.http { HttpClient_=HttpClient, HttpClientRequest_=Htt
 import ceylon.promise { Deferred, Promise }
 import org.vertx.java.core { Handler_=Handler}
 import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
-import java.lang { Iterable_=Iterable, String_=String }
-import io.vertx.ceylon.util { toStringIterable }
+import io.vertx.ceylon.util { putAll }
 import io.vertx.ceylon.stream { wrapWriteStream, WriteStream }
-import org.vertx.java.core.buffer {
-  Buffer
-}
+import org.vertx.java.core.buffer { Buffer }
 
 """Represents a client-side HTTP request.
  
@@ -100,17 +97,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
     }
 
     shared actual HttpClientRequest headers({<String-><String|{String+}>>*} headers) {
-        for (header_ in headers) {
-            value item = header_.item;
-            switch (item)
-            case (is String) {
-                request.putHeader(header_.key, item);
-            }
-            case (is {String+}) { 
-                Iterable_<String_> i = toStringIterable(item);
-                request.putHeader(header_.key, i);
-            }
-        }
+        putAll(headers, request.headers());
         return this;
     }
     

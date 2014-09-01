@@ -7,7 +7,7 @@ import io.vertx.ceylon.util { functionalHandler }
 
 "Create a write stream"
 by("Julien Viet")
-shared WriteStream wrapWriteStream<T>(WriteStream_<T> stream) given T satisfies Object {
+shared WriteStream wrapWriteStream<T>(WriteStream_<out T> stream) given T satisfies Object {
     return WriteStream(rawWriteStream(stream));
 }
 

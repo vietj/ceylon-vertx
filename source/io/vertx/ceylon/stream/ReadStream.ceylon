@@ -1,13 +1,12 @@
 import org.vertx.java.core.buffer { Buffer }
 import org.vertx.java.core.streams { ReadStream_=ReadStream }
-import org.vertx.java.core { Handler_=Handler }
-import java.lang { Void_=Void }
 import io.vertx.ceylon.interop { Utils { rawReadStream } }
-import io.vertx.ceylon.util { functionalHandler }
+import io.vertx.ceylon.util { functionalHandler,
+  VoidHandler }
 
 "Create a read stream"
 by("Julien Viet")
-shared ReadStream wrapReadStream<T>(ReadStream_<T> stream) given T satisfies Object {
+shared ReadStream wrapReadStream<T>(ReadStream_<out T> stream) given T satisfies Object {
     return ReadStream(rawReadStream(stream));
 }
 
@@ -29,12 +28,8 @@ shared class ReadStream(shared ReadStream_<Object> delegate) {
     
     "Set an end handler. Once the stream has ended, and there is no more data to be read, this handler will be called."
     shared void endHandler(void handleEnd()) {
-        object endHandler satisfies Handler_<Void_> {
-            shared actual void handle(Void_ v) {
-                handleEnd();
-            }
-        }
-        delegate.endHandler(endHandler);
+        value adapter = VoidHandler(handleEnd);
+        delegate.endHandler(adapter);
     }
     
     "Pause the `ReadStream`. While the stream is paused, no data will be sent to the `dataHandler`"

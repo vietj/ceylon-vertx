@@ -48,6 +48,21 @@ shared Anything(Vertx) eventBus(void test(EventBus sharedData)) {
   return f;
 }
 
+shared void assertResolveTo<T>(Promise<T>|Deferred<T> obj, T expected) {
+  Future<T> future;
+  switch (obj)
+  case (is Promise<T>) { future = obj.future; }
+  case (is Deferred<T>) { future = obj.promise.future; }
+  T|Throwable r = future.get(20000);
+  if (is T r) {
+    assertEquals(r, expected);
+  } else if (is Exception r) {
+    throw r;
+  } else {
+    throw Exception("Was not expecting this");
+  }
+}
+
 shared T assertResolve<T>(Promise<T>|Deferred<T> obj) {
     Future<T> future;
     switch (obj)

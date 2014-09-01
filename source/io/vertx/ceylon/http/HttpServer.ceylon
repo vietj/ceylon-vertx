@@ -1,8 +1,7 @@
 import org.vertx.java.core.http { HttpServer_=HttpServer }
 import ceylon.promise { Promise }
-import io.vertx.ceylon.util { AsyncResultPromise,
-  FunctionalHandlerAdapter,
-  voidAsyncResult }
+import io.vertx.ceylon.util { AsyncResultPromise, FunctionalHandlerAdapter, voidAsyncResult }
+import ceylon.collection { LinkedList }
 
 "An HTTP and WebSockets server
 
@@ -20,6 +19,45 @@ shared class HttpServer(HttpServer_ delegate) {
 	shared HttpServer requestHandler(void handle(HttpServerRequest req)) {
 		delegate.requestHandler(FunctionalHandlerAdapter(InternalHttpServerRequest, handle));
 		return this;
+	}
+	
+	"""Set the websocket handler for the server to [[handle]]. If a websocket connect handshake is successful a
+    new [[ServerWebSocket]] instance will be created and passed to the handle."""
+	shared HttpServer websocketHandler(void handle(ServerWebSocket websocket)) {
+		delegate.websocketHandler(FunctionalHandlerAdapter(ServerWebSocket, handle));
+		return this;
+	}
+	
+	"""Returns true if the [[HttpServer]] should compress the http response if the connected client supports it."""
+	shared Boolean compressionSupported => delegate.compressionSupported;
+	
+	"""Set if the [[HttpServer]] should compress the http response if the connected client supports it."""
+	assign compressionSupported => delegate.setCompressionSupported(compressionSupported);
+
+  """The maximum websocket frame size in bytes."""
+	shared Integer maxWebSocketFrameSize => delegate.maxWebSocketFrameSize;
+	
+	"""Sets the maximum websocket frame size in bytes. Default is 65536 bytes."""
+	assign maxWebSocketFrameSize => delegate.setMaxWebSocketFrameSize(maxWebSocketFrameSize);
+
+  """Returns all the supported subprotocols. An empty sequence is returned if
+     non are supported. This is the default."""
+	shared String[] webSocketSubProtocols {
+		value list = LinkedList<String>();
+		value iterator = delegate.webSocketSubProtocols.iterator();
+		while (iterator.hasNext()) {
+			list.add(iterator.next().string);
+		}
+		return [*list];
+	}
+	
+	"""Set the supported websocket subprotocols. Using empty to disable support of subprotocols."""
+	assign webSocketSubProtocols {
+		if (webSocketSubProtocols.empty) {
+			delegate.setWebSocketSubProtocols(null);
+		} else {
+			delegate.setWebSocketSubProtocols(*webSocketSubProtocols);
+		}
 	}
 
     "Tell the server to start listening on all available interfaces and port `port`.

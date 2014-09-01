@@ -1,4 +1,9 @@
-import org.vertx.java.core.http { HttpClient_=HttpClient  }
+import org.vertx.java.core.http { HttpClient_=HttpClient, WebSocketVersion_=WebSocketVersion  }
+import io.vertx.ceylon.util { FunctionalHandlerAdapter, putAll }
+import org.vertx.java.core.http.impl { HttpHeadersAdapter }
+import io.netty.handler.codec.http { DefaultHttpHeaders }
+import java.util { HashSet_=HashSet }
+import java.lang { String_=String }
 
 "An HTTP client that maintains a pool of connections to a specific host, at a specific port. The client supports
  pipelining of requests.
@@ -59,6 +64,18 @@ shared class HttpClient(HttpClient_ delegate) {
     "Set the connect timeout in milliseconds."
     assign connectTimeout => delegate.setConnectTimeout(connectTimeout);
 
+    """Returns `true` if the [[HttpClient]] should try to use compression."""
+    shared Boolean tryUserCompression => delegate.tryUseCompression;
+    
+    """Set if the [[HttpClient]] should try to use compression."""
+    assign tryUserCompression => delegate.setTryUseCompression(tryUserCompression);
+    
+    """Get the  maximum websocket frame size in bytes."""
+    shared Integer maxWebSocketFrameSize => delegate.maxWebSocketFrameSize;
+    
+    """Sets the maximum websocket frame size in bytes. Default is 65536 bytes."""
+    assign maxWebSocketFrameSize => delegate.setMaxWebSocketFrameSize(maxWebSocketFrameSize);
+
     "This method returns an [[HttpClientRequest]] instance which represents an
      HTTP request with the specified `uri`. The specific HTTP method
      (e.g. GET, POST, PUT etc) is specified using the parameter `method`.
@@ -67,6 +84,43 @@ shared class HttpClient(HttpClient_ delegate) {
      is resolved with the response."
     shared HttpClientRequest request(String method, String uri) {
         return HttpClientRequest(delegate, method, uri);
+    }
+    
+    """Attempt to connect an HTML5 websocket to the specified URI
+       
+       This version of the method allows you to specify the websockets version using the [[wsVersion]] parameter
+       
+       You can also specify a set of headers to append to the upgrade request and specify the supported subprotocols.
+       
+       The connect is done asynchronously and [[onWsConnect]] is called back with the websocket"""
+    shared HttpClient connectWebsocket(String uri, void onWsConnect(WebSocket websocket),
+      WebSocketVersion? wsVersion = null, {<String-><String|{String+}>>*}? headers = null, String[]? subprotocols = null) {
+      value handler = FunctionalHandlerAdapter(WebSocket, onWsConnect);
+      if (exists wsVersion) {
+        WebSocketVersion_ wsVersion_;
+        switch (wsVersion) 
+        case (\iHYBI_00) { wsVersion_ = WebSocketVersion_.\iHYBI_00; }
+        case (\iHYBI_08) { wsVersion_ = WebSocketVersion_.\iHYBI_08; }
+        case (\iRFC6455) { wsVersion_ = WebSocketVersion_.\iRFC6455; }
+        if (exists headers) {
+          value headers_ = HttpHeadersAdapter(DefaultHttpHeaders()); // No other way...
+          putAll(headers, headers_);
+          if (exists subprotocols) {
+            value subprotocols_ = HashSet_<String_>();
+            for (subprotocol in subprotocols) {
+              subprotocols_.add(String_(subprotocol));
+            }
+            delegate.connectWebsocket(uri, wsVersion_, headers_, subprotocols_, handler);
+          } else {
+            delegate.connectWebsocket(uri, wsVersion_, headers_, handler);
+          }
+        } else {
+          delegate.connectWebsocket(uri, wsVersion_, handler);
+        }
+      } else {
+        delegate.connectWebsocket(uri, handler);
+      }
+      return this;
     }
     
     """This method returns an [[HttpClientRequest]] instance which represents an HTTP GET request with the specified `uri`."""
@@ -101,5 +155,12 @@ shared class HttpClient(HttpClient_ delegate) {
         delegate.close();
     }
     
+    shared void exceptionHandler(void onError(Throwable t)) {
+      value adapter = FunctionalHandlerAdapter<Throwable, Throwable>(
+        (Throwable t) => t,
+        onError
+      );
+      delegate.exceptionHandler(adapter);
+    }
 }
 
