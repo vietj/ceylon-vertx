@@ -1,43 +1,34 @@
-import io.vertx.ceylon { Vertx, Registration }
+import io.vertx.ceylon { Registration }
 import ceylon.promise { Promise, Deferred }
 import io.vertx.ceylon.eventbus { Message, EventBus, Payload }
 import ceylon.test { ... }
 import ceylon.json { JSonObject=Object, JSonArray=Array }
-import test.io.vertx.ceylon{ assertResolve, toByteArray  }
+import test.io.vertx.ceylon{ assertResolve, toByteArray, with, eventBus  }
 import java.lang { ByteArray }
 
-void run(Anything(EventBus) test) {
-	Vertx vertx = Vertx();
-	try {
-		test(vertx.eventBus);
-	} finally {
-		vertx.stop();
-	}
-}
+shared test void testFloatEvent() => with(eventBus(send(4.4)));
+shared test void testIntegerEvent() => with(eventBus(send(4)));
+shared test void testBooleanEvent() => with(eventBus(send(true)));
+shared test void testStringEvent() => with(eventBus(send("foo_msg")));
+shared test void testJSonObjectEvent() => with(eventBus(send(JSonObject({"juu"->"juu_value"}))));
+shared test void testJSonArrayEvent() => with(eventBus(send(JSonArray({"juu","daa"}))));
+shared test void testByteArray() => with(eventBus(send(toByteArray({0,1,2}))));
 
-shared test void testFloatEvent() => run(send(4.4));
-shared test void testIntegerEvent() => run(send(4));
-shared test void testBooleanEvent() => run(send(true));
-shared test void testStringEvent() => run(send("foo_msg"));
-shared test void testJSonObjectEvent() => run(send(JSonObject({"juu"->"juu_value"})));
-shared test void testJSonArrayEvent() => run(send(JSonArray({"juu","daa"})));
-shared test void testByteArray() => run(send(toByteArray({0,1,2})));
+shared test void testFloatReply() => with(eventBus(reply(4.4)));
+shared test void testIntegerReply() => with(eventBus(reply(4)));
+shared test void testBooleanReply() => with(eventBus(reply(true)));
+shared test void testStringReply() => with(eventBus(reply("foo_msg")));
+shared test void testJSonObjectReply() => with(eventBus(reply(JSonObject({"juu"->"juu_value"}))));
+shared test void testJSonArrayReply() => with(eventBus(reply(JSonArray({"juu","daa"}))));
+shared test void testByteArrayReply() => with(eventBus(reply(toByteArray({0,1,2}))));
 
-shared test void testFloatReply() => run(reply(4.4));
-shared test void testIntegerReply() => run(reply(4));
-shared test void testBooleanReply() => run(reply(true));
-shared test void testStringReply() => run(reply("foo_msg"));
-shared test void testJSonObjectReply() => run(reply(JSonObject({"juu"->"juu_value"})));
-shared test void testJSonArrayReply() => run(reply(JSonArray({"juu","daa"})));
-shared test void testByteArrayReply() => run(reply(toByteArray({0,1,2})));
-
-shared test void testFloatReplyToReply() => run(replyToReply(4.4));
-shared test void testIntegerReplyToReply() => run(replyToReply(4));
-shared test void testBooleanReplyToReply() => run(replyToReply(true));
-shared test void testStringReplyToReply() => run(replyToReply("foo_msg"));
-shared test void testJSonObjectReplyToReply() => run(replyToReply(JSonObject({"juu"->"juu_value"})));
-shared test void testJSonArrayReplyToReply() => run(replyToReply(JSonArray({"juu","daa"})));
-shared test void testByteArrayReplyToReply() => run(replyToReply(toByteArray({0,1,2})));
+shared test void testFloatReplyToReply() => with(eventBus(replyToReply(4.4)));
+shared test void testIntegerReplyToReply() => with(eventBus(replyToReply(4)));
+shared test void testBooleanReplyToReply() => with(eventBus(replyToReply(true)));
+shared test void testStringReplyToReply() => with(eventBus(replyToReply("foo_msg")));
+shared test void testJSonObjectReplyToReply() => with(eventBus(replyToReply(JSonObject({"juu"->"juu_value"}))));
+shared test void testJSonArrayReplyToReply() => with(eventBus(replyToReply(JSonArray({"juu","daa"}))));
+shared test void testByteArrayReplyToReply() => with(eventBus(replyToReply(toByteArray({0,1,2}))));
 
 
 void send<M>(M msg)(EventBus bus) given M of String|JSonObject|Boolean|Integer|Float|JSonArray|ByteArray {

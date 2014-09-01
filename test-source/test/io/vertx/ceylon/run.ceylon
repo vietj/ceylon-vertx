@@ -10,6 +10,43 @@ import test.io.vertx.ceylon.eventbus { ... }
 import ceylon.io.charset { ascii }
 import ceylon.io { newSocketConnector, SocketAddress }
 import java.lang { ByteArray }
+import io.vertx.ceylon { Vertx }
+import io.vertx.ceylon.http { HttpServer }
+import io.vertx.ceylon.shareddata { SharedData }
+import io.vertx.ceylon.eventbus { EventBus }
+
+shared void with(void test(Vertx vertx)) {
+  value vertx = Vertx();
+  try {
+    test(vertx);
+  } finally {
+    vertx.stop();
+  }
+}
+
+shared Anything(Vertx) server(void test(HttpServer server)) {
+  void f(Vertx vertx) {
+    value server = vertx.createHttpServer();
+    test(server);
+    Promise<Null> promise = server.close();
+    assertResolve(promise);
+  }
+  return f;
+}
+
+shared Anything(Vertx) sharedData(void test(SharedData sharedData)) {
+  void f(Vertx vertx) {
+    test(vertx.sharedData);
+  }
+  return f;
+}
+
+shared Anything(Vertx) eventBus(void test(EventBus sharedData)) {
+  void f(Vertx vertx) {
+    test(vertx.eventBus);
+  }
+  return f;
+}
 
 shared T assertResolve<T>(Promise<T>|Deferred<T> obj) {
     Future<T> future;
