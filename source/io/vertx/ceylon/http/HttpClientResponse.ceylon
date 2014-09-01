@@ -3,6 +3,7 @@ import ceylon.promise { Promise }
 import org.vertx.java.core.http { HttpClientResponse_=HttpClientResponse }
 import io.vertx.ceylon.stream { ReadStream, wrapReadStream }
 import ceylon.collection { LinkedList }
+import io.vertx.ceylon { MultiMap }
 
 "Represents a client-side HTTP response. Instances of this class are not thread-safe."
 by("Julien Viet")
@@ -16,10 +17,10 @@ shared class HttpClientResponse(HttpClientResponse_ delegate)
     shared String statusMessage => delegate.statusMessage();
 
     "The http headers"
-    shared actual Map<String,[String+]> headers = toMap(delegate.headers());
+    shared actual MultiMap headers = toMap(delegate.headers());
     
     "The http trailers"
-    shared Map<String,[String+]> trailers = toMap(delegate.trailers());
+    shared MultiMap trailers = toMap(delegate.trailers());
 
     "The Set-Cookie headers (including trailers)"
     shared {String*} cookies {

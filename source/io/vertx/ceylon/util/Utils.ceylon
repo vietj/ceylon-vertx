@@ -1,11 +1,11 @@
 import ceylon.collection { HashMap }
 import ceylon.json { Object, Array }
-import org.vertx.java.core { MultiMap }
+import org.vertx.java.core { MultiMap_=MultiMap }
 import org.vertx.java.core.json { JsonObject, JsonArray }
-import java.lang { String_=String, Iterable_=Iterable,
-  ObjectArray_=ObjectArray }
+import java.lang { String_=String, Iterable_=Iterable, ObjectArray_=ObjectArray }
 import java.util { Iterator_=Iterator, ArrayList_=ArrayList }
 import io.vertx.ceylon.interop { JavaBridge { getFieldValue } }
+import io.vertx.ceylon { MultiMap }
 
 by("Julien Viet")
 shared HashMap<String, [String+]> combine(
@@ -27,7 +27,7 @@ shared HashMap<String, [String+]> combine(
 }
 
 "Convert a Vert.x MultiMap to a Ceylon map"
-shared Map<String, [String+]> toMap(MultiMap multiMap) {
+shared MultiMap toMap(MultiMap_ multiMap) {
     HashMap<String, [String+]> map = HashMap<String, [String+]>();
     value keyIterator = multiMap.names().iterator();
     while (keyIterator.hasNext()) {

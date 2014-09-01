@@ -1,14 +1,10 @@
 import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
 import io.vertx.ceylon.stream { WriteStream, wrapWriteStream }
 import java.lang { Iterable_=Iterable, String_=String }
-import io.vertx.ceylon.util { toStringIterable,
-  voidAsyncResult }
-import ceylon.promise {
-  Promise
-}
-import org.vertx.java.core.buffer {
-  Buffer
-}
+import io.vertx.ceylon.util { toStringIterable, voidAsyncResult }
+import ceylon.promise { Promise }
+import org.vertx.java.core.buffer { Buffer }
+import io.vertx.ceylon { Chunk }
 
 "Represents a server-side HTTP response. Instances of this class are created and associated to every instance of
  [[HttpServerRequest]] that is created. It allows the developer to control the HTTP response that is sent back to the
@@ -35,7 +31,7 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
         return this;
     }
 
-    shared actual HttpServerResponse write(String|[String,String]|Buffer chunk) {
+    shared actual HttpServerResponse write(Chunk chunk) {
         switch (chunk) 
         case (is String) {
             delegate.write(chunk);
@@ -49,7 +45,7 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
         return this;
     }
 
-    shared actual HttpServerResponse end(<String|[String,String]|Buffer>? chunk) {
+    shared actual HttpServerResponse end(Chunk? chunk) {
         switch (chunk) 
         case (is String) {
             delegate.end(chunk);

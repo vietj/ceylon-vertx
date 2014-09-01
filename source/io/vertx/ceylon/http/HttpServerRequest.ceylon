@@ -5,6 +5,7 @@ import ceylon.promise { Promise, Deferred }
 import io.vertx.ceylon.stream { ReadStream, wrapReadStream }
 import org.vertx.java.core { Handler_=Handler }
 import java.lang { Void_=Void }
+import io.vertx.ceylon { MultiMap }
 
 "Represents a server-side HTTP request. Each instance of this class is associated with a corresponding
  [[HttpServerResponse]] instance via the `response` field. Instances of this class are not thread-safe."
@@ -35,14 +36,14 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     "Get the absolute URI corresponding to the the HTTP request"
     shared String absoluteURI => delegate.absoluteURI().string;
 
-    variable Deferred<Map<String, {String+}>>? formDeferred = null;
+    variable Deferred<MultiMap>? formDeferred = null;
     
     "The form attributes when the request is a POST/PUT/PATCH with a _application/x-www-form-urlencoded_ or _multipart/form-data_ mime type" 
-    shared Promise<Map<String, {String+}>> formAttributes {
+    shared Promise<MultiMap> formAttributes {
         if (exists t = formDeferred) {
             return t.promise;
         } else {
-            Deferred<Map<String, {String+}>> d = Deferred<Map<String, {String+}>>();
+            value d = Deferred<MultiMap>();
             String? contentType = delegate.headers().get("Content-Type");
             
             if (exists contentType,
@@ -52,7 +53,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
                 object handler satisfies Handler_<Void_> {
                     shared actual void handle(Void_ nothing) {
                         value formAttributesMap = delegate.formAttributes();
-                        Map<String, [String+]> form = toMap(formAttributesMap);
+                        MultiMap form = toMap(formAttributesMap);
                         d.fulfill(form);
                     }
                 } 
@@ -73,10 +74,10 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     };
 
     // Lazy params map
-    variable Map<String,[String+]>? paramsMap = null;
+    variable MultiMap? paramsMap = null;
 
     "Returns a map of all the parameters in the request."
-    shared Map<String, [String+]> params {
+    shared MultiMap params {
         if (exists ret = paramsMap) {
             return ret;
         } else {
@@ -87,8 +88,8 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     }
 
     // Lazy header map
-    variable Map<String,[String+]>? headerMap = null;
-    shared actual Map<String,[String+]> headers {
+    variable MultiMap? headerMap = null;
+    shared actual MultiMap headers {
         if (exists ret = headerMap) {
             return ret;
         } else {
