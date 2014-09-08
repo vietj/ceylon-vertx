@@ -1,5 +1,5 @@
 import org.vertx.java.core.http { HttpClient_=HttpClient, WebSocketVersion_=WebSocketVersion  }
-import io.vertx.ceylon.util { FunctionalHandlerAdapter, putAll }
+import io.vertx.ceylon.util { FunctionalHandlerAdapter, putAll, functionalHandler }
 import org.vertx.java.core.http.impl { HttpHeadersAdapter }
 import io.netty.handler.codec.http { DefaultHttpHeaders }
 import java.util { HashSet_=HashSet }
@@ -156,11 +156,7 @@ shared class HttpClient(HttpClient_ delegate) {
     }
     
     shared void exceptionHandler(void onError(Throwable t)) {
-      value adapter = FunctionalHandlerAdapter<Throwable, Throwable>(
-        (Throwable t) => t,
-        onError
-      );
-      delegate.exceptionHandler(adapter);
+      delegate.exceptionHandler(functionalHandler(onError));
     }
 }
 

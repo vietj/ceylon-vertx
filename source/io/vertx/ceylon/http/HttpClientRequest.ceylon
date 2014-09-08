@@ -1,8 +1,6 @@
-import org.vertx.java.core.http { HttpClient_=HttpClient, HttpClientRequest_=HttpClientRequest, HttpClientResponse_=HttpClientResponse }
+import org.vertx.java.core.http { HttpClient_=HttpClient, HttpClientResponse_=HttpClientResponse }
 import ceylon.promise { Deferred, Promise }
-import org.vertx.java.core { Handler_=Handler}
-import io.vertx.ceylon.interop { ExceptionSupportAdapter { setErrorHandler } }
-import io.vertx.ceylon.util { putAll }
+import io.vertx.ceylon.util { putAll, FunctionalHandlerAdapter, functionalHandler }
 import io.vertx.ceylon.stream { wrapWriteStream, WriteStream }
 import org.vertx.java.core.buffer { Buffer }
 
@@ -43,16 +41,14 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
        
        todo: consider provide an handler instead of having a Promise<Response>"""
     shared Promise<HttpClientResponse> response => deferred.promise;
-    
-    object valueHandler satisfies Handler_<HttpClientResponse_> {
-        shared actual void handle(HttpClientResponse_ response) {
-            deferred.fulfill(HttpClientResponse(response));
-        } 
-    }
 
-    HttpClientRequest_ request = delegate.request(method.string, uri, valueHandler);
-    setErrorHandler(request, deferred);
+    value request = delegate.request(
+      method.string,
+      uri,
+      FunctionalHandlerAdapter<HttpClientResponse, HttpClientResponse_>(HttpClientResponse, deferred.fulfill));
     
+    request.exceptionHandler(functionalHandler<Throwable>(deferred.reject));
+
     shared actual WriteStream stream = wrapWriteStream(request);
     
     "Set's the amount of time after which if a response is not received `TimeoutException`
