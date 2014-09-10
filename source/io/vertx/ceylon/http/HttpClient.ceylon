@@ -76,6 +76,51 @@ shared class HttpClient(HttpClient_ delegate) {
     """Sets the maximum websocket frame size in bytes. Default is 65536 bytes."""
     assign maxWebSocketFrameSize => delegate.setMaxWebSocketFrameSize(maxWebSocketFrameSize);
 
+    "true if this client will trust all server certificates."
+    shared Boolean trustAll => delegate.trustAll;
+    
+    """If you want an SSL client to trust *all* server certificates rather than match them
+       against those in its trust store, you can set this to true.
+       Use this with caution as you may be exposed to "main in the middle" attacks"""
+    assign trustAll => delegate.setTrustAll(trustAll);
+    
+    """Is SSL enabled"""
+    shared Boolean ssl => delegate.ssl;
+    
+    """If `true`, this signifies that any connections will be SSL connections."""
+    assign ssl => delegate.setSSL(ssl);
+    
+    "Get the key store path"
+    shared String keyStorePath => delegate.keyStorePath;
+    
+    "Set the path to the SSL key store. This method should only be used in SSL mode, i.e. after
+     [[ssl]] has been set to {@code true}.
+     The SSL key store is a standard Java Key Store, and will contain the client certificate.
+     Client certificates are only required if the server requests client authentication."
+    assign keyStorePath => delegate.setKeyStorePath(keyStorePath);
+    
+    "Get the key store password"
+    shared String keyStorePassword => delegate.keyStorePassword;
+    
+    "Set the password for the SSL key store. This method should only be used in SSL mode, i.e. after
+     [[ssl]] has been set to `true`."
+    assign keyStorePassword => delegate.setKeyStorePassword(keyStorePassword);
+    
+    "Get the trust store path"
+    shared String trustStorePath => delegate.trustStorePath;
+    
+    "Set the path to the SSL trust store. This method should only be used in SSL mode, i.e. after
+     [[ssl]] has been set to `true`. The trust store is a standard Java Key Store, and should contain
+     the certificates of any servers that the client trusts."
+    assign trustStorePath => delegate.setTrustStorePath(trustStorePath);
+    
+    "Get trust store password"
+    shared String trustStorePassword => delegate.trustStorePassword;
+    
+    "Set the password for the SSL trust store. This method should only be used in SSL mode, i.e. after
+     [[ssl]] has been set to `true`."
+    assign trustStorePassword => delegate.setTrustStorePassword(trustStorePassword);
+
     "This method returns an [[HttpClientRequest]] instance which represents an
      HTTP request with the specified `uri`. The specific HTTP method
      (e.g. GET, POST, PUT etc) is specified using the parameter `method`.
