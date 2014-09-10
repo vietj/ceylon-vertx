@@ -1,7 +1,9 @@
 import org.vertx.java.core.http { HttpServer_=HttpServer }
+import org.vertx.java.core { Vertx_=Vertx }
 import ceylon.promise { Promise }
 import io.vertx.ceylon.util { AsyncResultPromise, FunctionalHandlerAdapter, voidAsyncResult }
 import ceylon.collection { LinkedList }
+import io.vertx.ceylon.sockjs { SockJSServer }
 
 "An HTTP and WebSockets server
 
@@ -12,7 +14,7 @@ import ceylon.collection { LinkedList }
  
  Instances of HttpServer are thread-safe."
 by("Julien Viet")
-shared class HttpServer(HttpServer_ delegate) {
+shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) {
 	
 	"Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
      instances of [[HttpServerRequest]] will be created and passed to this handler."
@@ -59,6 +61,11 @@ shared class HttpServer(HttpServer_ delegate) {
 			delegate.setWebSocketSubProtocols(*webSocketSubProtocols);
 		}
 	}
+	
+	shared SockJSServer createSockJSServer() {
+		return SockJSServer(vertx.createSockJSServer(delegate));
+	}
+	
 
     "Tell the server to start listening on all available interfaces and port `port`.
      Be aware this is an async operation and the server may not bound on return of the method.

@@ -6,6 +6,9 @@ import java.lang { Long_=Long, Void_=Void }
 import io.vertx.ceylon.file {
   FileSystem
 }
+import io.vertx.ceylon.sockjs {
+  SockJSServer
+}
 
 "The control centre of the Vert.x Core API.
  
@@ -31,7 +34,7 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
     
     "Create a new http server and returns it"
     shared HttpServer createHttpServer() {
-        return HttpServer(v.createHttpServer());
+        return HttpServer(v, v.createHttpServer());
     }
 
     "Create a new http client and return it"
@@ -86,4 +89,8 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
     shared void stop() {
         v.stop();
     }
+    
+    "Create a SockJS server that wraps an HTTP server"
+    shared SockJSServer createSockJSServer(HttpServer server) => server.createSockJSServer();
+
 }

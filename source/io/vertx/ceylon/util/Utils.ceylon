@@ -3,7 +3,7 @@ import ceylon.json { Object, Array }
 import org.vertx.java.core { MultiMap_=MultiMap }
 import org.vertx.java.core.json { JsonObject, JsonArray }
 import java.lang { String_=String, Iterable_=Iterable, ObjectArray_=ObjectArray }
-import java.util { Iterator_=Iterator, ArrayList_=ArrayList }
+import java.util { ArrayList_=ArrayList }
 import io.vertx.ceylon.interop { JavaBridge { getFieldValue } }
 import io.vertx.ceylon { MultiMap }
 
@@ -28,25 +28,7 @@ shared HashMap<String, [String+]> combine(
 
 "Convert a Vert.x MultiMap to a Ceylon map"
 shared MultiMap toMap(MultiMap_ multiMap) {
-    HashMap<String, [String+]> map = HashMap<String, [String+]>();
-    value keyIterator = multiMap.names().iterator();
-    while (keyIterator.hasNext()) {
-        value nextKey = keyIterator.next();
-        String key = nextKey.string;
-
-        // Recurse to build the values in correct order 
-        [String+] read(Iterator_<String_> i) {
-            value val = i.next().string;
-            if (i.hasNext()) {
-                return [ val, *read(i) ];
-            } else {
-                return [ val ];
-            }
-        }
-        value values = read(multiMap.getAll(key).iterator());
-        map.put(key, values);
-    }
-    return map;
+    return MultiMap(multiMap);
 }
 
 "Put the entries in the provided Vert.x MultiMap"
