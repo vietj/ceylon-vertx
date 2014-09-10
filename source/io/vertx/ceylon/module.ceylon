@@ -34,11 +34,11 @@
    
    ## The Event Bus
    
-   See [io.vertx.ceylon.eventbus](eventbus/index.html).
+   See [[package io.vertx.ceylon.eventbus]].
    
    ## Shared Data
    
-   See [io.vertx.ceylon.shareddata](shareddata/index.html).
+   See [[package io.vertx.ceylon.shareddata]].
    
    ## Buffers
    
@@ -111,45 +111,33 @@
    };
    ~~~
 
-   ## Writing TCP Servers and Clients
-   
-   * Not yet implemented *
-   
-   ## User Datagram Protocol (UDP)
-   
-   *Not yet in 2.0*
-   
    ## Flow Control - Streams and Pumps
    
    Implemented for Http package, documentation uses a net server, so not yet translated.
    
    ## Writing HTTP Servers and Clients
    
-   See [io.vertx.ceylon.http](http/index.html).
+   See [[package io.vertx.ceylon.http]].
    
    ## Routing HTTP requests with Pattern Matching
    
-   See [io.vertx.ceylon.http](http/index.html).
+   See [[package io.vertx.ceylon.http]].
    
    ## WebSockets
    
-   *Not yet implemented*
+   See [[package io.vertx.ceylon.http]].
    
    ## SockJS
    
-   *Not yet implemented*
+   See [[package io.vertx.ceylon.sockjs]]
    
    ## SockJS - EventBus Bridge
    
-   *Not yet implemented*
+   See [[package io.vertx.ceylon.sockjs]]
    
    ## File System
    
-   See [io.vertx.ceylon.file](file/index.html).
-   
-   ## DNS Client
-   
-   *Not yet in 2.0*
+   See [[package io.vertx.ceylon.file]]
    
    """
 by("Julien Viet")
