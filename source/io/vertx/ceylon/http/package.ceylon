@@ -827,6 +827,34 @@
 
    Again, the client side WebSocket implements [[io.vertx.ceylon.stream::ReadStream]] and [[io.vertx.ceylon.stream::WriteStream]],
    so you can read and write to it in the same way as any other stream object.
-      """
+   
+   #### WebSockets in the browser
+   
+   To use WebSockets from a compliant browser, you use the standard WebSocket API. Here's some example
+   client side JavaScript which uses a WebSocket.
+   
+   ~~~
+   <script>
+   
+     var socket = new WebSocket("ws://foo.com/services/echo");
+   
+     socket.onmessage = function(event) {
+       alert("Received data from websocket: " + event.data);
+     }
+   
+     socket.onopen = function(event) {
+       alert("Web Socket opened");
+       socket.send("Hello World");
+     };
+   
+     socket.onclose = function(event) {
+       alert("Web Socket closed");
+     };
+   
+   </script>
+   ~~~
+   
+   For more information see the [WebSocket API documentation](http://dev.w3.org/html5/websockets/)
+   """
 by("Julien Viet")
 shared package io.vertx.ceylon.http;
