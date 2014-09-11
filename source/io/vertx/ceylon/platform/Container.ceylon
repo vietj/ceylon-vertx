@@ -1,14 +1,14 @@
 import org.vertx.java.platform { Container_ = Container }
 import org.vertx.java.core.json { JsonObject }
 import ceylon.json { Object }
-import io.vertx.ceylon.util { fromObject, toObject, AsyncResultPromise }
+import io.vertx.ceylon.util { toJsonObject, fromJsonObject, AsyncResultPromise }
 import java.lang { String_=String }
 import ceylon.promise { Promise }
 import ceylon.collection { HashMap }
 
 JsonObject? toConf(Object? c) {
     if (exists c) {
-        return fromObject(c);
+        return toJsonObject(c);
     } else {
         return null;
     }
@@ -46,7 +46,7 @@ shared class Container(Container_ delegate) {
     JsonObject? config_ = delegate.config();
     shared Object? config;
     if (exists config_) {
-        config = toObject(delegate.config());
+        config = fromJsonObject(delegate.config());
     } else {
         config = null;
     }

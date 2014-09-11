@@ -82,19 +82,19 @@
    It's as simple as that. The handler will then receive any messages sent to that address.
    
    The class [[Message]] is a generic type and specific Message types include:
-   - `Message<String>` : mapped to Ceylon `String`
-   - `Message<Boolean>` : mapped to Ceylon `Boolean`
-   - `Message<byte[]>` : mapped to `java.lang.ByteArray` virtual type
-   - `Message<Double>` : mapped to Ceylon `Float`
-   - `Message<JsonObject>` : mapped to `ceylon.json.Object`
-   - `Message<JsonArray>` : mapped to `ceylon.json.Array`
-   - `Message<Long>` : mapped to Ceylon `Integer`
-   - `Message<Buffer>` : not supported at the moment
-   - `Message<Byte>` : not supported at the moment
-   - `Message<Character>` : not supported at the moment
-   - `Message<Float>` : not supported at the moment
-   - `Message<Integer>` : not supported at the moment
-   - `Message<Short>` : not supported at the moment
+   - `Message<String>` : mapped to [[ceylon.language::String]]
+   - `Message<Boolean>` : mapped to [[ceylon.language::Boolean]]
+   - `Message<byte[]>` : mapped to [[java.lang::ByteArray]] virtual type
+   - `Message<Double>` : mapped to [[ceylon.language::Float]]
+   - `Message<JsonObject>` : mapped to [[ceylon.json::Object]]
+   - `Message<JsonArray>` : mapped to [[ceylon.json::Array]]
+   - `Message<Long>` : mapped to Ceylon [[ceylon.language::Integer]]
+   - `Message<Buffer>` : mapped to [[org.vertx.java.core.buffer::Buffer]]
+   - `Message<Byte>` : mapped to [[ceylon.language::Byte]] or [[ceylon.language::Integer]]
+   - `Message<Character>` : mapped to [[ceylon.language::Character]]
+   - `Message<Float>` :  mapped to [[ceylon.language::Float]]
+   - `Message<Integer>` : mapped to Ceylon [[ceylon.language::Integer]]
+   - `Message<Short>` : mapped to Ceylon [[ceylon.language::Integer]]
    
    If you know you'll always be receiving messages of a particular type you can use the specific type in your handler, e.g:
    
@@ -172,7 +172,7 @@
    reply.onComplete((Message<String> message) => println("I received a reply ``message.body``"));
    ~~~
    
-   It is legal also to send an empty reply or a null reply (*todo*).
+   It is legal also to send an empty reply or a null reply.
    
    The replies themselves can also be replied to so you can create a dialog between two different verticles consisting of multiple rounds.
    
@@ -195,9 +195,6 @@
    * java.lang.String
    * org.vertx.java.core.json.JsonObject
    * org.vertx.java.core.json.JsonArray
-   
-   The following types are not supported at the moment
-   
    * short
    * float
    * integer
@@ -226,11 +223,11 @@
    Send a JSON object:
    
    ~~~
-   value obj = new Object { "foo"->"wibble" };
+   value obj = Object { "foo"->"wibble" };
    eb.send("test.address", obj);
    ~~~
    
-   Null messages can also be sent (not supported at the moment):
+   Null messages can also be sent:
    
    ~~~
    eb.send("test.address", null);

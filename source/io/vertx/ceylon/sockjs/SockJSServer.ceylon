@@ -1,7 +1,7 @@
 import ceylon.json { JsonObject=Object, JsonArray=Array }
 import org.vertx.java.core.json { JsonObject_=JsonObject }
 import org.vertx.java.core.sockjs { SockJSServer_=SockJSServer, EventBusBridgeHook_=EventBusBridgeHook, SockJSSocket_=SockJSSocket }
-import io.vertx.ceylon.util { FunctionalHandlerAdapter, fromObject, fromArray, toObject }
+import io.vertx.ceylon.util { FunctionalHandlerAdapter, toJsonObject, toJsonArray, fromJsonObject }
 import org.vertx.java.core { Handler_=Handler, AsyncResult_=AsyncResult }
 import org.vertx.java.core.impl { DefaultFutureResult_=DefaultFutureResult }
 import java.lang { Boolean_=Boolean }
@@ -42,7 +42,7 @@ shared class SockJSServer(SockJSServer_ delegate) {
     JsonObject config,
     "A handler that will be called when new SockJS sockets are created"
     void sockHandler(SockJSSocket socket)) {
-    delegate.installApp(fromObject(config), FunctionalHandlerAdapter(SockJSSocket, sockHandler));
+    delegate.installApp(toJsonObject(config), FunctionalHandlerAdapter(SockJSSocket, sockHandler));
     return this;
   }
   
@@ -57,9 +57,9 @@ shared class SockJSServer(SockJSServer_ delegate) {
     "JSON object holding config for the EventBusBridge"
     JsonObject? bridgeConfig = null) {
     if (exists bridgeConfig) {
-      delegate.bridge(fromObject(sjsConfig), fromArray(inboundPermitted), fromArray(outboundPermitted), fromObject(bridgeConfig));
+      delegate.bridge(toJsonObject(sjsConfig), toJsonArray(inboundPermitted), toJsonArray(outboundPermitted), toJsonObject(bridgeConfig));
     } else {
-      delegate.bridge(fromObject(sjsConfig), fromArray(inboundPermitted), fromArray(outboundPermitted));
+      delegate.bridge(toJsonObject(sjsConfig), toJsonArray(inboundPermitted), toJsonArray(outboundPermitted));
     }
     return this;
   }
@@ -79,7 +79,7 @@ shared class SockJSServer(SockJSServer_ delegate) {
             handler.handle(DefaultFutureResult_<Boolean_>(t));
           }
         };
-        return hook.handleAuthorise(toObject(jsonObject), sessionID, deferred);
+        return hook.handleAuthorise(fromJsonObject(jsonObject), sessionID, deferred);
       }
       
       shared actual void handlePostRegister(SockJSSocket_ sockJSSocket, String address) {
@@ -91,7 +91,7 @@ shared class SockJSServer(SockJSServer_ delegate) {
       }
       
       shared actual Boolean handleSendOrPub(SockJSSocket_ sockJSSocket, Boolean send, JsonObject_ msg, String address) {
-        return hook.handleSendOrPub(SockJSSocket(sockJSSocket), send, toObject(msg), address);
+        return hook.handleSendOrPub(SockJSSocket(sockJSSocket), send, fromJsonObject(msg), address);
       }
       
       shared actual void handleSocketClosed(SockJSSocket_ sockJSSocket) {

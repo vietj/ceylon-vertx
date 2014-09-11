@@ -26,7 +26,7 @@ shared test void testCombine() {
 
 shared test void testFromJson() {
   value src = JsonObject{"a"->"b","b"->123,"c"->true,"d"->1.1,"e"->JsonArray{"b",123,true,1.1,JsonObject{},JsonArray{}},"f"->JsonObject{}};
-  value dst = fromObject(src);
+  value dst = toJsonObject(src);
   assertEquals(dst.getField("a"), String_("b"));
   assertEquals(dst.getField("b"), Long_(123));
   assertEquals(dst.getField("c"), Boolean_(true));
@@ -64,7 +64,7 @@ shared test void testToJson() {
   array.addObject(JsonObject_());
   array.addArray(JsonArray_());
   src.putArray("array", array);
-  value dst = toObject(src);
+  value dst = fromJsonObject(src);
   assertEquals(dst["string"], "s");
   assertEquals(dst["boolean"], true);
   assertEquals(dst["byte"], 123);

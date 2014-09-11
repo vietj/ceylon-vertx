@@ -1,13 +1,13 @@
-package io.vertx.ceylon;
+package io.vertx.ceylon.interop;
 
 import org.vertx.java.core.VertxFactory;
 import org.vertx.java.core.Vertx;
 
 ;
 
-class VertxProvider {
+public class VertxProvider {
 
-	static Vertx create() {
+	public static Vertx create() {
 		ClassLoader prev = Thread.currentThread().getContextClassLoader();
 		try {
 			Thread.currentThread().setContextClassLoader(

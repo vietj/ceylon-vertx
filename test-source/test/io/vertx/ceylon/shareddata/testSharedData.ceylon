@@ -1,5 +1,4 @@
 import ceylon.test { ... }
-import io.vertx.ceylon { Vertx }
 import io.vertx.ceylon.shareddata { ... }
 import java.lang { ByteArray }
 import test.io.vertx.ceylon { toByteArray, byteArrayEquals, with, sharedData }
@@ -11,7 +10,7 @@ shared test void testSharedMapBoolean() => with(sharedData(testMap(true, false, 
 shared test void testSharedMapByteArray() => with(sharedData(testMap(toByteArray({0,1,2}), toByteArray({2,1,0}), byteArrayEquals)));
 
 shared test void testSharedSetInteger() => with(sharedData(testSet(0, (Integer item1, Integer item2) => item1.equals(item2))));
-shared test void testSharedSetStringr() => with(sharedData(testSet("foo", (String item1, String item2) => item1.equals(item2))));
+shared test void testSharedSetString() => with(sharedData(testSet("foo", (String item1, String item2) => item1.equals(item2))));
 shared test void testSharedSetFloat() => with(sharedData(testSet(0.4, (Float item1, Float item2) => item1.equals(item2))));
 shared test void testSharedSetBoolean() => with(sharedData(testSet(true, (Boolean item1, Boolean item2) => item1.equals(item2))));
 shared test void testSharedSetByteArray() => with(sharedData(testSet(toByteArray({0,1,2}), byteArrayEquals)));

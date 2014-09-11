@@ -9,6 +9,9 @@ import io.vertx.ceylon.file {
 import io.vertx.ceylon.sockjs {
   SockJSServer
 }
+import io.vertx.ceylon.interop {
+  VertxProvider
+}
 
 "The control centre of the Vert.x Core API.
  

@@ -1,10 +1,11 @@
 import org.vertx.java.core.eventbus { EventBus_=EventBus, Message_=Message }
+import org.vertx.java.core.buffer { Buffer_=Buffer }
 import ceylon.promise { Promise }
 import io.vertx.ceylon { Registration }
-import io.vertx.ceylon.util { fromObject, fromArray }
+import io.vertx.ceylon.util { toJsonObject, toJsonArray }
 import ceylon.json { JSonObject=Object, JSonArray=Array }
 import org.vertx.java.core { Handler_=Handler }
-import java.lang { Double_ = Double, Long_ = Long, Boolean_ = Boolean, ByteArray }
+import java.lang { Character_=Character, Double_=Double, Long_=Long, Boolean_=Boolean, ByteArray, Byte_=Byte }
 
 "A distributed lightweight event bus which can encompass multiple vert.x instances.
  The event bus implements publish / subscribe, point to point messaging and request-response messaging.
@@ -48,7 +49,7 @@ shared class EventBus(EventBus_ delegate) {
     		"The address to send it to"
     		String address,
     		"The message"
-    		Payload message) given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray {
+    		Payload message) given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray|Byte|Character|Buffer_|Null {
 
         //
 		Handler_<Message_<Object>>? replyHandler;
@@ -64,13 +65,20 @@ shared class EventBus(EventBus_ delegate) {
         
         //
         switch (message)
+        case (is Buffer_) { delegate.send(address, message, replyHandler); }
+        case (is Character) { delegate.send(address, Character_(message), replyHandler); }
+        case (is Byte) { delegate.send(address, Byte_(message), replyHandler); }
         case (is Float) { delegate.send(address, Double_(message), replyHandler); }
         case (is Integer) { delegate.send(address, Long_(message), replyHandler); }
         case (is Boolean) { delegate.send(address, Boolean_(message), replyHandler); }
         case (is String) { delegate.send(address, message, replyHandler); }
-        case (is JSonObject) { delegate.send(address, fromObject(message), replyHandler); }
-        case (is JSonArray) { delegate.send(address, fromArray(message), replyHandler); }
+        case (is JSonObject) { delegate.send(address, toJsonObject(message), replyHandler); }
+        case (is JSonArray) { delegate.send(address, toJsonArray(message), replyHandler); }
         case (is ByteArray) { delegate.send(address, message, replyHandler); }
+        case (is Null) {
+          String? dummy = null;
+          delegate.send(address, dummy, replyHandler);
+        }
         
         //
         return promise;
@@ -84,13 +92,20 @@ shared class EventBus(EventBus_ delegate) {
     		Payload message) {
 
 		switch (message)
+		case (is Buffer_) { delegate.publish(address, message); }
+		case (is Character) { delegate.publish(address, message); }
 		case (is Boolean) { delegate.publish(address, message); }
+		case (is Byte) { delegate.publish(address, message); }
 		case (is Float) { delegate.publish(address, message); }
 		case (is Integer) { delegate.publish(address, message); }
 		case (is String) { delegate.publish(address, message); }
-		case (is JSonObject) { delegate.publish(address, fromObject(message)); }
-		case (is JSonArray) { throw Exception(); }
-		case (is ByteArray) { throw Exception(); }
+		case (is JSonObject) { delegate.publish(address, toJsonObject(message)); }
+		case (is JSonArray) { delegate.publish(address, toJsonArray(message)); }
+		case (is ByteArray) { delegate.publish(address, message); }
+		case (is Null) {
+			String? dummy = null;
+			delegate.publish(address, dummy);
+		}
 	}
 
     "Registers a handler against the specified address. The method returns a registration whose:
@@ -100,7 +115,7 @@ shared class EventBus(EventBus_ delegate) {
             "The address to register it at"
             String address,
             "The handler"
-            Anything(Message<M>) handler) given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray {
+            Anything(Message<M>) handler) given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray|Byte|Character|Buffer_|Null {
         HandlerRegistration<M> handlerAdapter = HandlerRegistration<M>(delegate, address, handler);
         handlerAdapter.register();
         return handlerAdapter;
