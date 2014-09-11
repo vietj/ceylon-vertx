@@ -4,7 +4,7 @@ import ceylon.collection { HashMap }
 import ceylon.test { ... }
 import org.vertx.java.core.json { JsonArray }
 
-shared test void testUtils() {
+shared test void testCombine() {
 
     HashMap<String, [String+]> src = HashMap<String, [String+]> {
         "foo" -> ["foo_value_2"],
