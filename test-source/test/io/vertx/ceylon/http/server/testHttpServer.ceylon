@@ -6,10 +6,10 @@ import ceylon.promise { Promise, Deferred }
 import ceylon.collection { HashMap, LinkedList }
 import ceylon.io { newSocketConnector, SocketAddress }
 import ceylon.io.charset { ascii }
-import test.io.vertx.ceylon { assertRequest, assertResolve, assertSend, with, server }
+import test.io.vertx.ceylon { assertRequest, assertResolve, assertSend, with, httpServer }
 
 shared test void testPath() => with {
-  server {
+  httpServer {
     void test(HttpServer server) {
       variable String? path = null;
       void f(HttpServerRequest req) {
@@ -28,7 +28,7 @@ shared test void testPath() => with {
 };
 
 shared test void testRequestHeader() => with {
-  server {
+  httpServer {
     void test(HttpServer server) {
       variable String? path = null;
       value headers = Deferred<Map<String, {String+}>>();
@@ -64,7 +64,7 @@ shared test void testRequestHeader() => with {
 };
 
 shared test void testQuery() => with {
-  server {
+  httpServer {
     void test(HttpServer server) {
       variable String? query = null;
       variable Map<String, {String+}>? parameters = null;
@@ -85,7 +85,7 @@ shared test void testQuery() => with {
 };
 
 shared test void testForm() => with {
-  server {
+  httpServer {
     void test(HttpServer server) {
       value parameters = Deferred<Map<String, {String+}>>();
       Promise<Map<String, {String+}>> p = parameters.promise;
@@ -105,7 +105,7 @@ shared test void testForm() => with {
 };
 
 shared test void testOk() => with {
-  server {
+  httpServer {
     void test(HttpServer server) {
       void f(HttpServerRequest req) {
         HttpServerResponse resp = req.response;
@@ -137,7 +137,7 @@ shared test void testOk() => with {
 };
 
 shared test void testParseBody() => with {
-  server {
+  httpServer {
     void test(HttpServer server) {
       value parameters = Deferred<String>();
       Promise<String> p = parameters.promise;
@@ -163,7 +163,7 @@ shared test void testParseBody() => with {
 };
 
 shared test void testPump() => with {
-  server {
+  httpServer {
     void test(HttpServer server) {
       void f(HttpServerRequest req) {
         HttpServerResponse resp = req.response;

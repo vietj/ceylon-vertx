@@ -12,6 +12,10 @@ import io.vertx.ceylon.sockjs {
 import io.vertx.ceylon.interop {
   VertxProvider
 }
+import io.vertx.ceylon.net {
+  NetServer,
+  NetClient
+}
 
 "The control centre of the Vert.x Core API.
  
@@ -35,10 +39,11 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
     "The File system object"
     shared FileSystem fileSystem = FileSystem(v.fileSystem());
     
+    "Create a new net server and returns it"
+    shared NetServer createNetServer() =>  NetServer(v.createNetServer());
+
     "Create a new http server and returns it"
-    shared HttpServer createHttpServer() {
-        return HttpServer(v, v.createHttpServer());
-    }
+    shared HttpServer createHttpServer() =>  HttpServer(v, v.createHttpServer());
 
     "Create a new http client and return it"
     shared HttpClient createHttpClient(
@@ -56,6 +61,9 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
         return HttpClient(client);
     }
     
+    "Create a new net client and return it"
+    shared NetClient createNetClient() => NetClient(v.createNetClient());
+
     """Set a one-shot timer to fire after [[delay]] milliseconds, at which point [[handle]] will be called with
        the id of the timer.
        """

@@ -3,6 +3,9 @@ import ceylon.promise { Deferred, Promise }
 import io.vertx.ceylon.util { putAll, FunctionalHandlerAdapter, functionalHandler }
 import io.vertx.ceylon.stream { wrapWriteStream, WriteStream }
 import org.vertx.java.core.buffer { Buffer }
+import io.vertx.ceylon {
+  Chunk
+}
 
 """Represents a client-side HTTP request.
  
@@ -61,7 +64,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
         return this;
     }
 
-    shared actual HttpClientRequest write(String|[String,String]|Buffer chunk) {
+    shared actual HttpClientRequest write(Chunk chunk) {
         switch (chunk) 
         case (is String) {
             request.write(chunk);
@@ -75,7 +78,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
         return this;
     }
 
-    shared actual HttpClientRequest end(<String|[String,String]|Buffer>? chunk) {
+    shared actual HttpClientRequest end(Chunk? chunk) {
         switch (chunk) 
         case (is String) {
             request.end(chunk);

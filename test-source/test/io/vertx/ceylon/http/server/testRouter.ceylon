@@ -1,10 +1,10 @@
 import ceylon.test { test, assertEquals }
 import io.vertx.ceylon.http { HttpServer, HttpServerRequest, RouteMatcher }
-import test.io.vertx.ceylon { assertRequest, assertResolve, with, server }
+import test.io.vertx.ceylon { assertRequest, assertResolve, with, httpServer }
 import ceylon.collection { LinkedList, HashMap }
 
 shared test void testRouter() => with {
-  server {
+  httpServer {
     void test(HttpServer server) {
       variable Integer catsCount = 0;
       void cats(HttpServerRequest req) {
@@ -31,7 +31,7 @@ shared test void testRouter() => with {
 };
 
 shared test void testRouterParameters() => with {
-  server {
+  httpServer {
     void test(HttpServer server) {
       value router = RouteMatcher();
       value params = LinkedList<Map<String, {String+}>>();

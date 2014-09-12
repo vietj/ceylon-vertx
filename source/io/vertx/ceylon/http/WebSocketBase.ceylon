@@ -1,6 +1,6 @@
 import org.vertx.java.core.http { WebSocketBase_=WebSocketBase, WebSocketFrame_=WebSocketFrame }
 import org.vertx.java.core.buffer { Buffer }
-import io.vertx.ceylon.util { VoidHandler, FunctionalHandlerAdapter }
+import io.vertx.ceylon.util { VoidNoArgHandler, FunctionalHandlerAdapter }
 import ceylon.io { SocketAddress }
 import io.vertx.ceylon.stream {
   wrapWriteStream,
@@ -58,7 +58,7 @@ shared abstract class WebSocketBase(WebSocketBase_<out Object> delegate) {
   
   """Set a closed handler on the connection"""
   shared WebSocketBase closeHandler(void handleClose()) {
-    value adapter = VoidHandler(handleClose);
+    value adapter = VoidNoArgHandler(handleClose);
     delegate.closeHandler(adapter);
     return this;
   }

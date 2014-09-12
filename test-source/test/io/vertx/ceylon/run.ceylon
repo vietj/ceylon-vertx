@@ -14,6 +14,7 @@ import io.vertx.ceylon { Vertx }
 import io.vertx.ceylon.http { HttpServer }
 import io.vertx.ceylon.shareddata { SharedData }
 import io.vertx.ceylon.eventbus { EventBus }
+import io.vertx.ceylon.net { NetServer }
 
 shared void with(void test(Vertx vertx)) {
   value vertx = Vertx();
@@ -24,7 +25,17 @@ shared void with(void test(Vertx vertx)) {
   }
 }
 
-shared Anything(Vertx) server(void test(HttpServer server)) {
+shared Anything(Vertx) netServer(void test(NetServer server)) {
+  void f(Vertx vertx) {
+    value server = vertx.createNetServer();
+    test(server);
+    Promise<Null> promise = server.close();
+    assertResolve(promise);
+  }
+  return f;
+}
+
+shared Anything(Vertx) httpServer(void test(HttpServer server)) {
   void f(Vertx vertx) {
     value server = vertx.createHttpServer();
     test(server);
