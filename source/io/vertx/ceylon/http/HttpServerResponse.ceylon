@@ -3,7 +3,8 @@ import io.vertx.ceylon.stream { WriteStream, wrapWriteStream }
 import io.vertx.ceylon.util { voidAsyncResult, putAll }
 import ceylon.promise { Promise }
 import org.vertx.java.core.buffer { Buffer }
-import io.vertx.ceylon { Chunk }
+import io.vertx.ceylon { Chunk,
+  Entries }
 
 "Represents a server-side HTTP response. Instances of this class are created and associated to every instance of
  [[HttpServerRequest]] that is created. It allows the developer to control the HTTP response that is sent back to the
@@ -81,12 +82,12 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
     shared actual Boolean chunked => delegate.chunked;
     assign chunked => delegate.setChunked(chunked);
 
-    shared actual HttpServerResponse headers({<String-><String|{String+}>>*} headers) {
+    shared actual HttpServerResponse headers(Entries headers) {
         putAll(headers, delegate.headers());
         return this;
     }
 
-    shared HttpServerResponse trailers({<String-><String|{String+}>>*} trailers) {
+    shared HttpServerResponse trailers(Entries trailers) {
         putAll(trailers, delegate.trailers());
         return this;
     }

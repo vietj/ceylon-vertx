@@ -19,7 +19,7 @@ shared class Message<T = Anything>(
     "Reply to this message. If the message was sent specifying a reply handler, that handler will be
      called when it has received a reply. If the message wasn't sent specifying a receipt handler
      this method does nothing."
-    shared Promise<Message<M>> reply<M = Nothing>(Payload? body = null) given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray|Byte|Character|Buffer_|Null {
+    shared Promise<Message<M>> reply<M = Nothing>(Payload? body = null) {
         
         //
         Handler_<Message_<Object>>? replyHandler;

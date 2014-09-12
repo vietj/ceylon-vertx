@@ -14,7 +14,7 @@ import io.vertx.ceylon.util {
 
 """You interact with SockJS clients through instances of SockJS socket.
    
-   The API is very similar to [[io.vertx.ceylon.http::WebSocket]]].
+   The API is very similar to [[io.vertx.ceylon.http::WebSocket]].
    It provides access to both [[SockJSSocket.readStream]] and [[SockJSSocket.writeStream]] so it can be used with
    [[io.vertx.ceylon.stream::Pump]] to pump data with flow control.
    

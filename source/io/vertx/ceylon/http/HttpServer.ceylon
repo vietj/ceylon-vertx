@@ -19,15 +19,15 @@ shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) extends ServerBase(d
 	
 	"Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
      instances of [[HttpServerRequest]] will be created and passed to this handler."
-	shared HttpServer requestHandler(void handle(HttpServerRequest req)) {
-		delegate.requestHandler(FunctionalHandlerAdapter(InternalHttpServerRequest, handle));
+	shared HttpServer requestHandler(void onRequest(HttpServerRequest req)) {
+		delegate.requestHandler(FunctionalHandlerAdapter(InternalHttpServerRequest, onRequest));
 		return this;
 	}
 	
-	"""Set the websocket handler for the server to [[handle]]. If a websocket connect handshake is successful a
-    new [[ServerWebSocket]] instance will be created and passed to the handle."""
-	shared HttpServer websocketHandler(void handle(ServerWebSocket websocket)) {
-		delegate.websocketHandler(FunctionalHandlerAdapter(ServerWebSocket, handle));
+	"""Set the websocket handler for the server to [[onConnect]]. If a websocket connect handshake is successful a
+    new [[ServerWebSocket]] instance will be created and passed to [[onConnect]]."""
+	shared HttpServer websocketHandler(void onConnect(ServerWebSocket websocket)) {
+		delegate.websocketHandler(FunctionalHandlerAdapter(ServerWebSocket, onConnect));
 		return this;
 	}
 	

@@ -57,15 +57,15 @@ shared abstract class WebSocketBase(WebSocketBase_<out Object> delegate) {
   }
   
   """Set a closed handler on the connection"""
-  shared WebSocketBase closeHandler(void handleClose()) {
-    value adapter = VoidNoArgHandler(handleClose);
+  shared WebSocketBase closeHandler(void onClose()) {
+    value adapter = VoidNoArgHandler(onClose);
     delegate.closeHandler(adapter);
     return this;
   }
   
   """Set a frame handler on the connection"""
-  shared WebSocketBase frameHandler(void handleFrame(WebSocketFrame frame)) {
-    value adapter = FunctionalHandlerAdapter<WebSocketFrame, WebSocketFrame_>(WebSocketFrame, handleFrame);
+  shared WebSocketBase frameHandler(void onFrame(WebSocketFrame frame)) {
+    value adapter = FunctionalHandlerAdapter<WebSocketFrame, WebSocketFrame_>(WebSocketFrame, onFrame);
     delegate.frameHandler(adapter);
     return this;
   }

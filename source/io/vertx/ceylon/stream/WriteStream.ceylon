@@ -32,17 +32,17 @@ shared class WriteStream(shared WriteStream_<Object> delegate) {
     
     """Set a drain handler on the stream. If the write queue is full, then the handler will be called when the write
        queue has been reduced to maxSize / 2. See [[Pump]] for an example of this being used."""
-    shared void drainHandler(void handleDrain()) {
+    shared void drainHandler(void onDrain()) {
         object drainHandler satisfies Handler_<Void_> {
             shared actual void handle(Void_ v) {
-                handleDrain();
+                onDrain();
             }
         }
         delegate.drainHandler(drainHandler);
     }
 
     "Set an exception handler."
-    shared void exceptionHandler(void handleException(Throwable t)) {
-      delegate.exceptionHandler(functionalHandler(handleException));
+    shared void exceptionHandler(void onException(Throwable t)) {
+      delegate.exceptionHandler(functionalHandler(onException));
     }
 }

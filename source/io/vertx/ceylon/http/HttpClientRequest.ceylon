@@ -4,7 +4,8 @@ import io.vertx.ceylon.util { putAll, FunctionalHandlerAdapter, functionalHandle
 import io.vertx.ceylon.stream { wrapWriteStream, WriteStream }
 import org.vertx.java.core.buffer { Buffer }
 import io.vertx.ceylon {
-  Chunk
+  Chunk,
+  Entries
 }
 
 """Represents a client-side HTTP request.
@@ -95,7 +96,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
         return this;
     }
 
-    shared actual HttpClientRequest headers({<String-><String|{String+}>>*} headers) {
+    shared actual HttpClientRequest headers(Entries headers) {
         putAll(headers, request.headers());
         return this;
     }

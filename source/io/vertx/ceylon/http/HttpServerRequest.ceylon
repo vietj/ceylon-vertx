@@ -107,8 +107,8 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
       return this;
     }
     
-    shared HttpServerRequest uploadHandler(void handle(HttpServerFileUpload upload)) {
-      delegate.uploadHandler(FunctionalHandlerAdapter(HttpServerFileUpload, handle));
+    shared HttpServerRequest uploadHandler(void onUpload(HttpServerFileUpload upload)) {
+      delegate.uploadHandler(FunctionalHandlerAdapter(HttpServerFileUpload, onUpload));
       return this;
     }
     

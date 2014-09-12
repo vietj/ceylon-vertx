@@ -37,7 +37,7 @@ shared test void testRouterParameters() => with {
       value params = LinkedList<Map<String, {String+}>>();
       router.get {
         pattern = "/:blogname/:post";
-        void handler(HttpServerRequest req) {
+        void handle(HttpServerRequest req) {
           params.add(req.params);
           req.response.status(200).end();
         }

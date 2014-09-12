@@ -43,108 +43,108 @@ shared class RouteMatcher() {
     }
     
     "Specify a handler that will be called for a matching HTTP GET"
-    shared void get("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.get(pattern, wrap(handler));
+    shared void get("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.get(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP PUT"
-    shared void put("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.put(pattern, wrap(handler));
+    shared void put("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.put(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP POST"
-    shared void post("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.post(pattern, wrap(handler));
+    shared void post("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.post(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP DELETE"
-    shared void delete("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.delete(pattern, wrap(handler));
+    shared void delete("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.delete(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP OPTIONS"
-    shared void options("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.options(pattern, wrap(handler));
+    shared void options("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.options(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP HEAD"
-    shared void head("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.head(pattern, wrap(handler));
+    shared void head("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.head(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP TRACE"
-    shared void trace("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.trace(pattern, wrap(handler));
+    shared void trace("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.trace(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP CONNECT"
-    shared void connect("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.connect(pattern, wrap(handler));
+    shared void connect("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.connect(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP PATCH"
-    shared void patch("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.patch(pattern, wrap(handler));
+    shared void patch("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.patch(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for all HTTP methods"
-    shared void all("The simple pattern" String pattern, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.all(pattern, wrap(handler));
+    shared void all("The simple pattern" String pattern, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.all(pattern, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP GET"
-    shared void getWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.getWithRegEx(regex, wrap(handler));
+    shared void getWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.getWithRegEx(regex, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP PUT"
-    shared void putWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.putWithRegEx(regex, wrap(handler));
+    shared void putWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.putWithRegEx(regex, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP POST"
-    shared void postWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.postWithRegEx(regex, wrap(handler));
+    shared void postWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.postWithRegEx(regex, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP DELETE"
-    shared void deleteWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.deleteWithRegEx(regex, wrap(handler));
+    shared void deleteWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.deleteWithRegEx(regex, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP OPTIONS"
-    shared void optionsWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.optionsWithRegEx(regex, wrap(handler));
+    shared void optionsWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.optionsWithRegEx(regex, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP HEAD"
-    shared void headWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.headWithRegEx(regex, wrap(handler));
+    shared void headWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.headWithRegEx(regex, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP TRACE"
-    shared void traceWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.traceWithRegEx(regex, wrap(handler));
+    shared void traceWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.traceWithRegEx(regex, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP CONNECT"
-    shared void connectWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.connectWithRegEx(regex, wrap(handler));
+    shared void connectWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.connectWithRegEx(regex, wrap(handle));
     }
     
     "Specify a handler that will be called for a matching HTTP PATCH"
-    shared void patchWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.patchWithRegEx(regex, wrap(handler));
+    shared void patchWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.patchWithRegEx(regex, wrap(handle));
     }
     
     "Specify a handler that will be called for all HTTP methods"
-    shared void allWithRegEx("A regular expression" String regex, "The handler to call" void handler(HttpServerRequest request)) {
-        delegate.allWithRegEx(regex, wrap(handler));
+    shared void allWithRegEx("A regular expression" String regex, "The handler to call" void handle(HttpServerRequest request)) {
+        delegate.allWithRegEx(regex, wrap(handle));
     }
 
     "Specify a handler that will be called when no other handlers match. If this handler is not specified default behaviour is to return a 404"
-    shared void noMatch(void handler(HttpServerRequest request)) {
-        delegate.noMatch(wrap(handler));
+    shared void noMatch(void handle(HttpServerRequest request)) {
+        delegate.noMatch(wrap(handle));
     }
 }
 

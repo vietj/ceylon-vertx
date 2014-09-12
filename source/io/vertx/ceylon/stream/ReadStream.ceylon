@@ -17,18 +17,18 @@ by("Julien Viet")
 shared class ReadStream(shared ReadStream_<Object> delegate) {
     
     "Set a data handler. As data is read, the handler will be called with the data."
-    shared void dataHandler(void handleData(Buffer buffer)) {
-        delegate.dataHandler(functionalHandler(handleData));
+    shared void dataHandler(void onData(Buffer buffer)) {
+        delegate.dataHandler(functionalHandler(onData));
     }
     
     "Set an exception handler."
-    shared void exceptionHandler(void handleException(Throwable t)) {
-      delegate.exceptionHandler(functionalHandler(handleException));
+    shared void exceptionHandler(void onException(Throwable t)) {
+      delegate.exceptionHandler(functionalHandler(onException));
     }
     
     "Set an end handler. Once the stream has ended, and there is no more data to be read, this handler will be called."
-    shared void endHandler(void handleEnd()) {
-        value adapter = VoidNoArgHandler(handleEnd);
+    shared void endHandler(void onEnd()) {
+        value adapter = VoidNoArgHandler(onEnd);
         delegate.endHandler(adapter);
     }
     
