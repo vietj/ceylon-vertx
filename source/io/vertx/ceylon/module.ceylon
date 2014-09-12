@@ -226,7 +226,7 @@
 
    ## Flow Control - Streams and Pumps
    
-   Implemented for Http package, documentation uses a net server, so not yet translated.
+   See [[package io.vertx.ceylon.stream]].
    
    ## Writing HTTP Servers and Clients
    
