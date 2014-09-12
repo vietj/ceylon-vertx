@@ -93,8 +93,8 @@
    - `Message<Byte>` : mapped to [[ceylon.language::Byte]] or [[ceylon.language::Integer]]
    - `Message<Character>` : mapped to [[ceylon.language::Character]]
    - `Message<Float>` :  mapped to [[ceylon.language::Float]]
-   - `Message<Integer>` : mapped to Ceylon [[ceylon.language::Integer]]
-   - `Message<Short>` : mapped to Ceylon [[ceylon.language::Integer]]
+   - `Message<Integer>` : mapped to [[ceylon.language::Integer]]
+   - `Message<Short>` : mapped to [[ceylon.language::Integer]]
    
    If you know you'll always be receiving messages of a particular type you can use the specific type in your handler, e.g:
    
@@ -104,7 +104,15 @@
    }
    ~~~
    
-   The return value of [[EventBus.registerHandler]] is a [[io.vertx.ceylon::Registration]] object that allows to unregister an handler:
+   You can create also combine types:
+   
+   ~~~
+   void myHandler(Message<String|Integer> message) {
+      ...
+   }
+   ~~~
+
+      The return value of [[EventBus.registerHandler]] is a [[io.vertx.ceylon::Registration]] object that allows to unregister an handler:
    
    ~~~
    value registration = eb.registerHandler("test.address", myHandler);

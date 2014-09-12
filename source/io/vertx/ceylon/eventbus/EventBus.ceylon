@@ -49,7 +49,7 @@ shared class EventBus(EventBus_ delegate) {
     		"The address to send it to"
     		String address,
     		"The message"
-    		Payload message) given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray|Byte|Character|Buffer_|Null {
+    		Payload message) {
 
         //
 		Handler_<Message_<Object>>? replyHandler;
@@ -115,7 +115,7 @@ shared class EventBus(EventBus_ delegate) {
             "The address to register it at"
             String address,
             "The handler"
-            Anything(Message<M>) handler) given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray|Byte|Character|Buffer_|Null {
+            Anything(Message<M>) handler) {
         HandlerRegistration<M> handlerAdapter = HandlerRegistration<M>(delegate, address, handler);
         handlerAdapter.register();
         return handlerAdapter;

@@ -58,8 +58,25 @@ shared test void testJavaString() => testNativeJavaType<String>("foobar", (Event
 shared test void testJavaCharacter() => testNativeJavaType<Character>('X', (EventBus_ bus) => bus.send("foo", Character_('X')) );
 shared test void testJavaBuffer() => testNativeJavaType<Buffer_>(Buffer_("thebuffer"), (EventBus_ bus) => bus.send("foo", Buffer_("thebuffer")) );
 
-void testNativeJavaType<C>(C expected, void send(EventBus_ bus))
-    given C of Byte|String|JSonObject|Boolean|Integer|Float|JSonArray|ByteArray|Character|Buffer_ {
+T? nullValue<T>() {
+  return null;
+}
+
+shared test void testJavaNullByte() => testNativeJavaType<Byte?>(null, (EventBus_ bus) => bus.send("foo", nullValue<Byte_>()) );
+shared test void testJavaNullShort() => testNativeJavaType<Integer?>(null, (EventBus_ bus) => bus.send("foo", nullValue<Short_>()) );
+shared test void testJavaNullInteger() => testNativeJavaType<Integer?>(null, (EventBus_ bus) => bus.send("foo", nullValue<Integer_>()) );
+shared test void testJavaNullLong() => testNativeJavaType<Integer?>(null, (EventBus_ bus) => bus.send("foo", nullValue<Long_>()) );
+shared test void testJavaNullFloat() => testNativeJavaType<Float?>(null, (EventBus_ bus) => bus.send("foo", nullValue<Float_>()) );
+shared test void testJavaNullDouble() => testNativeJavaType<Float?>(null, (EventBus_ bus) => bus.send("foo", nullValue<Double_>()) );
+shared test void testJavaNullBoolean() => testNativeJavaType<Boolean?>(null, (EventBus_ bus) => bus.send("foo", nullValue<Boolean_>()) );
+shared test void testJavaNullString() => testNativeJavaType<String?>(null, (EventBus_ bus) => bus.send("foo", nullValue<String>()) );
+shared test void testJavaNullCharacter() => testNativeJavaType<Character?>(null, (EventBus_ bus) => bus.send("foo", nullValue<Character_>()) );
+shared test void testJavaNullBuffer() => testNativeJavaType<Buffer_?>(null, (EventBus_ bus) => bus.send("foo", nullValue<Buffer_>()) );
+
+shared test void testJavaIntegerOrString1() => testNativeJavaType<Integer|String>(3, (EventBus_ bus) => bus.send("foo", Long_(3)) );
+shared test void testJavaIntegerOrString2() => testNativeJavaType<Integer|String>("3", (EventBus_ bus) => bus.send("foo", String_("3")) );
+
+void testNativeJavaType<C>(C expected, void send(EventBus_ bus)) {
   Vertx_ native = VertxProvider_.create();
   value vertx = Vertx(native);
   value deferred = Deferred<C>();
@@ -69,7 +86,7 @@ void testNativeJavaType<C>(C expected, void send(EventBus_ bus))
   assertEquals(payload, expected);
 }
 
-void send<M>(M msg)(EventBus bus) given M of String|JSonObject|Boolean|Integer|Float|JSonArray|ByteArray|Byte|Character|Buffer_|Null {
+void send<M>(M msg)(EventBus bus) {
     assert(is Payload msg);
     value deferred = Deferred<M>();
     Registration registration = bus.registerHandler("foo", (Message<M> msg) => deferred.fulfill(msg.body));
@@ -87,7 +104,7 @@ void send<M>(M msg)(EventBus bus) given M of String|JSonObject|Boolean|Integer|F
     assertResolve(cancel);
 }
 
-void reply<M>(M msg)(EventBus bus) given M of String|JSonObject|Boolean|Integer|Float|JSonArray|ByteArray|Byte|Character|Buffer_|Null {
+void reply<M>(M msg)(EventBus bus) {
     assert(is Payload msg);
     Registration registration = bus.registerHandler("foo", (Message<String> whateverMsg) => whateverMsg.reply(msg));
     assertResolve(registration.completed);

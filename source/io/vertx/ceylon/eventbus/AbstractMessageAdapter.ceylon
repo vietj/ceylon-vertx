@@ -1,14 +1,10 @@
-import ceylon.json { JSonArray=Array, JSonObject=Object }
 import org.vertx.java.core { Handler_=Handler }
 import org.vertx.java.core.eventbus { Message_=Message }
 import io.vertx.ceylon.util { fromObject }
-import java.lang { ByteArray }
-import org.vertx.java.core.buffer { Buffer_=Buffer }
 
 by("Julien Viet")
 abstract class AbstractMessageAdapter<M>() 
-        satisfies Handler_<Message_<Object>>
-        given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray|Byte|Character|Buffer_|Null {
+        satisfies Handler_<Message_<Object>> {
     
     shared actual void handle(Message_<Object> eventDelegate) {
         String? replyAddress = eventDelegate.replyAddress();

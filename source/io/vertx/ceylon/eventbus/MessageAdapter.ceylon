@@ -1,10 +1,7 @@
-import ceylon.json { JSonObject=Object, JSonArray=Array }
 import ceylon.promise { Deferred }
-import java.lang { ByteArray }
-import org.vertx.java.core.buffer { Buffer_=Buffer }
 
 by("Julien Viet")
-class MessageAdapter<M>() extends AbstractMessageAdapter<M>() given M of String|JSonObject|JSonArray|Integer|Float|Boolean|ByteArray|Byte|Character|Buffer_|Null {
+class MessageAdapter<M>() extends AbstractMessageAdapter<M>() {
     
     "The deferred for the reply"
     shared Deferred<Message<M>> deferred = Deferred<Message<M>>();
