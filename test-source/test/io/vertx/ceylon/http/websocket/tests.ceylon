@@ -70,25 +70,25 @@ shared test void clientCloseHandler() => with {
     });
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
-    value deferred = Deferred<String>(); 
+    value deferred = Deferred<Null>(); 
     value ws = client.connectWebsocket("/foo");    
-    ws.onComplete((WebSocket websocket) => websocket.closeHandler(() => deferred.fulfill("closed")));
-    assertResolveTo(deferred, "closed");
+    ws.onComplete((WebSocket websocket) => websocket.closeHandler().compose(deferred.fulfill, deferred.reject));
+    assertResolveTo(deferred, null);
   }
 };
 
 shared test void serverCloseHandler() => with {
   void test(Vertx vertx) {   
     value server = vertx.createHttpServer();
-    value deferred = Deferred<String>(); 
+    value deferred = Deferred<Null>(); 
     server.websocketHandler(void (ServerWebSocket websocket) {
-      websocket.closeHandler(() => deferred.fulfill("closed"));
+      websocket.closeHandler().compose(deferred.fulfill, deferred.reject);
     });
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
     value ws = client.connectWebsocket("/foo");    
     ws.onComplete((WebSocket websocket) => websocket.close());
-    assertResolveTo(deferred, "closed");
+    assertResolveTo(deferred, null);
   }
 };
 
