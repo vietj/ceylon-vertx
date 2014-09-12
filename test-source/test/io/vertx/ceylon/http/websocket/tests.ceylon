@@ -22,7 +22,6 @@ shared test void clientSendHeader() => with {
       uri = "/foo";
       wsVersion = \iRFC6455;
       headers = { "foo"->"foo_value"  };
-      void onWsConnect (WebSocket websocket) {}
     };    
     assertResolveTo(deferred, "foo_value");
   }
@@ -39,9 +38,8 @@ shared test void clientSendMessage() => with {
     });
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
-    client.connectWebsocket("/foo", void (WebSocket websocket) {
-      websocket.writeTextFrame("helloFromClient");
-    });    
+    value ws = client.connectWebsocket("/foo");    
+    ws.onComplete((WebSocket websocket) => websocket.writeTextFrame("helloFromClient"));
     assertResolveTo(deferred, "helloFromClient");
   }
 };
@@ -55,11 +53,11 @@ shared test void serverSendMessage() => with {
     });
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
-    client.connectWebsocket("/foo", void (WebSocket websocket) {
-      websocket.frameHandler(void (WebSocketFrame frame) {
+    value ws = client.connectWebsocket("/foo");    
+    ws.onComplete((WebSocket websocket) => websocket.frameHandler(void (WebSocketFrame frame) {
         deferred.fulfill(frame.textData);
-      });
-    });    
+      })
+    );
     assertResolveTo(deferred, "helloFromServer");
   }
 };
@@ -73,9 +71,8 @@ shared test void clientCloseHandler() => with {
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
     value deferred = Deferred<String>(); 
-    client.connectWebsocket("/foo", void (WebSocket websocket) {
-      websocket.closeHandler(() => deferred.fulfill("closed"));
-    });    
+    value ws = client.connectWebsocket("/foo");    
+    ws.onComplete((WebSocket websocket) => websocket.closeHandler(() => deferred.fulfill("closed")));
     assertResolveTo(deferred, "closed");
   }
 };
@@ -89,9 +86,8 @@ shared test void serverCloseHandler() => with {
     });
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
-    client.connectWebsocket("/foo", void (WebSocket websocket) {
-      websocket.close();
-    });    
+    value ws = client.connectWebsocket("/foo");    
+    ws.onComplete((WebSocket websocket) => websocket.close());
     assertResolveTo(deferred, "closed");
   }
 };
@@ -108,9 +104,8 @@ shared test void serverRejects() => with {
     client.exceptionHandler(void (Throwable t) {
       deferred.fulfill("rejected");
     });
-    client.connectWebsocket("/foo", void (WebSocket websocket) {
-      deferred.reject(Exception());
-    });    
+    value ws = client.connectWebsocket("/foo");    
+    ws.onComplete((WebSocket websocket) => deferred.reject(Exception()));
     assertResolveTo(deferred, "rejected");
   }
 };

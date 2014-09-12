@@ -67,8 +67,9 @@ shared class NetSocket(NetSocket_ delegate) {
     return SocketAddress(address.address.hostAddress, address.port);
   }
   
-  "Returns `true` if this [[NetSocket]] is encrypted via SSL/TLS."
-  shared Boolean ssl => delegate.ssl;
+  // Can't work
+  // "Returns `true` if this [[NetSocket]] is encrypted via SSL/TLS."
+  // shared Boolean ssl => delegate.ssl;
   
   "Upgrade channel to use SSL/TLS. Be aware that for this to work SSL must be configured."
   shared Promise<Null> sslUpgrade(void onUpgrade()) {

@@ -1,12 +1,11 @@
-import org.vertx.java.core.http { HttpClient_=HttpClient, WebSocketVersion_=WebSocketVersion  }
-import io.vertx.ceylon.util { FunctionalHandlerAdapter, putAll, functionalHandler }
+import org.vertx.java.core.http { HttpClient_=HttpClient, WebSocketVersion_=WebSocketVersion, WebSocket_=WebSocket  }
+import io.vertx.ceylon.util { putAll, functionalHandler, HandlerPromise }
 import org.vertx.java.core.http.impl { HttpHeadersAdapter }
 import io.netty.handler.codec.http { DefaultHttpHeaders }
 import java.util { HashSet_=HashSet }
 import java.lang { String_=String }
-import io.vertx.ceylon {
-  ClientBase
-}
+import io.vertx.ceylon { ClientBase }
+import ceylon.promise { Promise }
 
 "An HTTP client that maintains a pool of connections to a specific host, at a specific port. The client supports
  pipelining of requests.
@@ -95,10 +94,15 @@ shared class HttpClient(HttpClient_ delegate) extends ClientBase(delegate, deleg
        
        You can also specify a set of headers to append to the upgrade request and specify the supported subprotocols.
        
-       The connect is done asynchronously and [[onWsConnect]] is called back with the websocket"""
-    shared HttpClient connectWebsocket(String uri, void onWsConnect(WebSocket websocket),
+       The connect is done asynchronously, the returned promise is resolved with the websocket"""
+    shared Promise<WebSocket> connectWebsocket(String uri,
       WebSocketVersion? wsVersion = null, {<String-><String|{String+}>>*}? headers = null, String[]? subprotocols = null) {
-      value handler = FunctionalHandlerAdapter(WebSocket, onWsConnect);
+      value handler = HandlerPromise {
+        WebSocket transform(WebSocket_? ws) {
+          assert(exists ws);
+          return WebSocket(ws);
+        }
+      };
       if (exists wsVersion) {
         WebSocketVersion_ wsVersion_;
         switch (wsVersion) 
@@ -123,7 +127,7 @@ shared class HttpClient(HttpClient_ delegate) extends ClientBase(delegate, deleg
       } else {
         delegate.connectWebsocket(uri, handler);
       }
-      return this;
+      return handler.promise;
     }
     
     """This method returns an [[HttpClientRequest]] instance which represents an HTTP GET request with the specified `uri`."""

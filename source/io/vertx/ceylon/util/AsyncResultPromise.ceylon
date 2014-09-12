@@ -1,6 +1,9 @@
 import org.vertx.java.core { Handler_=Handler, AsyncResult_=AsyncResult }
 import ceylon.promise { Deferred, Promise }
 import java.lang { Void_=Void, Boolean_=Boolean, String_=String, ObjectArray_=ObjectArray }
+import io.vertx.ceylon.util {
+  fromStringArray
+}
 
 by("Julien Viet")
 shared class AsyncResultPromise<Value, Result>(Value(Result) transform)
