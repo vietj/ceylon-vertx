@@ -1,3 +1,9 @@
+import java.lang {
+  ByteArray
+}
+import org.vertx.java.core.buffer {
+  Buffer
+}
 """# Vert.x for Ceylon
    
    Vert.x is a lightweight, high performance application platform for the JVM that's designed for modern mobile, web,
@@ -42,7 +48,95 @@
    
    ## Buffers
    
-   *Not yet implemented*
+   Most data in Vert.x is shuffled around using instances of [[org.vertx.java.core.buffer::Buffer]]. We chose deliberately
+   to use the Vert.x native type as it can easily used from Ceylon and a wrapper would complicate the bridge.
+   
+   A Buffer represents a sequence of zero or more bytes that can be written to or read from, and which expands
+   automatically as necessary to accomodate any bytes written to it. You can perhaps think of a buffer as smart byte array.
+   
+   ### Creating Buffers
+   
+   Create a new empty buffer:
+   
+   ~~~
+   value buff = Buffer();
+   ~~~
+   
+   Create a buffer from a String. The String will be encoded in the buffer using UTF-8.
+   
+   ~~~
+   value buff = Buffer("some-string");
+   ~~~
+   
+   Create a buffer from a String: The String will be encoded using the specified encoding, e.g:
+
+   ~~~
+   value buff = Buffer("some-string", "UTF-16");
+   ~~~
+   
+   Create a buffer from a byte[] (using [[java.lang::ByteArray]])
+   
+   ~~~
+   ByteArray bytes = ...;
+   value buff = Buffer(bytes);   
+   ~~~
+   
+   Create a buffer with an initial size hint. If you know your buffer will have a certain amount of data written to it
+   you can create the buffer and specify this size. This makes the buffer initially allocate that much memory and
+   is more efficient than the buffer automatically resizing multiple times as data is written to it.
+   
+   Note that buffers created this way are empty. It does not create a buffer filled with zeros up to the specified size.
+   
+   ~~~
+   value buff = Buffer(10000);
+   ~~~
+   
+   ### Writing to a Buffer
+   
+   There are two ways to write to a buffer: appending, and random access. In either case buffers
+   will always expand automatically to encompass the bytes. It's not possible to get an
+   `IndexOutOfBoundsException` with a buffer.
+   
+   #### Appending to a Buffer
+   
+   To append to a buffer, you use the `appendXXX` methods. Append methods exist for appending other buffers,
+   byte[], String and all primitive types.
+   
+   The return value of the appendXXX methods is the buffer itself, so these can be chained:
+   
+   ~~~
+   value buff = Buffer();
+   
+   buff.appendInt(123).appendString("hello\n");
+   ~~~
+   
+   #### Random access buffer writes
+   
+   You can also write into the buffer at a specific index, by using the `setXXX` methods. Set methods exist for other
+   buffers, byte[], String and all primitive types. All the set methods take an index as the first argument - this
+   represents the position in the buffer where to start writing the data.
+   
+   ~~~
+   value buff = Buffer();
+   
+   buff.setInt(1000, 123);
+   buff.setString(0, "hello");
+   ~~~
+
+   ### Reading from a Buffer
+   
+   Data is read from a buffer using the `getXXX` methods. Get methods exist for byte[], String and all primitive types.
+   The first argument to these methods is an index in the buffer from where to get the data.
+   
+   ~~~
+   Buffer buff = ...;
+   Integer i = buff.getInt(0);
+   ~~~
+
+   ### Other buffer methods:
+
+   - length(). To obtain the length of the buffer. The length of a buffer is the index of the byte in the buffer with the largest index + 1.
+   - copy(). Copy the entire buffer
    
    ## JSON
    
