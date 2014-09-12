@@ -1,9 +1,3 @@
-import java.lang {
-  ByteArray
-}
-import org.vertx.java.core.buffer {
-  Buffer
-}
 """# Vert.x for Ceylon
    
    Vert.x is a lightweight, high performance application platform for the JVM that's designed for modern mobile, web,
