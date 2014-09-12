@@ -140,8 +140,29 @@ import org.vertx.java.core.buffer {
    
    ## JSON
    
-   *Todo*
+   Whereas JavaScript has first class support for JSON, and Ruby has Hash literals which make representing JSON easy
+   within code, things aren't so easy in Ceylon
    
+   A JSON object is represented by instances of [[ceylon.json::Object]]. A JSON array is represented by instances of
+   [[ceylon.json::Array]].
+   
+   A usage example would be using a Ceylon verticle to send or receive JSON messages from the event bus.
+   
+   ~~~
+   value eb = vertx.eventBus();
+   
+   value obj = Object { "foo"->"wibble", "age"->1000 };
+   eb.send("some-address", obj);
+   
+   // ....
+   // And in a handler somewhere:
+   
+   shared void handle(Message<Object> message) {
+     print("foo is ``message.body["foo"]``");
+     print("age is ``message.body["age"]``");
+   }
+   ~~~
+
    ## Delayed and Periodic Tasks
    
    It's very common in Vert.x to want to perform an action after a delay, or periodically.
