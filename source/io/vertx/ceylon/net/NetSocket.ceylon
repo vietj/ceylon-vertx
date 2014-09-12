@@ -2,9 +2,10 @@ import org.vertx.java.core.net { NetSocket_=NetSocket }
 import io.vertx.ceylon { Chunk }
 import org.vertx.java.core.buffer { Buffer_=Buffer }
 import ceylon.promise { Promise, Deferred }
-import io.vertx.ceylon.util { voidAsyncResult, VoidNullArgHandler }
+import io.vertx.ceylon.util { voidAsyncResult, VoidNullArgHandler, HandlerPromise }
 import ceylon.io { SocketAddress }
 import io.vertx.ceylon.stream { ReadStream, wrapWriteStream, WriteStream, wrapReadStream }
+import java.lang { Void_=Void }
 
 """Represents a socket-like interface to a TCP/SSL connection on either the
    client or the server side.
@@ -18,6 +19,9 @@ import io.vertx.ceylon.stream { ReadStream, wrapWriteStream, WriteStream, wrapRe
    
    Instances of this class are not thread-safe."""
 shared class NetSocket(NetSocket_ delegate) {
+  
+  value closed = HandlerPromise<Null, Void_>((Void_? v) => null);
+  delegate.closeHandler(closed);
   
   shared WriteStream writeStream = wrapWriteStream(delegate);
   
@@ -76,6 +80,11 @@ shared class NetSocket(NetSocket_ delegate) {
     value done = Deferred<Null>();
     delegate.ssl(VoidNullArgHandler(done.fulfill));
     return done.promise;
+  }
+  
+  "Returns a promise that will be resolved when the NetSocket is closed"
+  shared Promise<Null> closeHandler() {
+    return closed.promise;
   }
   
   "Close the NetSocket"
