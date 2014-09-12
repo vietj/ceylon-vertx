@@ -4,6 +4,7 @@ import ceylon.promise { Promise }
 import io.vertx.ceylon.util { AsyncResultPromise, FunctionalHandlerAdapter, voidAsyncResult }
 import ceylon.collection { LinkedList }
 import io.vertx.ceylon.sockjs { SockJSServer }
+import io.vertx.ceylon { ServerBase }
 
 "An HTTP and WebSockets server
 
@@ -14,7 +15,7 @@ import io.vertx.ceylon.sockjs { SockJSServer }
  
  Instances of HttpServer are thread-safe."
 by("Julien Viet")
-shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) {
+shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) extends ServerBase(delegate, delegate) {
 	
 	"Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
      instances of [[HttpServerRequest]] will be created and passed to this handler."
@@ -65,52 +66,6 @@ shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) {
 	shared SockJSServer createSockJSServer() {
 		return SockJSServer(vertx.createSockJSServer(delegate));
 	}
-	
-	"Is client auth required"
-	shared Boolean clientAuthRequired => delegate.clientAuthRequired;
-
-	"""Set to true if you want the server to request client authentication from any connecting clients. This
-     is an extra level of security in SSL, and requires clients to provide client certificates.
-     Those certificates must be added to the server trust store.
-   """
-	assign clientAuthRequired => delegate.setClientAuthRequired(clientAuthRequired);
-
-	"""Is SSL enabled"""
-	shared Boolean ssl => delegate.ssl;
-
-	"""If `true`, this signifies that any connections will be SSL connections."""
-	assign ssl => delegate.setSSL(ssl);
-
-	"Get the key store path"
-	shared String keyStorePath => delegate.keyStorePath;
-
-	"Set the path to the SSL key store. This method should only be used in SSL mode, i.e. after
-	 [[ssl]] has been set to {@code true}.
-   The SSL key store is a standard Java Key Store, and will contain the client certificate.
-   Client certificates are only required if the server requests client authentication."
-	assign keyStorePath => delegate.setKeyStorePath(keyStorePath);
-
-	"Get the key store password"
-	shared String keyStorePassword => delegate.keyStorePassword;
-
-	"Set the password for the SSL key store. This method should only be used in SSL mode, i.e. after
-	 [[ssl]] has been set to `true`."
-	assign keyStorePassword => delegate.setKeyStorePassword(keyStorePassword);
-
-	"Get the trust store path"
-	shared String trustStorePath => delegate.trustStorePath;
-
-	"Set the path to the SSL trust store. This method should only be used in SSL mode, i.e. after
-	 [[ssl]] has been set to `true`. The trust store is a standard Java Key Store, and should contain
-	 the certificates of any servers that the client trusts."
-	assign trustStorePath => delegate.setTrustStorePath(trustStorePath);
-
-	"Get trust store password"
-	shared String trustStorePassword => delegate.trustStorePassword;
-
-	"Set the password for the SSL trust store. This method should only be used in SSL mode, i.e. after
-	 [[ssl]] has been set to `true`."
-	assign trustStorePassword => delegate.setTrustStorePassword(trustStorePassword);
 
     "Tell the server to start listening on all available interfaces and port `port`.
      Be aware this is an async operation and the server may not bound on return of the method.
