@@ -219,6 +219,10 @@
      }
    };
    ~~~
+   
+   ## Writing TCP Servers and Clients
+   
+   See [[package io.vertx.ceylon.net]].
 
    ## Flow Control - Streams and Pumps
    
