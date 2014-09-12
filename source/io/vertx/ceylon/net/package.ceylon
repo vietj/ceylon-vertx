@@ -382,5 +382,109 @@
    They have the same meaning as those on [[NetServer]].
    
    [[NetClient]] also has a further set of properties which are used to configure SSL. We'll discuss those later on.
+   
+   ## SSL Servers
+   
+   Net servers can also be configured to work with [Transport Layer Security](http://en.wikipedia.org/wiki/Transport_Layer_Security) (previously known as SSL).
+   
+   When a [[NetServer]] is working as an SSL Server the API of the [[NetServer]] and [[NetSocket]] is identical compared to
+   when it working with standard sockets. Getting the server to use SSL is just a matter of configuring the [[NetServer]]
+   before [[NetServer.listen]] is called.
+   
+   To enabled SSL the attribute [[io.vertx.ceylon::ServerBase.ssl]] must be called on the Net Server.
+   
+   The server must also be configured with a _key store_ and an optional _trust store_.
+   
+   These are both _Java keystores_ which can be managed using the [keytool](http://docs.oracle.com/javase/6/docs/technotes/tools/solaris/keytool.html)
+   utility which ships with the JDK.
+   
+   The keytool command allows you to create keystores, and import and export certificates from them.
+   
+   The key store should contain the server certificate. This is mandatory - the client will not be able to connect
+   to the server over SSL if the server does not have a certificate.
+   
+   The key store is configured on the server using the [[io.vertx.ceylon::NetworkBase.keyStorePath]] and
+   [[io.vertx.ceylon::NetworkBase.keyStorePassword]] methods.
+   
+   The trust store is optional and contains the certificates of any clients it should trust. This is only used if client
+   authentication is required.
+   
+   To configure a server to use server certificates only:
+
+   ~~~
+   value server = vertx.createNetServer();
+   server.ssl = true;
+   server.keyStorePath = "/path/to/your/keystore/server-keystore.jks";
+   server.keyStorePassword = "password";
+   ~~~
+   
+   Making sure that `server-keystore.jks` contains the server certificate.
+   
+   To configure a server to also require client certificates:
+   
+   ~~~
+   value server = vertx.createNetServer();
+   server.ssl = true;
+   server.keyStorePath = "/path/to/your/keystore/server-keystore.jks";
+   server.keyStorePassword = "password";
+   server.trustStorePath = "/path/to/your/keystore/server-truststore.jks";
+   server.trustStorePassword = "password";
+   server.clientAuthRequired = true;
+   ~~~
+   
+   Making sure that `server-truststore.jks` contains the certificates of any clients who the server trusts.
+   
+   If `clientAuthRequired` is set to `true and the client cannot provide a certificate, or it provides a certificate that the server does not trust then the connection attempt will not succeed.
+   
+   ## SSL Clients
+   
+   Net Clients can also be easily configured to use SSL. They have the exact same API when using SSL as when using standard sockets.
+   
+   To enable SSL on a [[NetClient]] the attribute [[io.vertx.ceylon::NetworkBase.ssl]] is set to `true`.
+   
+   If the [[io.vertx.ceylon::ClientBase.trustAll]] is invoked on the client, then the client will trust all server
+   certificates. The connection will still be encrypted but this mode is vulnerable to 'man in the middle' 
+   ttacks. I.e. you can't be sure who you are connecting to. Use this with caution. Default value is `false`.
+   
+   If [[io.vertx.ceylon::ClientBase.trustAll]] has not been set to `true` then a client trust store must be configured and
+   should contain the certificates of the servers that the client trusts.
+   
+   The client trust store is just a standard Java key store, the same as the key stores on the server side. The client
+   trust store location is set by using the attribute [[io.vertx.ceylon::NetworkBase.trustStorePath]] on the [[NetClient]]. If a server presents a certificate
+   during connection which is not in the client trust store, the connection attempt will not succeed.
+   
+   If the server requires client authentication then the client must present its own certificate to the server
+   when connecting. This certificate should reside in the client key store. Again it's just a regular Java key store.
+   The client keystore location is set by using the [[io.vertx.ceylon::NetworkBase.keyStorePath]] attribute on the [[NetClient]].
+   
+   To configure a client to trust all server certificates (dangerous):
+   
+   ~~~
+   value client = vertx.createNetClient();
+   client.ssl = true;
+   client.trustAll = true;
+   ~~~
+   
+   To configure a client to only trust those certificates it has in its trust store:
+
+   ~~~
+   value client = vertx.createNetClient();
+   client.ssl = true;
+   client.trustStorePath = "/path/to/your/client/truststore/client-truststore.jks";
+   client.trustStorePassword = "password";
+   ~~~
+   
+   To configure a client to only trust those certificates it has in its trust store, and also to supply a client certificate:
+
+   ~~~
+   value client = vertx.createNetClient();
+   client.ssl = true;
+   client.trustStorePath = "/path/to/your/client/truststore/client-truststore.jks";
+   client.trustStorePassword = "password";
+   client.clientAuthRequired = true;
+   client.keyStorePath = "/path/to/keystore/holding/client/cert/client-keystore.jks";
+   client.keyStorePassword = "password";
+   ~~~
+   
    """
 shared package io.vertx.ceylon.net;

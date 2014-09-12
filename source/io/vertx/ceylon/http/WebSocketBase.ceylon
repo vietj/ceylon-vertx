@@ -1,20 +1,10 @@
 import org.vertx.java.core.http { WebSocketBase_=WebSocketBase, WebSocketFrame_=WebSocketFrame }
 import org.vertx.java.core.buffer { Buffer }
-import io.vertx.ceylon.util { VoidNoArgHandler, FunctionalHandlerAdapter,
-  HandlerPromise }
+import io.vertx.ceylon.util { FunctionalHandlerAdapter, HandlerPromise }
 import ceylon.io { SocketAddress }
-import io.vertx.ceylon.stream {
-  wrapWriteStream,
-  WriteStream,
-  ReadStream,
-  wrapReadStream
-}
-import java.lang {
-  Void_=Void
-}
-import ceylon.promise {
-  Promise
-}
+import io.vertx.ceylon.stream { wrapWriteStream, WriteStream, ReadStream, wrapReadStream }
+import java.lang { Void_=Void }
+import ceylon.promise { Promise }
 
 """Represents an HTML 5 Websocket
    
