@@ -18,7 +18,7 @@ import org.vertx.java.core.streams { Pump_=Pump }
    
    Instances of this class are not thread-safe.
 """
-shared class Pump(ReadStream rs, WriteStream ws, Integer? maxSize) {
+shared class Pump(ReadStream rs, WriteStream ws, Integer? maxSize = null) {
     
     Pump_ delegate;
     if (exists maxSize) {
