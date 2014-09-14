@@ -43,14 +43,43 @@
         </ceylon-run>
     </target>
 
-    <target name="install" depends="test">
-	    <ceylon-compile out="+USER" encoding="${source.encoding}">
-	        <module name="io.vertx.ceylon"/>
-	    </ceylon-compile>
-    </target>
+  <moduleset id="examples">
+    <module name="examples.echo"/>
+    <module name="examples.eventbus_pointtopoint"/>
+    <module name="examples.eventbus_pubsub"/>
+    <module name="examples.eventbusbridge"/>
+    <module name="examples.fanout"/>
+    <module name="examples.http"/>
+    <module name="examples.httphelloworld"/>
+    <module name="examples.https"/>
+    <module name="examples.proxyserver"/>
+    <module name="examples.route_match"/>
+    <module name="examples.sendfile"/>
+    <module name="examples.simpleform"/>
+    <module name="examples.simpleformupload"/>
+    <module name="examples.sockjs"/>
+    <module name="examples.ssl"/>
+    <module name="examples.upload"/>
+    <module name="examples.websockets"/>
+  </moduleset>
+  
+  <target name="examples-compile">
+    <ceylon-compile encoding="${source.encoding}" src="examples-source">
+    	<moduleset refid="examples"/>
+    </ceylon-compile>
+  </target>
+
+	<target name="install" depends="test">
+    <ceylon-compile out="+USER" encoding="${source.encoding}">
+	    <module name="io.vertx.ceylon"/>
+	  </ceylon-compile>
+    <ceylon-compile out="+USER" encoding="${source.encoding}" src="examples-source">
+      <moduleset refid="examples"/>
+    </ceylon-compile>
+  </target>
 	
-    <target name="clean">
-         <delete dir="modules"/>
-    </target>
+  <target name="clean">
+    <delete dir="modules"/>
+  </target>
 
 </project>
