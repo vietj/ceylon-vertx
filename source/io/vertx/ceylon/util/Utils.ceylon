@@ -4,11 +4,8 @@ import org.vertx.java.core { MultiMap_=MultiMap }
 import org.vertx.java.core.json { JsonObject_=JsonObject, JsonArray_=JsonArray }
 import java.lang { Character_=Character, String_=String, Iterable_=Iterable, ObjectArray_=ObjectArray, Long_=Long, Boolean_=Boolean, Double_=Double, Byte_=Byte, Short_=Short, Float_=Float, Integer_=Integer }
 import java.util { ArrayList_=ArrayList }
-import io.vertx.ceylon.interop { JavaBridge { getFieldValue } }
 import io.vertx.ceylon { MultiMap }
-import ceylon.language.meta.model {
-  Type
-}
+import ceylon.language.meta.model { Type }
 
 by("Julien Viet")
 shared HashMap<String, [String+]> combine(
@@ -137,7 +134,7 @@ shared JsonObject fromJsonObject(JsonObject_ jsonObject) {
     while (iterator.hasNext()) {
         value next = iterator.next();
         String fieldName = next.string;
-        value fieldValue = getFieldValue(jsonObject, fieldName);
+        value fieldValue = jsonObject.getField<Object>(fieldName);
         switch (fieldValue)
         case (is String_) { obj.put(fieldName, fieldValue.string); }
         case (is JsonObject_) { obj.put(fieldName, fromJsonObject(fieldValue)); }
