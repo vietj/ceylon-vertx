@@ -9,9 +9,7 @@ import io.vertx.ceylon.file {
 import io.vertx.ceylon.sockjs {
   SockJSServer
 }
-import io.vertx.ceylon.interop {
-  VertxProvider
-}
+
 import io.vertx.ceylon.net {
   NetServer,
   NetClient
@@ -28,22 +26,22 @@ import io.vertx.ceylon.net {
  
  Create a new Vertx instance. Instances of this class are thread-safe."
 by("Julien Viet")
-shared class Vertx(Vertx_ v = VertxProvider.create()) {
+shared class Vertx(shared Vertx_ delegate = VertxProvider.create()) {
 
     "The event bus"
-    shared EventBus eventBus = EventBus(v.eventBus());
+    shared EventBus eventBus = EventBus(delegate.eventBus());
 
     "The shared data object"
-    shared SharedData sharedData = SharedData(v.sharedData());
+    shared SharedData sharedData = SharedData(delegate.sharedData());
     
     "The File system object"
-    shared FileSystem fileSystem = FileSystem(v.fileSystem());
+    shared FileSystem fileSystem = FileSystem(delegate.fileSystem());
     
     "Create a new net server and returns it"
-    shared NetServer createNetServer() =>  NetServer(v.createNetServer());
+    shared NetServer createNetServer() =>  NetServer(delegate.createNetServer());
 
     "Create a new http server and returns it"
-    shared HttpServer createHttpServer() =>  HttpServer(v, v.createHttpServer());
+    shared HttpServer createHttpServer() =>  HttpServer(delegate, delegate.createHttpServer());
 
     "Create a new http client and return it"
     shared HttpClient createHttpClient(
@@ -51,7 +49,7 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
         Integer? port = null,
         "the client host"
         String? host = null) {
-        value client = v.createHttpClient();
+        value client = delegate.createHttpClient();
         if (exists port) {
             client.setPort(port);
         }
@@ -62,20 +60,20 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
     }
     
     "Create a new net client and return it"
-    shared NetClient createNetClient() => NetClient(v.createNetClient());
+    shared NetClient createNetClient() => NetClient(delegate.createNetClient());
 
     """Set a one-shot timer to fire after [[delay]] milliseconds, at which point [[handle]] will be called with
        the id of the timer.
        """
     shared Integer setTimer(Integer delay, void handle(Integer timerId)) {
-        return v.setTimer(Long_(delay).longValue(), TimerProxy(handle));
+        return delegate.setTimer(Long_(delay).longValue(), TimerProxy(handle));
     }
     
     """Set a periodic timer to fire every [[delay]] milliseconds, at which point [[handle]] will be called with
        the id of the timer.
        """
     shared Integer setPeriodic(Integer delay, void handle(Integer timerId)) {
-        return v.setPeriodic(Long_(delay).longValue(), TimerProxy(handle));
+        return delegate.setPeriodic(Long_(delay).longValue(), TimerProxy(handle));
     }
     
     "Put the handler on the event queue for the current loop (or worker context) so it will be run asynchronously
@@ -87,18 +85,18 @@ shared class Vertx(Vertx_ v = VertxProvider.create()) {
           task();
         }
       }
-      v.runOnContext(adapter);
+      delegate.runOnContext(adapter);
     }
 
     """Cancel the timer with the specified [[id]]. Returns `true` true if the timer was successfully cancelled, or
        `false` if the timer does not exist."""
     shared Boolean cancelTimer(Integer id) {
-        return v.cancelTimer(Long_(id).longValue());
+        return delegate.cancelTimer(Long_(id).longValue());
     }
     
     "Stop Vertx"
     shared void stop() {
-        v.stop();
+        delegate.stop();
     }
     
     "Create a SockJS server that wraps an HTTP server"

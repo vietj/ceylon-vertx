@@ -5,10 +5,10 @@ import ceylon.test { ... }
 import ceylon.json { JSonObject=Object, JSonArray=Array }
 import test.io.vertx.ceylon{ assertResolve, toByteArray, with, eventBus  }
 import java.lang { Character_=Character, String_=String, ByteArray, Short_=Short, Long_=Long, Integer_=Integer, Byte_=Byte, Float_=Float, Double_=Double, Boolean_=Boolean }
-import org.vertx.java.core { Vertx_=Vertx }
 import org.vertx.java.core.buffer { Buffer_=Buffer }
 import org.vertx.java.core.eventbus { EventBus_=EventBus }
-import io.vertx.ceylon.interop { VertxProvider_=VertxProvider }
+
+
 
 shared test void testCharacterEvent() => with(eventBus(send('X')));
 shared test void testByteEvent() => with(eventBus(send(123.byte)));
@@ -77,11 +77,10 @@ shared test void testJavaIntegerOrString1() => testNativeJavaType<Integer|String
 shared test void testJavaIntegerOrString2() => testNativeJavaType<Integer|String>("3", (EventBus_ bus) => bus.send("foo", String_("3")) );
 
 void testNativeJavaType<C>(C expected, void send(EventBus_ bus)) {
-  Vertx_ native = VertxProvider_.create();
-  value vertx = Vertx(native);
+  value vertx = Vertx();
   value deferred = Deferred<C>();
   vertx.eventBus.registerHandler("foo", (Message<C> msg) => deferred.fulfill(msg.body));
-  send(native.eventBus());
+  send(vertx.delegate.eventBus());
   value payload = assertResolve(deferred);	
   assertEquals(payload, expected);
 }
