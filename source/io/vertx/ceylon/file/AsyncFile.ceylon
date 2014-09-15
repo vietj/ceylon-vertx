@@ -1,13 +1,9 @@
-import io.vertx.ceylon.stream { ReadStream, WriteStream, wrapReadStream, wrapWriteStream }
+import io.vertx.ceylon.stream { ReadStream, WriteStream }
 import ceylon.promise { Promise }
 import org.vertx.java.core.buffer { Buffer }
 import org.vertx.java.core.file { AsyncFile_=AsyncFile }
-import java.lang {
-  Void_=Void
-}
-import io.vertx.ceylon.util {
-  AsyncResultPromise
-}
+import java.lang { Void_=Void }
+import io.vertx.ceylon.util { AsyncResultPromise }
 
 """Represents a file on the file-system which can be read from, or written to asynchronously.
    
@@ -25,7 +21,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
     if (exists ret = readStream_) {
       return ret;
     } else {
-      value ret = wrapReadStream(delegate);
+      value ret = ReadStream(delegate);
       readStream_ = ret;
       return ret;
     }
@@ -35,7 +31,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
     if (exists ret = writeStream_) {
       return ret;
     } else {
-      value ret = wrapWriteStream(delegate);
+      value ret = WriteStream(delegate);
       writeStream_ = ret;
       return ret;
     }

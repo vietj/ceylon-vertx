@@ -2,20 +2,13 @@ import org.vertx.java.core.buffer { Buffer }
 import org.vertx.java.core.streams { WriteStream_=WriteStream }
 import org.vertx.java.core { Handler_=Handler }
 import java.lang { Void_=Void }
-import io.vertx.ceylon.interop { Utils { rawWriteStream } }
 import io.vertx.ceylon.util { functionalHandler }
-
-"Create a write stream"
-by("Julien Viet")
-shared WriteStream wrapWriteStream<T>(WriteStream_<out T> stream) given T satisfies Object {
-    return WriteStream(rawWriteStream(stream));
-}
 
 """Represents a stream of data that can be written to.
    
    Any class that implements this interface can be used by a [[Pump]] to pump data from a [[ReadStream]] to it."""
 by("Julien Viet")
-shared class WriteStream(shared WriteStream_<Object> delegate) {
+shared class WriteStream(shared WriteStream_<out Object> delegate) {
     
     """Write some data to the stream. The data is put on an internal write queue, and the write actually happens
        asynchronously. To avoid running out of memory by putting too much on the write queue,

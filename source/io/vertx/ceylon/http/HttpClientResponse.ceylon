@@ -1,7 +1,7 @@
 import io.vertx.ceylon.util { toMap }
 import ceylon.promise { Promise }
 import org.vertx.java.core.http { HttpClientResponse_=HttpClientResponse }
-import io.vertx.ceylon.stream { ReadStream, wrapReadStream }
+import io.vertx.ceylon.stream { ReadStream }
 import ceylon.collection { LinkedList }
 import io.vertx.ceylon { MultiMap }
 
@@ -32,7 +32,7 @@ shared class HttpClientResponse(HttpClientResponse_ delegate)
         return b;
     }
 
-    shared actual ReadStream stream = wrapReadStream(delegate);
+    shared actual ReadStream stream = ReadStream(delegate);
 
     shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
         return doParseBody(parser, delegate.bodyHandler, delegate, charset);

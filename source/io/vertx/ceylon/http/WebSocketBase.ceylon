@@ -2,7 +2,7 @@ import org.vertx.java.core.http { WebSocketBase_=WebSocketBase, WebSocketFrame_=
 import org.vertx.java.core.buffer { Buffer }
 import io.vertx.ceylon.util { FunctionalHandlerAdapter, HandlerPromise }
 import ceylon.io { SocketAddress }
-import io.vertx.ceylon.stream { wrapWriteStream, WriteStream, ReadStream, wrapReadStream }
+import io.vertx.ceylon.stream { WriteStream, ReadStream }
 import java.lang { Void_=Void }
 import ceylon.promise { Promise }
 
@@ -24,9 +24,9 @@ shared abstract class WebSocketBase(WebSocketBase_<out Object> delegate) {
   value closed = HandlerPromise<Null, Void_>((Void_? v) => null);
   delegate.closeHandler(closed);
 
-  shared WriteStream writeStream = wrapWriteStream(delegate);
+  shared WriteStream writeStream = WriteStream(delegate);
   
-  shared ReadStream readStream = wrapReadStream(delegate);
+  shared ReadStream readStream = ReadStream(delegate);
 
   """When a [[WebSocket]] is created it automatically registers an event handler with the eventbus, the ID of that
      handler is given by `binaryHandlerID`.

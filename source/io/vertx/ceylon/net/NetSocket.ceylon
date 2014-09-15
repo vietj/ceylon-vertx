@@ -4,7 +4,7 @@ import org.vertx.java.core.buffer { Buffer_=Buffer }
 import ceylon.promise { Promise, Deferred }
 import io.vertx.ceylon.util { voidAsyncResult, VoidNullArgHandler, HandlerPromise }
 import ceylon.io { SocketAddress }
-import io.vertx.ceylon.stream { ReadStream, wrapWriteStream, WriteStream, wrapReadStream }
+import io.vertx.ceylon.stream { ReadStream, WriteStream }
 import java.lang { Void_=Void }
 
 """Represents a socket-like interface to a TCP/SSL connection on either the
@@ -23,9 +23,9 @@ shared class NetSocket(NetSocket_ delegate) {
   value closed = HandlerPromise<Null, Void_>((Void_? v) => null);
   delegate.closeHandler(closed);
   
-  shared WriteStream writeStream = wrapWriteStream(delegate);
+  shared WriteStream writeStream = WriteStream(delegate);
   
-  shared ReadStream readStream = wrapReadStream(delegate);
+  shared ReadStream readStream = ReadStream(delegate);
   
   """When a [[NetSocket]] is created it automatically registers an event handler with the event bus, the ID of that
      handler is given by [[NetSocket.writeHandlerID]].

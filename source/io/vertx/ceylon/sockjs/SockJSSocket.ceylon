@@ -1,16 +1,8 @@
 import org.vertx.java.core.sockjs { SockJSSocket_=SockJSSocket }
-import io.vertx.ceylon.stream { ReadStream, WriteStream,
-  wrapWriteStream,
-  wrapReadStream }
-import ceylon.io {
-  SocketAddress
-}
-import io.vertx.ceylon {
-  MultiMap
-}
-import io.vertx.ceylon.util {
-  toMap
-}
+import io.vertx.ceylon.stream { ReadStream, WriteStream }
+import ceylon.io { SocketAddress }
+import io.vertx.ceylon { MultiMap }
+import io.vertx.ceylon.util { toMap }
 
 """You interact with SockJS clients through instances of SockJS socket.
    
@@ -21,9 +13,9 @@ import io.vertx.ceylon.util {
    Instances of this class are not thread-safe."""
 shared class SockJSSocket(SockJSSocket_ delegate) {
   
-  shared WriteStream writeStream = wrapWriteStream(delegate);
+  shared WriteStream writeStream = WriteStream(delegate);
   
-  shared ReadStream readStream = wrapReadStream(delegate);
+  shared ReadStream readStream = ReadStream(delegate);
   
   """When a `SockJSSocket` is created it automatically registers an event handler with the event bus,
      the ID of that handler is given by `writeHandlerID`.

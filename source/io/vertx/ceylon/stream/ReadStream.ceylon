@@ -1,20 +1,12 @@
 import org.vertx.java.core.buffer { Buffer }
 import org.vertx.java.core.streams { ReadStream_=ReadStream }
-import io.vertx.ceylon.interop { Utils { rawReadStream } }
-import io.vertx.ceylon.util { functionalHandler,
-  VoidNoArgHandler }
-
-"Create a read stream"
-by("Julien Viet")
-shared ReadStream wrapReadStream<T>(ReadStream_<out T> stream) given T satisfies Object {
-    return ReadStream(rawReadStream(stream));
-}
+import io.vertx.ceylon.util { functionalHandler, VoidNoArgHandler }
 
 """Represents a stream of data that can be read from.
    
    Any class that implements this interface can be used by a [[Pump]] to pump data from it to a [[WriteStream]]."""
 by("Julien Viet")
-shared class ReadStream(shared ReadStream_<Object> delegate) {
+shared class ReadStream(shared ReadStream_<out Object> delegate) {
     
     "Set a data handler. As data is read, the handler will be called with the data."
     shared void dataHandler(void onData(Buffer buffer)) {

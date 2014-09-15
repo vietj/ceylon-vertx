@@ -1,12 +1,9 @@
 import org.vertx.java.core.http { HttpClient_=HttpClient, HttpClientResponse_=HttpClientResponse }
 import ceylon.promise { Deferred, Promise }
 import io.vertx.ceylon.util { putAll, FunctionalHandlerAdapter, functionalHandler }
-import io.vertx.ceylon.stream { wrapWriteStream, WriteStream }
+import io.vertx.ceylon.stream { WriteStream }
 import org.vertx.java.core.buffer { Buffer }
-import io.vertx.ceylon {
-  Chunk,
-  Entries
-}
+import io.vertx.ceylon { Chunk, Entries }
 
 """Represents a client-side HTTP request.
  
@@ -53,7 +50,7 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
     
     request.exceptionHandler(functionalHandler<Throwable>(deferred.reject));
 
-    shared actual WriteStream stream = wrapWriteStream(request);
+    shared actual WriteStream stream = WriteStream(request);
     
     "Set's the amount of time after which if a response is not received `TimeoutException`
      will be sent to the exception handler of this request. Calling this method more than once

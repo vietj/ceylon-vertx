@@ -1,10 +1,9 @@
 import org.vertx.java.core.http { HttpServerResponse_=HttpServerResponse }
-import io.vertx.ceylon.stream { WriteStream, wrapWriteStream }
+import io.vertx.ceylon.stream { WriteStream }
 import io.vertx.ceylon.util { voidAsyncResult, putAll }
 import ceylon.promise { Promise }
 import org.vertx.java.core.buffer { Buffer }
-import io.vertx.ceylon { Chunk,
-  Entries }
+import io.vertx.ceylon { Chunk, Entries }
 
 "Represents a server-side HTTP response. Instances of this class are created and associated to every instance of
  [[HttpServerRequest]] that is created. It allows the developer to control the HTTP response that is sent back to the
@@ -16,7 +15,7 @@ by("Julien Viet")
 shared class HttpServerResponse(HttpServerResponse_ delegate)
         extends HttpOutput<HttpServerResponse>() {
 
-    shared actual WriteStream stream = wrapWriteStream(delegate);
+    shared actual WriteStream stream = WriteStream(delegate);
 
     "Set the status code."
     shared HttpServerResponse status(

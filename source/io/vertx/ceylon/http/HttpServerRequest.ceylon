@@ -2,7 +2,7 @@ import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest, HttpVers
 import ceylon.io { SocketAddress }
 import io.vertx.ceylon.util { toMap, FunctionalHandlerAdapter }
 import ceylon.promise { Promise, Deferred }
-import io.vertx.ceylon.stream { ReadStream, wrapReadStream }
+import io.vertx.ceylon.stream { ReadStream }
 import org.vertx.java.core { Handler_=Handler }
 import java.lang { Void_=Void }
 import io.vertx.ceylon { MultiMap }
@@ -19,7 +19,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     "The HTTP version of the request."
     shared HttpVersion version = delegate.version() == http_1_0_ then http_1_0 else http_1_1;
     
-    shared actual ReadStream stream = wrapReadStream(delegate);
+    shared actual ReadStream stream = ReadStream(delegate);
 
     "The request method"
     shared String method = delegate.method();
