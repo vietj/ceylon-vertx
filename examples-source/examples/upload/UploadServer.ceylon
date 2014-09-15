@@ -7,7 +7,7 @@ import io.vertx.ceylon.file { AsyncFile }
 
 shared class UploadServer() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     
     vertx.createHttpServer().requestHandler(void (HttpServerRequest req) {
       

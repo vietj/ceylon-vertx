@@ -20,7 +20,7 @@ String safe([String+]? s) {
 
 shared class RouteMatchExample() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     
     value rm = RouteMatcher();
     rm.get("/details/:user/:id", (HttpServerRequest req) => req.response.end("User: ``safe(req.params["user"])`` ID: ``safe(req.params["id"])``"));

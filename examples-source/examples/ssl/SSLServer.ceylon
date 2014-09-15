@@ -3,7 +3,7 @@ import io.vertx.ceylon { Vertx }
 import io.vertx.ceylon.net { NetSocket }
 shared class SSLServer() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     value server = vertx.createNetServer().connectHandler(void (NetSocket sock) {
       sock.readStream.dataHandler(sock.write);
     });

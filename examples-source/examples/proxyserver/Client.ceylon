@@ -13,7 +13,7 @@ import org.vertx.java.core.buffer {
 }
 shared class Client() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     
     value req = vertx.createHttpClient {
       port = 8080;

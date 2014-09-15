@@ -4,7 +4,7 @@ import io.vertx.ceylon.http { HttpClientResponse }
 
 shared class ClientExample() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     value client = vertx.createHttpClient();
     client.ssl = true;
     client.trustAll = true;

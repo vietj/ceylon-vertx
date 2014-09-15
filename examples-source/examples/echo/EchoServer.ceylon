@@ -13,7 +13,7 @@ import io.vertx.ceylon.stream {
 }
 shared class EchoServer() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     vertx.createNetServer().connectHandler(void (NetSocket sock) {
       Pump(sock.readStream, sock.writeStream).start();
     }).listen(1234);

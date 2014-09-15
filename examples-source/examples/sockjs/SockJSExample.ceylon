@@ -6,7 +6,7 @@ import ceylon.json { Object }
 
 shared class SockJSExample() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     
     value server = vertx.createHttpServer();
     

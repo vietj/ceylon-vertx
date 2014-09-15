@@ -5,7 +5,7 @@ import org.vertx.java.core.buffer { Buffer }
 
 shared class SSLClient() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     value client = vertx.createNetClient();
     client.ssl = true;
     client.trustAll = true;

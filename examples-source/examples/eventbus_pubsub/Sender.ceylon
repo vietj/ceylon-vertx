@@ -7,7 +7,7 @@ import io.vertx.ceylon {
 }
 shared class Sender() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     
     vertx.setPeriodic {
       delay = 1000;

@@ -10,7 +10,7 @@ import io.vertx.ceylon.http {
 }
 shared class ServerExample() extends Verticle() {
 
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     vertx.createHttpServer().requestHandler {
       void onRequest(HttpServerRequest req) {
         print("Got request ``req.uri``");

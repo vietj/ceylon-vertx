@@ -18,7 +18,7 @@ import io.vertx.ceylon.sockjs {
 }
 shared class BridgeServer() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     
     value server = vertx.createHttpServer();
     

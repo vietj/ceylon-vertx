@@ -3,7 +3,7 @@ import io.vertx.ceylon { Vertx }
 import io.vertx.ceylon.http { HttpServerRequest }
 shared class ServerExample() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     value server = vertx.createHttpServer().requestHandler(void (HttpServerRequest req) {
       print("Got request: ``req.uri``");
       print("Headers are: ");

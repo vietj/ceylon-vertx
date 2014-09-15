@@ -3,8 +3,10 @@ import ceylon.json { Object }
 import ceylon.promise { Promise }
 import org.vertx.java.core.json { JsonObject }
 import io.vertx.ceylon.util { AsyncResultPromise }
-import java.lang { String_ = String }
+import java.lang { String_ = String,
+  ObjectArray }
 import io.vertx.ceylon { Vertx }
+import java.net { URL }
 
 """Represents the Vert.x platform.
    
@@ -20,6 +22,15 @@ import io.vertx.ceylon { Vertx }
 shared class Platform() {
 
 	PlatformManager manager = f.createPlatformManager();
+	
+	shared Promise<Deployment> deployVerticle(String main) {
+		void undeploy(String s) {
+			manager.undeploy(s, null);
+		}
+		AsyncResultPromise<Deployment, String_> done = AsyncResultPromise<Deployment, String_>(fa(undeploy));
+		manager.deployVerticle(main, null, ObjectArray<URL>(0), 1, null, done);
+		return done.promise;
+	}
 	
 	"Deploy a module. The returned promise will be resolved with the deployment or be rejected if it fails to deploy"
 	shared Promise<Deployment> deploy(

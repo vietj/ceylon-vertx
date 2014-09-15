@@ -14,7 +14,7 @@ import org.vertx.java.core.buffer {
 }
 shared class ProxyServer() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     
     value client = vertx.createHttpClient {
       host = "localhost";

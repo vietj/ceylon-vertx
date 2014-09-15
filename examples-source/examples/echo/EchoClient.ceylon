@@ -13,7 +13,7 @@ import org.vertx.java.core.buffer {
 }
 shared class EchoClient() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     vertx.createNetClient().connect(1234, "localhost").onComplete(
       void (NetSocket sock) {
         sock.readStream.dataHandler(void (Buffer buffer) {

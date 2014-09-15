@@ -10,7 +10,7 @@ import io.vertx.ceylon.http {
 }
 shared class ClientExample() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     vertx.createHttpClient {
       port = 8080;
       host = "localhost";

@@ -46,10 +46,10 @@ shared List<Callable<JavaVerticle>> findVerticles("The set of module names" Set<
 					      shared actual void start() {
 					        Vertx vertx = Vertx(this.vertx);
 					        Container container = Container(this.container);
-					        instance.start(vertx, container);
+					        instance.doStart(vertx, container);
 					      }
 					      shared actual void stop() {
-					        instance.stop();
+					        instance.doStop();
 					      }
 					    }
 					    return adapter;

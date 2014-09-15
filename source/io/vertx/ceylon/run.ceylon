@@ -1,8 +1,19 @@
 import io.vertx.ceylon.http { ... }
 import ceylon.promise { ... }
 import io.vertx.ceylon.eventbus { ... }
+import io.vertx.ceylon.platform {
+  Platform,
+  Deployment
+}
 
 shared void run() {
+  
+  Platform platform = Platform();
+  value depl = platform.deployVerticle("io.vertx.ceylon.FooVerticle");
+  depl.onComplete(
+    (Deployment dep) => print("deployed"),
+    (Throwable reason) => reason.printStackTrace()
+  );
 }
 
 by("Julien Viet")

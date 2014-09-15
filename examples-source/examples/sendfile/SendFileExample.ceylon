@@ -12,7 +12,7 @@ shared class SendFileExample() extends Verticle() {
   
   String webroot = "sendfile/";
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     vertx.createHttpServer().requestHandler(void (HttpServerRequest req) {
       if (req.uri == "/") {
         req.response.sendFile("``webroot``index.html");

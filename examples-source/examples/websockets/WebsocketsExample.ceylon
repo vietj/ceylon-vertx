@@ -14,7 +14,7 @@ import org.vertx.java.core.buffer {
 }
 shared class WebsocketsExample() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     vertx.createHttpServer().websocketHandler(void (ServerWebSocket websocket) {
       if (websocket.path == "/myapp") {
         websocket.readStream.dataHandler(

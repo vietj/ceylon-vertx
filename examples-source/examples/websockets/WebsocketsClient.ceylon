@@ -13,7 +13,7 @@ import org.vertx.java.core.buffer {
 }
 shared class WebsocketsClient() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     vertx.createHttpClient(8080, "localhost").connectWebsocket("/myapp").onComplete(
       void (WebSocket websocket) {
         websocket.readStream.dataHandler(

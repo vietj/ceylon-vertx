@@ -5,7 +5,7 @@ import org.vertx.java.core.buffer { Buffer }
 
 shared class FanoutServer() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     value connections = vertx.sharedData.getSet<String>("conns");
     vertx.createNetServer().connectHandler(void (NetSocket sock) {
       connections.add(sock.writeHandlerID);

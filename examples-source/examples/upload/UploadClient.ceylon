@@ -13,7 +13,7 @@ import io.vertx.ceylon.file {
 }
 shared class UploadClient() extends Verticle() {
   
-  shared actual void start(Vertx vertx, Container container) {
+  shared actual void doStart(Vertx vertx, Container container) {
     
     value client = vertx.createHttpClient {
       port = 8080;
