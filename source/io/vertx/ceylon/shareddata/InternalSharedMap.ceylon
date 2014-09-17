@@ -27,6 +27,15 @@ class InternalSharedMap<ExtKey, ExtItem, IntKey, IntItem>(
         return null;
     }
     
+    shared actual Boolean defines(Object key) {
+        if (is ExtKey key) {
+            value wrappedKey = wrapKey(key);
+            return delegate.containsKey(wrappedKey);
+        }
+        return false;
+    }
+
+// FIXME: this is wrong it's not a key but and entry
     shared actual Boolean contains(Object key) {
         if (is ExtKey key) {
             value wrappedKey = wrapKey(key);

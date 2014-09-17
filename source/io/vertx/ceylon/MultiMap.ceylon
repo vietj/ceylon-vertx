@@ -16,6 +16,13 @@ shared class MultiMap(MultiMap_ delegate) satisfies Map<String, [String+]> {
   // Not needed at the moment
   shared actual Map<String,[String+]> clone() => this;
   
+  shared actual Boolean defines(Object key) {
+    if (is String key) {
+      return delegate.contains(key);
+    }
+    return false;
+  }
+
   shared actual [String+]? get(Object key) {
     if (is String key) {
       List_<String_>? val = delegate.getAll(key);
