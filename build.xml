@@ -20,32 +20,32 @@
 
     <target name="compile">
         <ceylon-compile encoding="${source.encoding}" verbose="false">
-            <module name="io.vertx.ceylon"/>
+            <module name="io.vertx.ceylon.core"/>
         </ceylon-compile>
     </target>
 
     <target name="doc">
         <ceylon-doc encoding="${source.encoding}">
-            <module name="io.vertx.ceylon"/>
+            <module name="io.vertx.ceylon.core"/>
         </ceylon-doc>
     </target>
 
     <target name="run" depends="compile">
-        <ceylon-run module="io.vertx.ceylon/${source.version}"/>
+        <ceylon-run module="io.vertx.ceylon.core/${source.version}"/>
     </target>
 
     <target name="test" depends="compile">
         <ceylon-compile encoding="${source.encoding}" src="test-source">
             <module name="fooverticle"/>
-            <module name="test.io.vertx.ceylon"/>
+            <module name="test.io.vertx.ceylon.core"/>
         </ceylon-compile>
-        <ceylon-run module="test.io.vertx.ceylon/${source.version}">
+        <ceylon-run module="test.io.vertx.ceylon.core/${source.version}">
         </ceylon-run>
     </target>
 
     <target name="install" depends="test">
 	    <ceylon-compile out="+USER" encoding="${source.encoding}">
-	        <module name="io.vertx.ceylon"/>
+	        <module name="io.vertx.ceylon.core"/>
 	    </ceylon-compile>
     </target>
 	
