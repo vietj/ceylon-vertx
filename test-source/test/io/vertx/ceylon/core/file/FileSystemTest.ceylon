@@ -254,7 +254,7 @@ shared class FileSystemTest() {
           d.fulfill("");
         });
       });
-      value done = d.promise.future.get();
+      d.promise.future.get();
     } finally {
       vertx.stop();
     }
