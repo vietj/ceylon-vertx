@@ -1,12 +1,9 @@
-import ceylon.promise { Promise, Deferred }
-import org.vertx.java.core.buffer { Buffer }
-import org.vertx.java.core { Handler_=Handler }
-import org.vertx.java.core.streams { ReadStream_=ReadStream }
 import ceylon.io.charset { Charset, getCharset }
 import io.vertx.ceylon.core.stream { ReadStream }
 import io.vertx.ceylon.core { MultiMap }
-import io.vertx.ceylon.core.util {
-  functionalHandler
+import ceylon.promise { Promise }
+import io.vertx.ceylon.core.net {
+  NetSocket
 }
 
 "Provides access for reading the http headers and the body of an [[HttpServerRequest]] or an [[HttpClientResponse]]."
@@ -63,34 +60,8 @@ shared abstract class HttpInput() {
     "The read stream of this request"
     shared formal ReadStream stream;
 
-}
-
-"Parse the body of an input"
-Promise<Body> doParseBody<Body, T>(
-        BodyType<Body> bodyType,
-        Anything(Handler_<Buffer>) setBodyHandler,
-        ReadStream_<T> stream,
-        Charset? charset) {
-
-    //
-    Deferred<Body> deferred = Deferred<Body>();
-
-    //
-    object valueHandler satisfies Handler_<Buffer> {
-        shared actual void handle(Buffer buffer) {
-            try {
-                Body body = bodyType.parse(charset, buffer);
-                deferred.fulfill(body);
-            } catch(Exception e) {
-                deferred.reject(e);
-            }
-        }
-    }
-
-    // Set handlers and resume the paused handler
-    setBodyHandler(valueHandler);
-    stream.exceptionHandler(functionalHandler<Throwable>(deferred.reject));
-
-    //
-    return deferred.promise;
+    "Get a net socket for the underlying connection of this request. USE THIS WITH CAUTION!
+     Writing to the socket directly if you don't know what you're doing can easily break the HTTP protocol"
+    shared formal NetSocket netSocket();
+    
 }

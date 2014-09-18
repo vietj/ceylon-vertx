@@ -88,4 +88,5 @@ shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) extends ServerBase(d
         delegate.close(handler);
         return handler.promise;
     }
+    
 }

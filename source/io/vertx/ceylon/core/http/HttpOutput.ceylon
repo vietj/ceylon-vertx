@@ -22,7 +22,6 @@ shared abstract class HttpOutput<O>() given O satisfies HttpOutput<O> {
     
     shared formal Boolean chunked;
 
-
     "Ends the response. If no data has been written to the response body,
      the actual response won't get written until this method gets called.
      Once the response has ended, it cannot be used any more."

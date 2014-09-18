@@ -4,11 +4,16 @@ import org.vertx.java.core.http { HttpClientResponse_=HttpClientResponse }
 import io.vertx.ceylon.core.stream { ReadStream }
 import ceylon.collection { LinkedList }
 import io.vertx.ceylon.core { MultiMap }
+import io.vertx.ceylon.core.net {
+  NetSocket
+}
 
 "Represents a client-side HTTP response. Instances of this class are not thread-safe."
 by("Julien Viet")
 shared class HttpClientResponse(HttpClientResponse_ delegate)
         extends HttpInput() {
+
+    variable NetSocket? cachedNetSocket = null;
 
     "The HTTP status code of the response"
     shared Integer statusCode => delegate.statusCode();
@@ -37,4 +42,13 @@ shared class HttpClientResponse(HttpClientResponse_ delegate)
     shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
         return doParseBody(parser, delegate.bodyHandler, delegate, charset);
     }
+
+    shared actual NetSocket netSocket() {
+      if (exists ns = cachedNetSocket) {
+        return ns;
+      } else {
+        return cachedNetSocket = NetSocket(delegate.netSocket());
+      }
+    }
+    
 }
