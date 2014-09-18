@@ -36,7 +36,6 @@
 
     <target name="test" depends="compile">
         <ceylon-compile encoding="${source.encoding}" src="test-source">
-            <module name="fooverticle"/>
             <module name="test.io.vertx.ceylon.core"/>
         </ceylon-compile>
         <ceylon-run module="test.io.vertx.ceylon.core/${source.version}">
