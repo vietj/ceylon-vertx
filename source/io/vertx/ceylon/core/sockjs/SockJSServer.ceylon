@@ -28,7 +28,7 @@ import ceylon.promise { Deferred }
    For more detailed information on SockJS, see their website.
    
    On the server side, you interact using instances of [[SockJSSocket]] - this allows you to send data to the
-   client or receive data via the [[SockJSSocket.readStream]] [[iio.vertx.ceylon.core.stream::ReadStream.dataHandler]].
+   client or receive data via the [[SockJSSocket.readStream]] [[io.vertx.ceylon.core.stream::ReadStream.dataHandler]].
    
    You can register multiple applications with the same SockJSServer, each using different path prefixes, each
    application will have its own handler, and configuration.

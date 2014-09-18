@@ -13,7 +13,7 @@ import org.vertx.java.core.streams { Pump_=Pump }
    called, which results in the pump resuming the [[ReadStream]].
    
    This class can be used to pump from any [[ReadStream]] to any [[WriteStream]],
-   e.g. from an [[io.vertx.ceylon.http::HttpServerRequest]] to an {@link org.vertx.java.core.file.AsyncFile} (todo),
+   e.g. from an [[io.vertx.ceylon.core.http::HttpServerRequest]] to an {@link org.vertx.java.core.file.AsyncFile} (todo),
    or from {@link org.vertx.java.core.net.NetSocket} (todo) to a {@link org.vertx.java.core.http.WebSocket} (todo).
    
    Instances of this class are not thread-safe.

@@ -8,30 +8,10 @@
    
    - Embed Vert.x in a Ceylon application
    - Use the Vert.x API
-   - Implement write verticles in Ceylon to deploy in Vert.x using the [Vert.x Ceylon module](https://github.com/vietj/vertx-ceylon)
-     for running Ceylon verticles
+   - Verticles are not covered by this API but are managed by the [[module io.vertx.ceylon.platform]] Ceylon module.
    
    # Reference
 
-   ## Writing Verticles
-   
-   *Todo*
-   
-   ## Deploying and Undeploying Verticles Programmatically
-   
-   *Todo*
-
-   ## Scaling your application
-   
-   A verticle instance is almost always single threaded (the only exception is multi-threaded worker verticles which are
-   an advanced feature), this means a single instance can at most utilise one core of your server.
-
-   In order to scale across cores you need to deploy more verticle instances. The exact numbers depend on your application
-   - how many verticles there are and of what type.
-   
-   You can deploy more verticle instances programmatically or on the command line when deploying your module using the
-   -instances command line option.
-   
    ## The Event Bus
    
    See [[package io.vertx.ceylon.core.eventbus]].

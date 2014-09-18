@@ -2,9 +2,6 @@ import io.vertx.ceylon.core.http { ... }
 import ceylon.promise { ... }
 import io.vertx.ceylon.core.eventbus { ... }
 
-shared void run() {
-}
-
 by("Julien Viet")
 shared void run2(){
 	value vertx = Vertx();
