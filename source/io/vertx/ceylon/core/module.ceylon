@@ -8,7 +8,7 @@
    
    - Embed Vert.x in a Ceylon application
    - Use the Vert.x API
-   - Verticles are not covered by this API but are managed by the [[module io.vertx.ceylon.platform]] Ceylon module.
+   - Verticles are not covered by this API but are managed by the `io.vertx.ceylon.platform` Ceylon module.
    
    # Reference
 
