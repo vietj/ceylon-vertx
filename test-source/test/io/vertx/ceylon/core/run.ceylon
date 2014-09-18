@@ -29,7 +29,7 @@ shared Anything(Vertx) netServer(void test(NetServer server)) {
   void f(Vertx vertx) {
     value server = vertx.createNetServer();
     test(server);
-    Promise<Null> promise = server.close();
+    Promise<Anything> promise = server.close();
     assertResolve(promise);
   }
   return f;
@@ -39,7 +39,7 @@ shared Anything(Vertx) httpServer(void test(HttpServer server)) {
   void f(Vertx vertx) {
     value server = vertx.createHttpServer();
     test(server);
-    Promise<Null> promise = server.close();
+    Promise<Anything> promise = server.close();
     assertResolve(promise);
   }
   return f;

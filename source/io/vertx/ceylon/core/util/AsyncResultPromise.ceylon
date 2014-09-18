@@ -29,7 +29,7 @@ shared class AsyncResultPromise<Value, Result>(Value(Result) transform)
 }
 
 shared AsyncResultPromise<Boolean, Boolean_> booleanAsyncResult() => AsyncResultPromise<Boolean, Boolean_>((Boolean_ v) => v.booleanValue());
-shared AsyncResultPromise<Null, Void_> voidAsyncResult() => AsyncResultPromise<Null, Void_>((Void_ v) => null);
+shared AsyncResultPromise<Anything, Void_> voidAsyncResult() => AsyncResultPromise<Anything, Void_>((Void_ v) => ""); // should use null
 shared AsyncResultPromise<String, String_> stringAsyncResult() => AsyncResultPromise<String, String_>((String_ v) => v.string);
 shared AsyncResultPromise<{String*}, ObjectArray_<String_>> stringArrayAsyncResult() => AsyncResultPromise<{String*}, ObjectArray_<String_>>(fromStringArray);
 

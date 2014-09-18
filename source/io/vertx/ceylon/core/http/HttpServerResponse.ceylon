@@ -95,7 +95,7 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
        outgoing connection, bypassing userspace altogether (where supported by the underlying
        operating system. This is a very efficient way to serve files. It also takes the path [[notFoundFile]]
        to a resource to serve if the resource is not found"""
-    shared Promise<Null> sendFile(String fileName, String? notFoundFile = null) {
+    shared Promise<Anything> sendFile(String fileName, String? notFoundFile = null) {
       value result = voidAsyncResult();
       if (exists notFoundFile) {
         delegate.sendFile(fileName, notFoundFile, result);

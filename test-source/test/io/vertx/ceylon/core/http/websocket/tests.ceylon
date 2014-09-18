@@ -1,5 +1,6 @@
 import ceylon.test { ... }
-import test.io.vertx.ceylon.core { with, assertResolveTo }
+import test.io.vertx.ceylon.core { with, assertResolveTo,
+  assertResolve }
 import io.vertx.ceylon.core { Vertx }
 import io.vertx.ceylon.core.http { ServerWebSocket, WebSocket, WebSocketFrame, \iRFC6455 }
 import ceylon.promise { Deferred }
@@ -70,17 +71,17 @@ shared test void clientCloseHandler() => with {
     });
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
-    value deferred = Deferred<Null>(); 
+    value deferred = Deferred<Anything>(); 
     value ws = client.connectWebsocket("/foo");    
     ws.onComplete((WebSocket websocket) => websocket.closeHandler().compose(deferred.fulfill, deferred.reject));
-    assertResolveTo(deferred, null);
+    assertResolve(deferred);
   }
 };
 
 shared test void serverCloseHandler() => with {
   void test(Vertx vertx) {   
     value server = vertx.createHttpServer();
-    value deferred = Deferred<Null>(); 
+    value deferred = Deferred<Anything>(); 
     server.websocketHandler(void (ServerWebSocket websocket) {
       websocket.closeHandler().compose(deferred.fulfill, deferred.reject);
     });
@@ -88,7 +89,7 @@ shared test void serverCloseHandler() => with {
     value client = vertx.createHttpClient(8080);
     value ws = client.connectWebsocket("/foo");    
     ws.onComplete((WebSocket websocket) => websocket.close());
-    assertResolveTo(deferred, null);
+    assertResolve(deferred);
   }
 };
 

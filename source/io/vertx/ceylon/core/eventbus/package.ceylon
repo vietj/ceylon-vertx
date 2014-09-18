@@ -126,8 +126,8 @@
    ~~~
    value registration = eb.registerHandler("test.address", myHandler);
    registration.completed.onComplete(
-    (Null n) => print("The handler has been registered across the cluster",
-    (Exception failure) => print("The handler has not been registered across the cluster: ``failure.message`"
+    (Anything anything) => print("The handler has been registered across the cluster",
+    (Throwable failure) => print("The handler has not been registered across the cluster: ``failure.message`"
    );
    ~~~
 

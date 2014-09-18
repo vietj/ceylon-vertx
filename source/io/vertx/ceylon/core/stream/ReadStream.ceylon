@@ -1,6 +1,6 @@
 import org.vertx.java.core.buffer { Buffer }
 import org.vertx.java.core.streams { ReadStream_=ReadStream }
-import io.vertx.ceylon.core.util { functionalHandler, VoidNoArgHandler }
+import io.vertx.ceylon.core.util { functionalHandler, NoArgVoidHandler }
 
 """Represents a stream of data that can be read from.
    
@@ -20,7 +20,7 @@ shared class ReadStream(shared ReadStream_<out Object> delegate) {
     
     "Set an end handler. Once the stream has ended, and there is no more data to be read, this handler will be called."
     shared void endHandler(void onEnd()) {
-        value adapter = VoidNoArgHandler(onEnd);
+        value adapter = NoArgVoidHandler(onEnd);
         delegate.endHandler(adapter);
     }
     

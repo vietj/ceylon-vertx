@@ -83,7 +83,7 @@ shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) extends ServerBase(d
 
     "Close the server. Any open HTTP connections will be closed.
      The returned promise is resolved when the close is complete."	
-    shared Promise<Null> close() {
+    shared Promise<Anything> close() {
         value handler = voidAsyncResult();
         delegate.close(handler);
         return handler.promise;

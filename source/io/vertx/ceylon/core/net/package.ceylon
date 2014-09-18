@@ -104,7 +104,7 @@
    
    ~~~
    server.close().onComplete {
-     void onFulfilled(Null n) {
+     void onFulfilled(Anything anything) {
        print("Close succeeded");
      },
      void onRejected(Throwable reason) {
@@ -224,7 +224,7 @@
    server.connectHandler {
      void onConnect(NetSocket sock) {
        sock.closeHandler.onComplete {
-         void onFulfilled(Null n) {
+         void onFulfilled(Anything anything) {
            print("The socket is now closed");
          }
        }

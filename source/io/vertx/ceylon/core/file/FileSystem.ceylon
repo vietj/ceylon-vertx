@@ -36,7 +36,7 @@ shared class FileSystem(FileSystem_ delegate) {
      will be copied recursively to the destination [[to]].
      
      The copy will fail if the destination if the destination already exists."""
-  shared Promise<Null> copy(String from, String to, Boolean? recursive = null) {
+  shared Promise<Anything> copy(String from, String to, Boolean? recursive = null) {
     value result = voidAsyncResult();
     if (exists recursive) {
       delegate.copy(from, to, recursive, result);
@@ -59,7 +59,7 @@ shared class FileSystem(FileSystem_ delegate) {
   """Move a file from the path [[from]] to path [[to]], asynchronously.
      
      The move will fail if the destination already exists."""
-  shared Promise<Null> move(String from, String to) {
+  shared Promise<Anything> move(String from, String to) {
     value result = voidAsyncResult();
     delegate.move(from, to, result);
     return result.promise;
@@ -74,7 +74,7 @@ shared class FileSystem(FileSystem_ delegate) {
   """Truncate the file represented by [[path]] to length [[len]] in bytes, asynchronously.
      
      The operation will fail if the file does not exist or [[len]] is less than `0`."""
-  shared Promise<Null> truncate(String path, Integer len) {
+  shared Promise<Anything> truncate(String path, Integer len) {
     value result = voidAsyncResult();
     delegate.truncate(path, len, result);
     return result.promise;
@@ -93,7 +93,7 @@ shared class FileSystem(FileSystem_ delegate) {
      
      If the file is directory then all contents will also have their permissions changed recursively. Any directory
      permissions will be set to [[dirPerms]], whilst any normal file permissions will be set to [[perms]]."""
-  shared Promise<Null> chmod(String path,  String perms, String? dirPerms = null) {
+  shared Promise<Anything> chmod(String path,  String perms, String? dirPerms = null) {
     value result = voidAsyncResult();
     if (exists dirPerms) {
       delegate.chmod(path, perms, dirPerms, result);
@@ -114,7 +114,7 @@ shared class FileSystem(FileSystem_ delegate) {
   }
 
   "Change the ownership on the file represented by [[path]] to [[user]] and [[group]], asynchronously."
-  shared Promise<Null> chown(String path,  String user, String group) {
+  shared Promise<Anything> chown(String path,  String user, String group) {
     value result = voidAsyncResult();
     delegate.chown(path, user, group, result);
     return result.promise;
@@ -179,7 +179,7 @@ shared class FileSystem(FileSystem_ delegate) {
   }
   
   "Create a hard link on the file system from [[link]] to [[existing]], asynchronously."
-  shared Promise<Null> link(String link, String existing) {
+  shared Promise<Anything> link(String link, String existing) {
     value result = voidAsyncResult();
     delegate.link(link, existing, result);
     return result.promise;
@@ -192,7 +192,7 @@ shared class FileSystem(FileSystem_ delegate) {
   }
 
   "Create a symbolic link on the file system from [[link]] to [[existing]], asynchronously."
-  shared Promise<Null> symlink(String link, String existing) {
+  shared Promise<Anything> symlink(String link, String existing) {
     value result = voidAsyncResult();
     delegate.symlink(link, existing, result);
     return result.promise;
@@ -205,7 +205,7 @@ shared class FileSystem(FileSystem_ delegate) {
   }
 
   "Unlinks the link on the file system represented by the path [[link]], asynchronously."
-  shared Promise<Null> unlink(String link) {
+  shared Promise<Anything> unlink(String link) {
     value result = voidAsyncResult();
     delegate.unlink(link, result);
     return result.promise;
@@ -233,7 +233,7 @@ shared class FileSystem(FileSystem_ delegate) {
    
    If the path represents a directory and [[recursive]] then the directory and its contents will be
    deleted recursively."
-  shared Promise<Null> delete(String path, Boolean? recursive = null) {
+  shared Promise<Anything> delete(String path, Boolean? recursive = null) {
     value result = voidAsyncResult();
     if (exists recursive) {
       delegate.delete(path, recursive, result);
@@ -264,7 +264,7 @@ shared class FileSystem(FileSystem_ delegate) {
      
      The operation will fail if the directory already exists.
      """
-  shared Promise<Null> mkdir(String path, String? perms = null, Boolean? createParents = null) {
+  shared Promise<Anything> mkdir(String path, String? perms = null, Boolean? createParents = null) {
     value result = voidAsyncResult();
     if (exists createParents) {
       if (exists perms) {
@@ -340,7 +340,7 @@ shared class FileSystem(FileSystem_ delegate) {
   }
 
   "Creates the file, and writes the specified [[data]] to the file represented by the path [[path]], asynchronously."
-  shared Promise<Null> writeFile(String path, Buffer data) {
+  shared Promise<Anything> writeFile(String path, Buffer data) {
     value result = voidAsyncResult();
     delegate.writeFile(path, data, result);
     return result.promise;
@@ -398,7 +398,7 @@ shared class FileSystem(FileSystem_ delegate) {
   }
   
   "Creates an empty file with the specified [[path]] and permissions [[perms]], asynchronously."
-  shared Promise<Null> createFile(String path, String? perms = null) {
+  shared Promise<Anything> createFile(String path, String? perms = null) {
     value result = voidAsyncResult();
     if (exists perms) {
       delegate.createFile(path, perms, result);

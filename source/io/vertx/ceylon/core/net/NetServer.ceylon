@@ -45,7 +45,7 @@ shared class NetServer(NetServer_ delegate) extends ServerBase(delegate, delegat
   
   "Close the server. This will close any currently open connections. The returned promise will be resolved
     when the close is complete."
-  shared Promise<Null> close() {
+  shared Promise<Anything> close() {
     value handler = voidAsyncResult();
     delegate.close(handler);
     return handler.promise;

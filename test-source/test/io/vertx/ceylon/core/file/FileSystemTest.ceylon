@@ -104,7 +104,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      assertEquals(null, fs.copy("work/foo.txt", "work/bar.txt").future.get());
+      fs.copy("work/foo.txt", "work/bar.txt").future.get();
       assertFile("foo.txt");
       assertFile("bar.txt");
     } finally {
@@ -117,7 +117,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      assertEquals(null, fs.move("work/foo.txt", "work/bar.txt").future.get());
+      fs.move("work/foo.txt", "work/bar.txt").future.get();
       assertNil("foo.txt");
       assertFile("bar.txt");
     } finally {
@@ -130,7 +130,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      assertEquals(null, fs.delete("work/foo.txt").future.get());
+      fs.delete("work/foo.txt").future.get();
       assertNil("foo.txt");
     } finally {
       vertx.stop();
@@ -142,7 +142,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      assertEquals(null, fs.createFile("work/foo.txt").future.get());
+      fs.createFile("work/foo.txt").future.get();
       assertFile("foo.txt");
     } finally {
       vertx.stop();
@@ -154,7 +154,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      assertEquals(null, fs.mkdir("work/foo").future.get());
+      fs.mkdir("work/foo").future.get();
       assertDir("foo");
     } finally {
       vertx.stop();
@@ -216,7 +216,7 @@ shared class FileSystemTest() {
     try {
       value fs = vertx.fileSystem;
       value content = Buffer("helloworld");
-      assertEquals(null, fs.writeFile("work/foo.txt", content).future.get());
+      fs.writeFile("work/foo.txt", content).future.get();
       value buffer = assertFile("foo.txt");
       assertEquals(content, buffer);
     } finally {
@@ -246,19 +246,20 @@ shared class FileSystemTest() {
     value expected = Buffer("helloworld");
     value vertx = Vertx();
     try {
-      Deferred<Null> d = Deferred<Null>();
+      Deferred<Anything> d = Deferred<Anything>();
       vertx.runOnContext(void () {
         value fs = vertx.fileSystem;
-        value result = fs.open("work/foo.txt").compose<Null>((AsyncFile file) => file.write(expected, 0));
-        d.fulfill(result);
+        fs.open("work/foo.txt").onComplete(void (AsyncFile file) {
+          file.write(expected, 0);
+          d.fulfill("");
+        });
       });
       value done = d.promise.future.get();
-      assertEquals(done, null);
     } finally {
       vertx.stop();
     }
     value buffer = assertFile("foo.txt");
-    assertEquals(buffer, expected);
+    assertEquals(expected, buffer);
   }
   
   shared test void testPump() {

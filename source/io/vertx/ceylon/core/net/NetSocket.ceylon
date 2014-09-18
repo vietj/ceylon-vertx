@@ -2,7 +2,7 @@ import org.vertx.java.core.net { NetSocket_=NetSocket }
 import io.vertx.ceylon.core { Chunk }
 import org.vertx.java.core.buffer { Buffer_=Buffer }
 import ceylon.promise { Promise, Deferred }
-import io.vertx.ceylon.core.util { voidAsyncResult, VoidNullArgHandler, HandlerPromise }
+import io.vertx.ceylon.core.util { voidAsyncResult, AnythingVoidHandler, HandlerPromise }
 import ceylon.io { SocketAddress }
 import io.vertx.ceylon.core.stream { ReadStream, WriteStream }
 import java.lang { Void_=Void }
@@ -20,7 +20,7 @@ import java.lang { Void_=Void }
    Instances of this class are not thread-safe."""
 shared class NetSocket(NetSocket_ delegate) {
   
-  value closed = HandlerPromise<Null, Void_>((Void_? v) => null);
+  value closed = HandlerPromise<Anything, Void_>((Void_? v) => ""); // Use null
   delegate.closeHandler(closed);
   
   shared WriteStream writeStream = WriteStream(delegate);
@@ -53,7 +53,7 @@ shared class NetSocket(NetSocket_ delegate) {
   """Tell the kernel to stream a file as specified by [[fileName]]] directly, from disk to the
      outgoing connection, bypassing userspace altogether (where supported by the underlying
      operating system. This is a very efficient way to serve files."""
-  shared Promise<Null> sendFile(String fileName) {
+  shared Promise<Anything> sendFile(String fileName) {
     value result = voidAsyncResult();
     delegate.sendFile(fileName, result);
     return result.promise;
@@ -76,14 +76,14 @@ shared class NetSocket(NetSocket_ delegate) {
   // shared Boolean ssl => delegate.ssl;
   
   "Upgrade channel to use SSL/TLS. Be aware that for this to work SSL must be configured."
-  shared Promise<Null> sslUpgrade(void onUpgrade()) {
-    value done = Deferred<Null>();
-    delegate.ssl(VoidNullArgHandler(done.fulfill));
+  shared Promise<Anything> sslUpgrade(void onUpgrade()) {
+    value done = Deferred<Anything>();
+    delegate.ssl(AnythingVoidHandler(done.fulfill));
     return done.promise;
   }
   
   "Returns a promise that will be resolved when the NetSocket is closed"
-  shared Promise<Null> closeHandler() {
+  shared Promise<Anything> closeHandler() {
     return closed.promise;
   }
   

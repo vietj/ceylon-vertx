@@ -10,9 +10,9 @@ class HandlerRegistration<M>(EventBus_ delegate, String address, Anything(Messag
         satisfies Registration & Handler_<Message_<Object>> {
     
     value resultHandler = voidAsyncResult();
-    shared actual Promise<Null> completed => resultHandler.promise;
+    shared actual Promise<Anything> completed => resultHandler.promise;
     
-    shared actual Promise<Null> cancel() {
+    shared actual Promise<Anything> cancel() {
         value cancelled = voidAsyncResult();
         delegate.unregisterHandler(address, this, cancelled);
         return cancelled.promise;

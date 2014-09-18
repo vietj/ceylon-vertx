@@ -99,7 +99,7 @@ void send<M>(M msg)(EventBus bus) {
     } else {
         assertEquals(msg, payload);
     }
-    Promise<Null> cancel = registration.cancel();
+    Promise<Anything> cancel = registration.cancel();
     assertResolve(cancel);
 }
 
@@ -118,7 +118,7 @@ void reply<M>(M msg)(EventBus bus) {
     } else {
         assertEquals(msg, payload);
     }
-    Promise<Null> cancel = registration.cancel();
+    Promise<Anything> cancel = registration.cancel();
     assertResolve(cancel);
 }
 
@@ -139,6 +139,6 @@ void replyToReply<M>(M msg)(EventBus bus) given M of String|JSonObject|Boolean|I
     } else {
         assertEquals(msg, payload);
     }
-    Promise<Null> cancel = registration.cancel();
+    Promise<Anything> cancel = registration.cancel();
     assertResolve(cancel);
 }

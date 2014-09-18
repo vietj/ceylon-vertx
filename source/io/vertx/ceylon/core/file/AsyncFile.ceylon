@@ -39,8 +39,8 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
   
   "Close the file. The actual close happens asynchronously. The returned promise will be
    resolved when the close is complete, or an error occurs."
-  shared Promise<Null> close() {
-    value result = AsyncResultPromise<Null, Void_>((Void_ v) => null);
+  shared Promise<Anything> close() {
+    value result = AsyncResultPromise<Anything, Void_>((Void_ v) => ""); // use null
     delegate.close(result);
     return result.promise;
   }
@@ -52,8 +52,8 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
      those writes actually occur.
      
      The returned promise will be resolved when the write is complete, or if an error occurs."""
-  shared Promise<Null> write(Buffer buffer, Integer position) {
-    value result = AsyncResultPromise<Null, Void_>((Void_ v) => null);
+  shared Promise<Anything> write(Buffer buffer, Integer position) {
+    value result = AsyncResultPromise<Anything, Void_>((Void_ v) => ""); // use null
     delegate.write(buffer, position, result);
     return result.promise;
   }
@@ -81,8 +81,8 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
      The actual flush will happen asynchronously.
      
      The returned promise will be resolved when the flush is complete or if an error occurs"""
-  shared Promise<Null> flush() {
-    value result = AsyncResultPromise<Null, Void_>((Void_ v) => null);
+  shared Promise<Anything> flush() {
+    value result = AsyncResultPromise<Anything, Void_>((Void_ v) => ""); // use null
     delegate.flush(result);
     return result.promise;
   }

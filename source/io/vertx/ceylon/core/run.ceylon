@@ -40,7 +40,7 @@ shared void run2(){
 
     // Register event bus for logging messages
     Registration registration = vertx.eventBus.registerHandler("foo", (Message<String> msg) => print(msg.body));
-    registration.completed.compose((Null arg) => print("Event handler registered"));
+    registration.completed.compose((Anything arg) => print("Event handler registered"));
 
     // Wait until both conditions are met to say we are fully started
     // registration.completed.and(http).then_((HttpServer server, Null n) => print("Application started"));

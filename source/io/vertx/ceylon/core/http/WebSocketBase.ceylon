@@ -21,7 +21,7 @@ import ceylon.promise { Promise }
    Instances of this class are not thread-safe"""
 shared abstract class WebSocketBase(WebSocketBase_<out Object> delegate) {
   
-  value closed = HandlerPromise<Null, Void_>((Void_? v) => null);
+  value closed = HandlerPromise<Anything, Void_>((Void_? v) => null);
   delegate.closeHandler(closed);
 
   shared WriteStream writeStream = WriteStream(delegate);
@@ -56,7 +56,7 @@ shared abstract class WebSocketBase(WebSocketBase_<out Object> delegate) {
     return this;
   }
   
-  shared Promise<Null> closeHandler() {
+  shared Promise<Anything> closeHandler() {
     return closed.promise;
   }
   
