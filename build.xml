@@ -43,7 +43,7 @@
         </ceylon-run>
     </target>
 
-    <target name="install" depends="test">
+    <target name="install">
 	    <ceylon-compile out="+USER" encoding="${source.encoding}">
 	        <module name="io.vertx.ceylon.core"/>
 	    </ceylon-compile>
