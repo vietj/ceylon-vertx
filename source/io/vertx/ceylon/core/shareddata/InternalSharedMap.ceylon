@@ -1,5 +1,9 @@
 import org.vertx.java.core.shareddata { ConcurrentSharedMap_ = ConcurrentSharedMap }
-import java.util { Map_ = Map }
+import java.util { Map_ = Map, Arrays_=Arrays }
+import java.lang { ByteArray }
+import io.vertx.ceylon.core.util {
+  byteArrayEquals
+}
 
 class InternalSharedMap<ExtKey, ExtItem, IntKey, IntItem>(
         shared ConcurrentSharedMap_<IntKey, IntItem> delegate,
@@ -35,11 +39,19 @@ class InternalSharedMap<ExtKey, ExtItem, IntKey, IntItem>(
         return false;
     }
 
-// FIXME: this is wrong it's not a key but and entry
-    shared actual Boolean contains(Object key) {
-        if (is ExtKey key) {
-            value wrappedKey = wrapKey(key);
-            return delegate.containsKey(wrappedKey);
+    shared actual Boolean contains(Object entry) {
+        if (is ExtKey->ExtItem entry) {
+            value wrappedKey = wrapKey(entry.key);
+            IntItem? wrappedItem = delegate.get(wrappedKey);
+            if (exists wrappedItem) {
+              value item = unwrapItem(wrappedItem);
+              if (is ByteArray item) {
+                assert(is ByteArray tmp = entry.item);
+                return byteArrayEquals(tmp, item);
+              } else if (entry.item == unwrapItem(wrappedItem)) {
+                return true;
+              }
+            }
         }
         return false;
     }

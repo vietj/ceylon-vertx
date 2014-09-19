@@ -118,19 +118,6 @@ shared ByteArray toByteArray({Integer*} seq) {
     return array;
 }
 
-shared Boolean byteArrayEquals(ByteArray ba1, ByteArray ba2) {
-    if (ba1.size == ba2.size) {
-        for (i in 0..ba1.size-1) {
-            if (ba1.get(i) != ba2.get(i)) {
-                return false;
-            }
-        }
-        return true;
-    } else {
-        return false;
-    }
-}
-
 by("Julien Viet")
 void run() {
     value runner = createTestRunner([`module test.io.vertx.ceylon.core`], [DefaultLoggingListener()]);

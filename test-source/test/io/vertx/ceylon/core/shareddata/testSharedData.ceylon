@@ -1,7 +1,8 @@
 import ceylon.test { ... }
 import io.vertx.ceylon.core.shareddata { ... }
 import java.lang { ByteArray }
-import test.io.vertx.ceylon.core { toByteArray, byteArrayEquals, with, sharedData }
+import test.io.vertx.ceylon.core { toByteArray, with, sharedData }
+import io.vertx.ceylon.core.util { byteArrayEquals }
 
 shared test void testSharedMapInteger() => with(sharedData(testMap(0, 4, (Integer item1, Integer item2) => item1.equals(item2))));
 shared test void testSharedMapString() => with(sharedData(testMap("foo", "bar", (String item1, String item2) => item1.equals(item2))));
@@ -38,7 +39,7 @@ void testMap<Key, Item>(Key key, Item item, Boolean compare(Item item1, Item ite
     }
     
     // Contains
-    assertTrue(m.contains(key));
+    assertTrue(m.contains(key->item));
     
     // Iterate
     value i = m.iterator();
