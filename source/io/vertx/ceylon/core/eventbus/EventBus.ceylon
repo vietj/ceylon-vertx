@@ -115,8 +115,8 @@ shared class EventBus(EventBus_ delegate) {
             "The address to register it at"
             String address,
             "The handler"
-            Anything(Message<M>) handler) {
-        HandlerRegistration<M> handlerAdapter = HandlerRegistration<M>(delegate, address, handler);
+            Anything(Message<M>) onMessage) {
+        HandlerRegistration<M> handlerAdapter = HandlerRegistration<M>(delegate, address, onMessage);
         handlerAdapter.register();
         return handlerAdapter;
     }
