@@ -1,7 +1,6 @@
 import org.vertx.java.core.shareddata { SharedData_=SharedData }
 import java.lang { ByteArray, Long_=Long, Double_=Double, Boolean_=Boolean, String_=String }
 
-T id<T>(T t) => t;
 Long_ wrapInteger(Integer v) => Long_(v);
 Integer unwrapInteger(Long_ v) => v.longValue();
 Boolean_ wrapBoolean(Boolean v) => Boolean_(v);
@@ -10,7 +9,7 @@ Double_ wrapFloat(Float v) => Double_(v);
 Float unwrapFloat(Double_ v) => v.doubleValue();
 String_ wrapString(String v) => String_(v);
 String(String_) unwrapString = String_.string;
-ByteArray(ByteArray) wrapByteArray = id<ByteArray>;
+ByteArray(ByteArray) wrapByteArray = identity<ByteArray>;
 ByteArray(ByteArray) unwrapByteArray = wrapByteArray;
 
 """Sometimes it is desirable to share immutable data between different event loops, for example to implement a
