@@ -1,5 +1,5 @@
 import org.vertx.java.core.shareddata { ConcurrentSharedMap_ = ConcurrentSharedMap }
-import java.util { Map_ = Map, Arrays_=Arrays }
+import java.util { Map_ = Map }
 import java.lang { ByteArray }
 import io.vertx.ceylon.core.util {
   byteArrayEquals

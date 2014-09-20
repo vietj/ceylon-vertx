@@ -3,15 +3,15 @@ import ceylon.test { ... }
 import java.lang { ByteArray }
 
 shared test void testEmptyBuffer() {
-  value buff = Buffer();
+  Buffer();
 }
 
 shared test void testStringBuffer() {
-  value buff = Buffer("some-string");
+  Buffer("some-string");
 }
 
 shared test void testStringEncodedBuffer() {
-  value buff = Buffer("some-string", "UTF-8");
+  Buffer("some-string", "UTF-8");
 }
 
 shared test void testByteArrayBuffer() {
@@ -21,11 +21,11 @@ shared test void testByteArrayBuffer() {
   bytes.set(0, 67.byte);
   bytes.set(0, 68.byte);
   bytes.set(0, 69.byte);
-  value buff = Buffer(bytes);
+  Buffer(bytes);
 }
 
 shared test void testInitialSizeBuffer() {
-  value buff = Buffer(100000);
+  Buffer(100000);
 }
 
 shared test void testBufferAppend() {
@@ -42,5 +42,5 @@ shared test void testBufferRandomAccess() {
 shared test void testBufferRead() {
   value buff = Buffer();
   buff.setInt(0, 3);
-  Integer i = buff.getInt(0);
+  buff.getInt(0);
 }

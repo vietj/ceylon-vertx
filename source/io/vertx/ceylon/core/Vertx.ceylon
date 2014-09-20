@@ -1,19 +1,12 @@
-import org.vertx.java.core { Vertx_=Vertx, Handler_=Handler }
+import org.vertx.java.core { Vertx_=Vertx, Context_=Context }
 import io.vertx.ceylon.core.http { HttpServer, HttpClient }
 import io.vertx.ceylon.core.eventbus { EventBus }
 import io.vertx.ceylon.core.shareddata { SharedData }
-import java.lang { Long_=Long, Void_=Void }
-import io.vertx.ceylon.core.file {
-  FileSystem
-}
-import io.vertx.ceylon.core.sockjs {
-  SockJSServer
-}
-
-import io.vertx.ceylon.core.net {
-  NetServer,
-  NetClient
-}
+import java.lang { Long_=Long }
+import io.vertx.ceylon.core.file { FileSystem }
+import io.vertx.ceylon.core.sockjs { SockJSServer }
+import io.vertx.ceylon.core.net { NetServer, NetClient }
+import io.vertx.ceylon.core.util { NoArgVoidHandler }
 
 "The control centre of the Vert.x Core API.
  
@@ -62,6 +55,32 @@ shared class Vertx(shared Vertx_ delegate = VertxProvider.create()) {
     "Create a new net client and return it"
     shared NetClient createNetClient() => NetClient(delegate.createNetClient());
 
+    "Put the handler on the event queue for the current loop (or worker context) so it will be run asynchronously
+     ASAP after this event has
+     been processed"
+    shared void runOnContext(void task()) => delegate.runOnContext(NoArgVoidHandler(task));
+    
+    "The current context"
+    shared Context? currentContext {
+      Context_? ctx = delegate.currentContext();
+      if (exists ctx) {
+        return Context(ctx);
+      } else {
+        return null;
+      }
+    }
+    
+    "Is the current thread an event loop thread?"
+    shared Boolean eventLoop => delegate.eventLoop;
+    
+    "Is the current thread an worker thread?"
+    shared Boolean worker => delegate.worker;
+    
+    "Stop the eventbus and any resource managed by the eventbus."
+    shared void stop() {
+      delegate.stop();
+    }
+
     """Set a one-shot timer to fire after [[delay]] milliseconds, at which point [[handle]] will be called with
        the id of the timer.
        """
@@ -76,27 +95,10 @@ shared class Vertx(shared Vertx_ delegate = VertxProvider.create()) {
         return delegate.setPeriodic(Long_(delay).longValue(), TimerProxy(handle));
     }
     
-    "Put the handler on the event queue for the current loop (or worker context) so it will be run asynchronously
-     ASAP after this event has
-     been processed"
-    shared void runOnContext(void task()) {
-      object adapter satisfies Handler_<Void_> {
-        shared actual void handle(Void_? e) {
-          task();
-        }
-      }
-      delegate.runOnContext(adapter);
-    }
-
     """Cancel the timer with the specified [[id]]. Returns `true` true if the timer was successfully cancelled, or
        `false` if the timer does not exist."""
     shared Boolean cancelTimer(Integer id) {
         return delegate.cancelTimer(Long_(id).longValue());
-    }
-    
-    "Stop Vertx"
-    shared void stop() {
-        delegate.stop();
     }
     
     "Create a SockJS server that wraps an HTTP server"
