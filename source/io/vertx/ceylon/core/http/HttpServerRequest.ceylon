@@ -1,9 +1,9 @@
-import org.vertx.java.core.http { HttpServerRequest_=HttpServerRequest, HttpVersion_=HttpVersion { http_1_0_=HTTP_1_0} }
+import org.vertx.java.core.http { CaseInsensitiveMultiMap_=CaseInsensitiveMultiMap, HttpServerRequest_=HttpServerRequest, HttpVersion_=HttpVersion { http_1_0_=HTTP_1_0} }
 import ceylon.io { SocketAddress }
 import io.vertx.ceylon.core.util { toMap, FunctionalHandlerAdapter, functionalHandler }
 import ceylon.promise { Promise, Deferred }
 import io.vertx.ceylon.core.stream { ReadStream }
-import org.vertx.java.core { Handler_=Handler }
+import org.vertx.java.core { Handler_=Handler, MultiMap_=MultiMap }
 import org.vertx.java.core.buffer { Buffer_=Buffer }
 import java.lang { Void_=Void }
 import io.vertx.ceylon.core { MultiMap }
@@ -38,7 +38,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     shared String path => delegate.path();
 
     "The query part of the request uri"
-    shared String query => delegate.query();
+    shared String? query => delegate.query();
     
     "Get the absolute URI corresponding to the the HTTP request"
     shared String absoluteURI => delegate.absoluteURI().string;
@@ -82,7 +82,12 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
         if (exists ret = paramsMap) {
             return ret;
         } else {
-            return paramsMap = toMap(delegate.params());
+            MultiMap_? params = delegate.params();
+            if (exists params) {
+              return paramsMap = toMap(params);
+            } else {
+              return paramsMap = toMap(CaseInsensitiveMultiMap_());
+            }
         }
     }
 

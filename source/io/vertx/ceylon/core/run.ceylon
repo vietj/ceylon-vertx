@@ -3,11 +3,17 @@ import ceylon.promise { ... }
 import io.vertx.ceylon.core.eventbus { ... }
 
 by("Julien Viet")
-shared void run2(){
+shared void run(){
 	value vertx = Vertx();
 	value server = vertx.createHttpServer();
 
     void handle(HttpServerRequest req) {
+      String query;
+      if (exists b = req.query) {
+        query = b;
+      } else {
+        query = "";
+      }
         req.response.
             contentType("text/html").
             end("<html><body>
@@ -22,7 +28,7 @@ shared void run2(){
                  <h2>Parameters</h2>
                  <p>``req.params``</p>
                  <h2>Query</h2>
-                 <p>``req.query``</p>
+                 <p>``query``</p>
  
                  <form action='/post' method='POST'>
                  <input type='text' name='foo'>
@@ -31,6 +37,7 @@ shared void run2(){
  
                  </body></html>").close();
 
+        print("hello2");
         vertx.eventBus.send("foo", "Request ``req.path`` from ``req.remoteAddress.address``");
     }
 
