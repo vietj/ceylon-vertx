@@ -1,7 +1,17 @@
-import org.vertx.java.core.net { NetServer_=NetServer }
-import io.vertx.ceylon.core { ServerBase }
-import io.vertx.ceylon.core.util { FunctionalHandlerAdapter, AsyncResultPromise, voidAsyncResult }
-import ceylon.promise { Promise }
+import org.vertx.java.core.net {
+  NetServer_=NetServer
+}
+import io.vertx.ceylon.core {
+  ServerBase
+}
+import io.vertx.ceylon.core.util {
+  FunctionalHandlerAdapter,
+  AsyncResultPromise,
+  voidAsyncResult
+}
+import ceylon.promise {
+  Promise
+}
 
 """Represents a TCP or SSL server
    

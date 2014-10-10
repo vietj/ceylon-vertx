@@ -8,4 +8,4 @@ import org.vertx.java.core.buffer {
    * A string plus an encoding
    * A buffer 
    """
-shared alias Chunk => String|[String,String]|Buffer;
+shared alias Chunk => String|[String, String]|Buffer;

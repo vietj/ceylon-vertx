@@ -1,4 +1,3 @@
-
 """List of all frame types."""
 shared abstract class FrameType() of continuationFrame | textFrame | binaryFrame | closeFrame | pingFrame | pongFrame {
 }

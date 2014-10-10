@@ -1,11 +1,23 @@
-import org.vertx.java.core.file { FileSystem_=FileSystem, FileProps_=FileProps, AsyncFile_=AsyncFile, FileSystemProps_=FileSystemProps }
-import java.util { Date_=Date, GregorianCalendar_=GregorianCalendar }
-
+import org.vertx.java.core.file {
+  FileSystem_=FileSystem,
+  FileProps_=FileProps,
+  AsyncFile_=AsyncFile,
+  FileSystemProps_=FileSystemProps
+}
+import java.util {
+  Date_=Date,
+  GregorianCalendar_=GregorianCalendar
+}
 import ceylon.promise {
   Promise
 }
 import io.vertx.ceylon.core.util {
-  AsyncResultPromise, voidAsyncResult, booleanAsyncResult, stringAsyncResult, stringArrayAsyncResult, asyncResult,
+  AsyncResultPromise,
+  voidAsyncResult,
+  booleanAsyncResult,
+  stringAsyncResult,
+  stringArrayAsyncResult,
+  asyncResult,
   fromStringArray
 }
 import ceylon.time {
@@ -64,13 +76,13 @@ shared class FileSystem(FileSystem_ delegate) {
     delegate.move(from, to, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.move]]"
   shared FileSystem moveSync(String from, String to) {
     delegate.moveSync(from, to);
     return this;
   }
-
+  
   """Truncate the file represented by [[path]] to length [[len]] in bytes, asynchronously.
      
      The operation will fail if the file does not exist or [[len]] is less than `0`."""
@@ -79,13 +91,13 @@ shared class FileSystem(FileSystem_ delegate) {
     delegate.truncate(path, len, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.truncate]]"
   shared FileSystem truncateSync(String path, Integer len) {
     delegate.truncateSync(path, len);
     return this;
   }
-
+  
   """Change the permissions on the file represented by [[path]] to [[perms]], asynchronously.
      
      The permission String takes the form `rwxr-x---` as specified in
@@ -93,7 +105,7 @@ shared class FileSystem(FileSystem_ delegate) {
      
      If the file is directory then all contents will also have their permissions changed recursively. Any directory
      permissions will be set to [[dirPerms]], whilst any normal file permissions will be set to [[perms]]."""
-  shared Promise<Anything> chmod(String path,  String perms, String? dirPerms = null) {
+  shared Promise<Anything> chmod(String path, String perms, String? dirPerms = null) {
     value result = voidAsyncResult();
     if (exists dirPerms) {
       delegate.chmod(path, perms, dirPerms, result);
@@ -102,9 +114,9 @@ shared class FileSystem(FileSystem_ delegate) {
     }
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.chmod]]"
-  shared FileSystem chmodSync(String path,  String perms, String? dirPerms = null) {
+  shared FileSystem chmodSync(String path, String perms, String? dirPerms = null) {
     if (exists dirPerms) {
       delegate.chmodSync(path, perms, dirPerms);
     } else {
@@ -112,16 +124,16 @@ shared class FileSystem(FileSystem_ delegate) {
     }
     return this;
   }
-
+  
   "Change the ownership on the file represented by [[path]] to [[user]] and [[group]], asynchronously."
-  shared Promise<Anything> chown(String path,  String user, String group) {
+  shared Promise<Anything> chown(String path, String user, String group) {
     value result = voidAsyncResult();
     delegate.chown(path, user, group, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.chown]]"
-  shared FileSystem chownSync(String path,  String user, String group) {
+  shared FileSystem chownSync(String path, String user, String group) {
     delegate.chownSync(path, user, group);
     return this;
   }
@@ -141,18 +153,18 @@ shared class FileSystem(FileSystem_ delegate) {
   }
   
   FileProps fileProps(FileProps_ fp) =>
-    FileProps(
-      toDateTime(fp.creationTime()),
-      toDateTime(fp.lastAccessTime()),
-      toDateTime(fp.lastModifiedTime()),
-      fp.directory,
-      fp.other,
-      fp.regularFile,
-      fp.symbolicLink,
-      fp.size()
-    );
+      FileProps(
+    toDateTime(fp.creationTime()),
+    toDateTime(fp.lastAccessTime()),
+    toDateTime(fp.lastModifiedTime()),
+    fp.directory,
+    fp.other,
+    fp.regularFile,
+    fp.symbolicLink,
+    fp.size()
+  );
   
-  AsyncResultPromise<FileProps, FileProps_> filePropsAsyncResult() => AsyncResultPromise<FileProps, FileProps_>(fileProps);
+  AsyncResultPromise<FileProps,FileProps_> filePropsAsyncResult() => AsyncResultPromise<FileProps,FileProps_>(fileProps);
   
   "Obtain properties for the file represented by [[path]], asynchronously. If the file is a link, the link will be followed."
   shared Promise<FileProps> props(String path) {
@@ -160,19 +172,19 @@ shared class FileSystem(FileSystem_ delegate) {
     delegate.props(path, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.props]]"
   shared FileProps propsSync(String path) {
     return fileProps(delegate.propsSync(path));
   }
-
+  
   "Obtain properties for the link represented by [[path]], asynchronously. The link will not be followed."
   shared Promise<FileProps> lprops(String path) {
     value result = filePropsAsyncResult();
     delegate.lprops(path, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.lprops]]"
   shared FileProps lpropsSync(String path) {
     return fileProps(delegate.lpropsSync(path));
@@ -184,51 +196,51 @@ shared class FileSystem(FileSystem_ delegate) {
     delegate.link(link, existing, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.link]]"
   shared FileSystem linkSync(String link, String existing) {
     delegate.linkSync(link, existing);
     return this;
   }
-
+  
   "Create a symbolic link on the file system from [[link]] to [[existing]], asynchronously."
   shared Promise<Anything> symlink(String link, String existing) {
     value result = voidAsyncResult();
     delegate.symlink(link, existing, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.symlink]]"
   shared FileSystem symlinkSync(String link, String existing) {
     delegate.symlinkSync(link, existing);
     return this;
   }
-
+  
   "Unlinks the link on the file system represented by the path [[link]], asynchronously."
   shared Promise<Anything> unlink(String link) {
     value result = voidAsyncResult();
     delegate.unlink(link, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.unlink]]"
   shared FileSystem unlinkSync(String link) {
     delegate.unlinkSync(link);
     return this;
   }
-
+  
   "Returns the path representing the file that the symbolic link specified by [[link]] points to, asynchronously."
   shared Promise<String> readSymlink(String link) {
     value result = stringAsyncResult();
     delegate.readSymlink(link, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.readSymlink]]"
   shared String readSymlinkSync(String link) {
     return delegate.readSymlinkSync(link);
   }
-
+  
   "Deletes the file represented by the specified [[path]], asynchronously.
    
    If the path represents a directory and [[recursive]] then the directory and its contents will be
@@ -242,7 +254,7 @@ shared class FileSystem(FileSystem_ delegate) {
     }
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.delete]]"
   shared FileSystem deleteSync(String path, Boolean? recursive = null) {
     if (exists recursive) {
@@ -252,7 +264,7 @@ shared class FileSystem(FileSystem_ delegate) {
     }
     return this;
   }
-
+  
   """Create the directory represented by [[path]], asynchronously.
      
      The new directory will be created with permissions as specified by [[perms]].
@@ -281,7 +293,7 @@ shared class FileSystem(FileSystem_ delegate) {
     }
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.mkdir]]"
   shared FileSystem mkdirSync(String path, String? perms = null, Boolean? createParents = null) {
     if (exists createParents) {
@@ -329,7 +341,7 @@ shared class FileSystem(FileSystem_ delegate) {
      
      Do not user this method to read very large files or you risk running out of available RAM."""
   shared Promise<Buffer> readFile(String path) {
-    AsyncResultPromise<Buffer, Buffer> result = asyncResult<Buffer>();
+    AsyncResultPromise<Buffer,Buffer> result = asyncResult<Buffer>();
     delegate.readFile(path, result);
     return result.promise;
   }
@@ -338,14 +350,14 @@ shared class FileSystem(FileSystem_ delegate) {
   shared Buffer readFileSync(String path) {
     return delegate.readFileSync(path);
   }
-
+  
   "Creates the file, and writes the specified [[data]] to the file represented by the path [[path]], asynchronously."
   shared Promise<Anything> writeFile(String path, Buffer data) {
     value result = voidAsyncResult();
     delegate.writeFile(path, data, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.writeFile]]"
   shared FileSystem writeFileSync(String path, Buffer data) {
     delegate.writeFileSync(path, data);
@@ -370,9 +382,9 @@ shared class FileSystem(FileSystem_ delegate) {
      
      If [[flush]]} is `true` then all writes will be automatically flushed through OS buffers to the underlying
      storage on each write."""
-  shared Promise<AsyncFile> open(String path, String? perms = null,  Boolean? read = null, Boolean? createNew = null,
+  shared Promise<AsyncFile> open(String path, String? perms = null, Boolean? read = null, Boolean? createNew = null,
     Boolean? write = null, Boolean? flush = null) {
-    AsyncResultPromise<AsyncFile, AsyncFile_> result = AsyncResultPromise<AsyncFile, AsyncFile_>((AsyncFile_ delegate) => AsyncFile(path, delegate));
+    AsyncResultPromise<AsyncFile,AsyncFile_> result = AsyncResultPromise<AsyncFile,AsyncFile_>((AsyncFile_ delegate) => AsyncFile(path, delegate));
     delegate.open(
       path,
       perms,
@@ -384,17 +396,17 @@ shared class FileSystem(FileSystem_ delegate) {
     );
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.open]]"
-  shared AsyncFile openSync(String path, String? perms = null,  Boolean? read = null,
+  shared AsyncFile openSync(String path, String? perms = null, Boolean? read = null,
     Boolean? createNew = null, Boolean? write = null, Boolean? flush = null) {
     return AsyncFile(path, delegate.openSync(
-      path,
-      perms,
-      boolean(read, true),
-      boolean(write, true),
-      boolean(createNew, true),
-      boolean(flush, false)));
+        path,
+        perms,
+        boolean(read, true),
+        boolean(write, true),
+        boolean(createNew, true),
+        boolean(flush, false)));
   }
   
   "Creates an empty file with the specified [[path]] and permissions [[perms]], asynchronously."
@@ -413,22 +425,22 @@ shared class FileSystem(FileSystem_ delegate) {
     delegate.createFileSync(path);
     return this;
   }
-
+  
   "Determines whether the file as specified by the path [[path]] exists, asynchronously."
   shared Promise<Boolean> \iexists(String path) {
     value result = booleanAsyncResult();
     delegate.\iexists(path, result);
     return result.promise;
   }
-
+  
   "Synchronous version of [[FileSystem.exists]]"
   shared Boolean existsSync(String path) {
     return delegate.existsSync(path);
   }
-
+  
   "Returns properties of the file-system being used by the specified [[path]], asynchronously."
   shared Promise<FileSystemProps> fsProps(String path) {
-    value result = AsyncResultPromise<FileSystemProps, FileSystemProps_>(
+    value result = AsyncResultPromise<FileSystemProps,FileSystemProps_>(
       (FileSystemProps_ v) => FileSystemProps(v.totalSpace(), v.unallocatedSpace(), v.usableSpace()));
     delegate.fsProps(path, result);
     return result.promise;

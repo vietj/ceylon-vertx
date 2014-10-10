@@ -30,7 +30,7 @@ import ceylon.promise {
   Deferred
 }
 shared class FileSystemTest() {
-
+  
   value workRes = current.childPath("work").resource;
   Directory workDir;
   switch (workRes)
@@ -46,7 +46,7 @@ shared class FileSystemTest() {
   
   void createFile(String name, String? content = null) {
     value path = workDir.path.childPath(name);
-    assert(is Nil res = path.resource);
+    assert (is Nil res = path.resource);
     File f = res.createFile();
     if (exists content) {
       value writer = f.writer();
@@ -60,12 +60,12 @@ shared class FileSystemTest() {
   
   void assertDir(String name) {
     value res = workDir.path.childPath(name).resource;
-    assert(is Directory res);
+    assert (is Directory res);
   }
-
+  
   Buffer assertFile(String name) {
     value res = workDir.path.childPath(name).resource;
-    assert(is File res);
+    assert (is File res);
     value bytes = res.reader().readBytes(res.size);
     value buffer = Buffer(bytes.size);
     variable Integer index = 0;
@@ -77,18 +77,20 @@ shared class FileSystemTest() {
   
   void assertNil(String name) {
     value res = workDir.path.childPath(name).resource;
-    assert(is Nil res);
+    assert (is Nil res);
   }
-
-  shared beforeTest void cleanupDir() {
+  
+  shared beforeTest
+  void cleanupDir() {
     for (childPath in workDir.childPaths()) {
       value childRes = childPath.resource;
-      assert(is ExistingResource childRes);
+      assert (is ExistingResource childRes);
       childRes.delete();
     }
   }
   
-  shared test void testExists() {
+  shared test
+  void testExists() {
     createFile("foo.txt");
     value vertx = Vertx();
     try {
@@ -99,7 +101,8 @@ shared class FileSystemTest() {
     }
   }
   
-  shared test void testCopy() {
+  shared test
+  void testCopy() {
     createFile("foo.txt");
     value vertx = Vertx();
     try {
@@ -111,8 +114,9 @@ shared class FileSystemTest() {
       vertx.stop();
     }
   }
-
-  shared test void testMove() {
+  
+  shared test
+  void testMove() {
     createFile("foo.txt");
     value vertx = Vertx();
     try {
@@ -125,7 +129,8 @@ shared class FileSystemTest() {
     }
   }
   
-  shared test void testDelete() {
+  shared test
+  void testDelete() {
     createFile("foo.txt");
     value vertx = Vertx();
     try {
@@ -137,7 +142,8 @@ shared class FileSystemTest() {
     }
   }
   
-  shared test void testCreate() {
+  shared test
+  void testCreate() {
     assertNil("foo.txt");
     value vertx = Vertx();
     try {
@@ -149,7 +155,8 @@ shared class FileSystemTest() {
     }
   }
   
-  shared test void testMkdir() {
+  shared test
+  void testMkdir() {
     assertNil("foo");
     value vertx = Vertx();
     try {
@@ -161,7 +168,8 @@ shared class FileSystemTest() {
     }
   }
   
-  shared test void testReadDir() {
+  shared test
+  void testReadDir() {
     createFile("foo.txt");
     createFile("bar.txt");
     createFile("juu.txt");
@@ -169,25 +177,26 @@ shared class FileSystemTest() {
     try {
       value fs = vertx.fileSystem;
       value names = fs.readDir("work").future.get();
-      assert(is {String*} names);
+      assert (is {String*} names);
       assertEquals(["bar.txt", "foo.txt", "juu.txt"], sort(names.map((String element) => element.spanFrom(element.size - 7))));
       value t = fs.readDir("work/foo.txt").future.get();
-      assert(is Throwable t);
+      assert (is Throwable t);
     } finally {
       vertx.stop();
     }
   }
-
-  shared test void testProps() {
+  
+  shared test
+  void testProps() {
     createFile("foo.txt");
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
       value props = fs.props("work/foo.txt").future.get();
-      assert(is FileProps props);
+      assert (is FileProps props);
       value dateTime = now().dateTime();
-      for (i in {props.creationTime,props.lastAccessTime,props.lastModifiedTime}) {
-        assert(i.rangeTo(dateTime).duration.milliseconds < 2000); // < 2 seconds
+      for (i in { props.creationTime, props.lastAccessTime, props.lastModifiedTime }) {
+        assert (i.rangeTo(dateTime).duration.milliseconds < 2000); // < 2 seconds
       }
       assertEquals(true, props.regularFile);
       assertEquals(false, props.directory);
@@ -198,7 +207,8 @@ shared class FileSystemTest() {
     }
   }
   
-  shared test void testReadFile() {
+  shared test
+  void testReadFile() {
     createFile("foo.txt", "helloworld");
     value buffer = assertFile("foo.txt");
     value vertx = Vertx();
@@ -209,8 +219,9 @@ shared class FileSystemTest() {
       vertx.stop();
     }
   }
-
-  shared test void testWriteFile() {
+  
+  shared test
+  void testWriteFile() {
     assertNil("foo.txt");
     value vertx = Vertx();
     try {
@@ -224,36 +235,38 @@ shared class FileSystemTest() {
     }
   }
   
-  shared test void testAsyncFileRead() {
+  shared test
+  void testAsyncFileRead() {
     value expected = Buffer("helloworld");
     createFile("foo.txt", "helloworld");
     value vertx = Vertx();
     try {
       Deferred<Buffer> d = Deferred<Buffer>();
-      vertx.runOnContext(void () {
-        value fs = vertx.fileSystem;
-        value buffer = fs.open("work/foo.txt").compose<Buffer>((AsyncFile file) => file.read(Buffer(10), 0, 0, 10));
-        d.fulfill(buffer);
-      });
+      vertx.runOnContext(void() {
+          value fs = vertx.fileSystem;
+          value buffer = fs.open("work/foo.txt").compose<Buffer>((AsyncFile file) => file.read(Buffer(10), 0, 0, 10));
+          d.fulfill(buffer);
+        });
       value buffer = d.promise.future.get();
       assertEquals(buffer, expected);
     } finally {
       vertx.stop();
     }
   }
-
-  shared test void testAsyncFileWrite() {
+  
+  shared test
+  void testAsyncFileWrite() {
     value expected = Buffer("helloworld");
     value vertx = Vertx();
     try {
       Deferred<Anything> d = Deferred<Anything>();
-      vertx.runOnContext(void () {
-        value fs = vertx.fileSystem;
-        fs.open("work/foo.txt").onComplete(void (AsyncFile file) {
-          file.write(expected, 0);
-          d.fulfill("");
+      vertx.runOnContext(void() {
+          value fs = vertx.fileSystem;
+          fs.open("work/foo.txt").onComplete(void(AsyncFile file) {
+              file.write(expected, 0);
+              d.fulfill("");
+            });
         });
-      });
       d.promise.future.get();
     } finally {
       vertx.stop();
@@ -262,23 +275,24 @@ shared class FileSystemTest() {
     assertEquals(expected, buffer);
   }
   
-  shared test void testPump() {
+  shared test
+  void testPump() {
     value expected = Buffer("helloworld");
     createFile("foo.txt", "helloworld");
     value vertx = Vertx();
     try {
       Deferred<Null> d = Deferred<Null>();
-      vertx.runOnContext(void () {
-        value fs = vertx.fileSystem;
-        value src = fs.openSync("work/foo.txt");
-        value dst = fs.openSync("work/bar.txt");
-        value pump = src.readStream.pump(dst.writeStream);
-        pump.start();
-        src.readStream.endHandler(void () {
-          dst.close();
-          d.fulfill(null);
+      vertx.runOnContext(void() {
+          value fs = vertx.fileSystem;
+          value src = fs.openSync("work/foo.txt");
+          value dst = fs.openSync("work/bar.txt");
+          value pump = src.readStream.pump(dst.writeStream);
+          pump.start();
+          src.readStream.endHandler(void() {
+              dst.close();
+              d.fulfill(null);
+            });
         });
-      });
       value done = d.promise.future.get();
       assertEquals(done, null);
     } finally {

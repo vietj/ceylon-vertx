@@ -1,9 +1,22 @@
-import io.vertx.ceylon.core.stream { ReadStream, WriteStream }
-import ceylon.promise { Promise }
-import org.vertx.java.core.buffer { Buffer }
-import org.vertx.java.core.file { AsyncFile_=AsyncFile }
-import java.lang { Void_=Void }
-import io.vertx.ceylon.core.util { AsyncResultPromise }
+import io.vertx.ceylon.core.stream {
+  ReadStream,
+  WriteStream
+}
+import ceylon.promise {
+  Promise
+}
+import org.vertx.java.core.buffer {
+  Buffer
+}
+import org.vertx.java.core.file {
+  AsyncFile_=AsyncFile
+}
+import java.lang {
+  Void_=Void
+}
+import io.vertx.ceylon.core.util {
+  AsyncResultPromise
+}
 
 """Represents a file on the file-system which can be read from, or written to asynchronously.
    
@@ -40,7 +53,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
   "Close the file. The actual close happens asynchronously. The returned promise will be
    resolved when the close is complete, or an error occurs."
   shared Promise<Anything> close() {
-    value result = AsyncResultPromise<Anything, Void_>((Void_ v) => ""); // use null
+    value result = AsyncResultPromise<Anything,Void_>((Void_ v) => ""); // use null
     delegate.close(result);
     return result.promise;
   }
@@ -53,7 +66,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
      
      The returned promise will be resolved when the write is complete, or if an error occurs."""
   shared Promise<Anything> write(Buffer buffer, Integer position) {
-    value result = AsyncResultPromise<Anything, Void_>((Void_ v) => ""); // use null
+    value result = AsyncResultPromise<Anything,Void_>((Void_ v) => ""); // use null
     delegate.write(buffer, position, result);
     return result.promise;
   }
@@ -69,7 +82,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
      
      The returned promise will be resolved when the close is complete, or if an error occurs."""
   shared Promise<Buffer> read(Buffer buffer, Integer offset, Integer position, Integer length) {
-    value result = AsyncResultPromise<Buffer, Buffer>((Buffer v) => v);
+    value result = AsyncResultPromise<Buffer,Buffer>((Buffer v) => v);
     delegate.read(buffer, offset, position, length, result);
     return result.promise;
   }
@@ -82,7 +95,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
      
      The returned promise will be resolved when the flush is complete or if an error occurs"""
   shared Promise<Anything> flush() {
-    value result = AsyncResultPromise<Anything, Void_>((Void_ v) => ""); // use null
+    value result = AsyncResultPromise<Anything,Void_>((Void_ v) => ""); // use null
     delegate.flush(result);
     return result.promise;
   }

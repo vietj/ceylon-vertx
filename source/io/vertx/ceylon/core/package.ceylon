@@ -1,2 +1,2 @@
-by("Julien Viet")
+by ("Julien Viet")
 shared package io.vertx.ceylon.core;

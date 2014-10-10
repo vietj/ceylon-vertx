@@ -1,8 +1,19 @@
-import org.vertx.java.core.sockjs { SockJSSocket_=SockJSSocket }
-import io.vertx.ceylon.core.stream { ReadStream, WriteStream }
-import ceylon.io { SocketAddress }
-import io.vertx.ceylon.core { MultiMap }
-import io.vertx.ceylon.core.util { toMap }
+import org.vertx.java.core.sockjs {
+  SockJSSocket_=SockJSSocket
+}
+import io.vertx.ceylon.core.stream {
+  ReadStream,
+  WriteStream
+}
+import ceylon.io {
+  SocketAddress
+}
+import io.vertx.ceylon.core {
+  MultiMap
+}
+import io.vertx.ceylon.core.util {
+  toMap
+}
 
 """You interact with SockJS clients through instances of SockJS socket.
    

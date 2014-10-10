@@ -1,11 +1,35 @@
-import org.vertx.java.core.eventbus { EventBus_=EventBus, Message_=Message }
-import org.vertx.java.core.buffer { Buffer_=Buffer }
-import ceylon.promise { Promise }
-import io.vertx.ceylon.core { Registration }
-import io.vertx.ceylon.core.util { toJsonObject, toJsonArray }
-import ceylon.json { JSonObject=Object, JSonArray=Array }
-import org.vertx.java.core { Handler_=Handler }
-import java.lang { Character_=Character, Double_=Double, Long_=Long, Boolean_=Boolean, ByteArray, Byte_=Byte }
+import org.vertx.java.core.eventbus {
+  EventBus_=EventBus,
+  Message_=Message
+}
+import org.vertx.java.core.buffer {
+  Buffer_=Buffer
+}
+import ceylon.promise {
+  Promise
+}
+import io.vertx.ceylon.core {
+  Registration
+}
+import io.vertx.ceylon.core.util {
+  toJsonObject,
+  toJsonArray
+}
+import ceylon.json {
+  JSonObject=Object,
+  JSonArray=Array
+}
+import org.vertx.java.core {
+  Handler_=Handler
+}
+import java.lang {
+  Character_=Character,
+  Double_=Double,
+  Long_=Long,
+  Boolean_=Boolean,
+  ByteArray,
+  Byte_=Byte
+}
 
 "A distributed lightweight event bus which can encompass multiple vert.x instances.
  The event bus implements publish / subscribe, point to point messaging and request-response messaging.
@@ -41,83 +65,83 @@ import java.lang { Character_=Character, Double_=Double, Long_=Long, Boolean_=Bo
  If handlers are registered from an event loop, they will be executed using that same event loop. If they are
  registered from outside an event loop (i.e. when using Vert.x embedded) then Vert.x will assign an event loop
  to the handler and use it to deliver messages to that handler."
-by("Julien Viet")
+by ("Julien Viet")
 shared class EventBus(EventBus_ delegate) {
-	
-	"Send a message via the event bus. The returned promise allows to receive any reply message from the recipient."
-	shared Promise<Message<M>> send<M = Nothing>(
-    		"The address to send it to"
-    		String address,
-    		"The message"
-    		Payload message) {
-
-        //
-		Handler_<Message_<Object>>? replyHandler;
-		Promise<Message<M>> promise;
-        if (`M` == `Nothing`) {
-            replyHandler = null;
-            promise = promiseOfNothing;
-        } else {
-            MessageAdapter<M> adapter = MessageAdapter<M>();
-            replyHandler = adapter;
-            promise = adapter.deferred.promise;
-        }
-        
-        //
-        switch (message)
-        case (is Buffer_) { Sender.send(delegate, address, message, replyHandler); }
-        case (is Character) { Sender.send(delegate, address, Character_(message), replyHandler); }
-        case (is Byte) { Sender.send(delegate, address, Byte_(message), replyHandler); }
-        case (is Float) { Sender.send(delegate, address, Double_(message), replyHandler); }
-        case (is Integer) { Sender.send(delegate, address, Long_(message), replyHandler); }
-        case (is Boolean) { Sender.send(delegate, address, Boolean_(message), replyHandler); }
-        case (is String) { Sender.send(delegate, address, message, replyHandler); }
-        case (is JSonObject) { Sender.send(delegate, address, toJsonObject(message), replyHandler); }
-        case (is JSonArray) { Sender.send(delegate, address, toJsonArray(message), replyHandler); }
-        case (is ByteArray) { Sender.send(delegate, address, message, replyHandler); }
-        case (is Null) {
-          String? dummy = null;
-          Sender.send(delegate, address, dummy, replyHandler);
-        }
-        
-        //
-        return promise;
-	}
-	
-	"Publish a message"
-	shared void publish(
-    		"The address to send it to"
-    		String address,
-    		"The message"
-    		Payload message) {
-
-		switch (message)
-		case (is Buffer_) { delegate.publish(address, message); }
-		case (is Character) { delegate.publish(address, message); }
-		case (is Boolean) { delegate.publish(address, message); }
-		case (is Byte) { delegate.publish(address, message); }
-		case (is Float) { delegate.publish(address, message); }
-		case (is Integer) { delegate.publish(address, message); }
-		case (is String) { delegate.publish(address, message); }
-		case (is JSonObject) { delegate.publish(address, toJsonObject(message)); }
-		case (is JSonArray) { delegate.publish(address, toJsonArray(message)); }
-		case (is ByteArray) { delegate.publish(address, message); }
-		case (is Null) {
-			String? dummy = null;
-			delegate.publish(address, dummy);
-		}
-	}
-
-    "Registers a handler against the specified address. The method returns a registration whose:
-     * the `completed` promise is resolved when the register has been propagated to all nodes of the event bus
-     * the `cancel()` method can be called to cancel the registration"
-    shared Registration registerHandler<M>(
-            "The address to register it at"
-            String address,
-            "The handler"
-            Anything(Message<M>) onMessage) {
-        HandlerRegistration<M> handlerAdapter = HandlerRegistration<M>(delegate, address, onMessage);
-        handlerAdapter.register();
-        return handlerAdapter;
+  
+  "Send a message via the event bus. The returned promise allows to receive any reply message from the recipient."
+  shared Promise<Message<M>> send<M = Nothing>(
+    "The address to send it to"
+    String address,
+    "The message"
+    Payload message) {
+    
+    //
+    Handler_<Message_<Object>>? replyHandler;
+    Promise<Message<M>> promise;
+    if (`M` == `Nothing`) {
+      replyHandler = null;
+      promise = promiseOfNothing;
+    } else {
+      MessageAdapter<M> adapter = MessageAdapter<M>();
+      replyHandler = adapter;
+      promise = adapter.deferred.promise;
     }
+    
+    //
+    switch (message)
+    case (is Buffer_) { Sender.send(delegate, address, message, replyHandler); }
+    case (is Character) { Sender.send(delegate, address, Character_(message), replyHandler); }
+    case (is Byte) { Sender.send(delegate, address, Byte_(message), replyHandler); }
+    case (is Float) { Sender.send(delegate, address, Double_(message), replyHandler); }
+    case (is Integer) { Sender.send(delegate, address, Long_(message), replyHandler); }
+    case (is Boolean) { Sender.send(delegate, address, Boolean_(message), replyHandler); }
+    case (is String) { Sender.send(delegate, address, message, replyHandler); }
+    case (is JSonObject) { Sender.send(delegate, address, toJsonObject(message), replyHandler); }
+    case (is JSonArray) { Sender.send(delegate, address, toJsonArray(message), replyHandler); }
+    case (is ByteArray) { Sender.send(delegate, address, message, replyHandler); }
+    case (is Null) {
+      String? dummy = null;
+      Sender.send(delegate, address, dummy, replyHandler);
+    }
+    
+    //
+    return promise;
+  }
+  
+  "Publish a message"
+  shared void publish(
+    "The address to send it to"
+    String address,
+    "The message"
+    Payload message) {
+    
+    switch (message)
+    case (is Buffer_) { delegate.publish(address, message); }
+    case (is Character) { delegate.publish(address, message); }
+    case (is Boolean) { delegate.publish(address, message); }
+    case (is Byte) { delegate.publish(address, message); }
+    case (is Float) { delegate.publish(address, message); }
+    case (is Integer) { delegate.publish(address, message); }
+    case (is String) { delegate.publish(address, message); }
+    case (is JSonObject) { delegate.publish(address, toJsonObject(message)); }
+    case (is JSonArray) { delegate.publish(address, toJsonArray(message)); }
+    case (is ByteArray) { delegate.publish(address, message); }
+    case (is Null) {
+      String? dummy = null;
+      delegate.publish(address, dummy);
+    }
+  }
+  
+  "Registers a handler against the specified address. The method returns a registration whose:
+   * the `completed` promise is resolved when the register has been propagated to all nodes of the event bus
+   * the `cancel()` method can be called to cancel the registration"
+  shared Registration registerHandler<M>(
+    "The address to register it at"
+    String address,
+    "The handler"
+    Anything(Message<M>) onMessage) {
+    HandlerRegistration<M> handlerAdapter = HandlerRegistration<M>(delegate, address, onMessage);
+    handlerAdapter.register();
+    return handlerAdapter;
+  }
 }

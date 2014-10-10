@@ -1,11 +1,34 @@
-import ceylon.json { JsonObject=Object, JsonArray=Array }
-import org.vertx.java.core.json { JsonObject_=JsonObject }
-import org.vertx.java.core.sockjs { SockJSServer_=SockJSServer, EventBusBridgeHook_=EventBusBridgeHook, SockJSSocket_=SockJSSocket }
-import io.vertx.ceylon.core.util { FunctionalHandlerAdapter, toJsonObject, toJsonArray, fromJsonObject }
-import org.vertx.java.core { Handler_=Handler, AsyncResult_=AsyncResult }
-import org.vertx.java.core.impl { DefaultFutureResult_=DefaultFutureResult }
-import java.lang { Boolean_=Boolean }
-import ceylon.promise { Deferred }
+import ceylon.json {
+  JsonObject=Object,
+  JsonArray=Array
+}
+import org.vertx.java.core.json {
+  JsonObject_=JsonObject
+}
+import org.vertx.java.core.sockjs {
+  SockJSServer_=SockJSServer,
+  EventBusBridgeHook_=EventBusBridgeHook,
+  SockJSSocket_=SockJSSocket
+}
+import io.vertx.ceylon.core.util {
+  FunctionalHandlerAdapter,
+  toJsonObject,
+  toJsonArray,
+  fromJsonObject
+}
+import org.vertx.java.core {
+  Handler_=Handler,
+  AsyncResult_=AsyncResult
+}
+import org.vertx.java.core.impl {
+  DefaultFutureResult_=DefaultFutureResult
+}
+import java.lang {
+  Boolean_=Boolean
+}
+import ceylon.promise {
+  Deferred
+}
 
 """This is an implementation of the server side part of [SockJS](https://github.com/sockjs)
    
@@ -65,7 +88,9 @@ shared class SockJSServer(SockJSServer_ delegate) {
   }
   
   "Set a EventBusBridgeHook on the SockJS server"
-  shared SockJSServer setHook("The hook" EventBusBridgeHook hook) {
+  shared SockJSServer setHook(
+    "The hook"
+    EventBusBridgeHook hook) {
     
     object impl satisfies EventBusBridgeHook_ {
       

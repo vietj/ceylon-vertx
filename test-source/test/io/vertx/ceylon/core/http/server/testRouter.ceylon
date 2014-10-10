@@ -1,9 +1,25 @@
-import ceylon.test { test, assertEquals }
-import io.vertx.ceylon.core.http { HttpServer, HttpServerRequest, RouteMatcher }
-import test.io.vertx.ceylon.core { assertRequest, assertResolve, with, httpServer }
-import ceylon.collection { LinkedList, HashMap }
+import ceylon.test {
+  test,
+  assertEquals
+}
+import io.vertx.ceylon.core.http {
+  HttpServer,
+  HttpServerRequest,
+  RouteMatcher
+}
+import test.io.vertx.ceylon.core {
+  assertRequest,
+  assertResolve,
+  with,
+  httpServer
+}
+import ceylon.collection {
+  LinkedList,
+  HashMap
+}
 
-shared test void testRouter() => with {
+shared test
+void testRouter() => with {
   httpServer {
     void test(HttpServer server) {
       variable Integer catsCount = 0;
@@ -30,11 +46,12 @@ shared test void testRouter() => with {
   };
 };
 
-shared test void testRouterParameters() => with {
+shared test
+void testRouterParameters() => with {
   httpServer {
     void test(HttpServer server) {
       value router = RouteMatcher();
-      value params = LinkedList<Map<String, {String+}>>();
+      value params = LinkedList<Map<String,{String+}>>();
       router.get {
         pattern = "/:blogname/:post";
         void handle(HttpServerRequest req) {

@@ -1,4 +1,6 @@
-import org.vertx.java.core.http { ServerWebSocket_=ServerWebSocket }
+import org.vertx.java.core.http {
+  ServerWebSocket_=ServerWebSocket
+}
 import io.vertx.ceylon.core {
   MultiMap
 }
@@ -16,13 +18,13 @@ shared class ServerWebSocket(ServerWebSocket_ delegate) extends WebSocketBase(de
   
   """The path the websocket is attempting to connect at"""
   shared String path = delegate.path();
-
+  
   """The query string passed on the websocket uri"""
   shared String? query = delegate.query();
-
+  
   // Lazy header map
   variable MultiMap? headerMap = null;
-
+  
   """A map of all headers in the request to upgrade to websocket"""
   shared MultiMap headers {
     if (exists ret = headerMap) {

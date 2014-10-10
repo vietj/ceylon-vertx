@@ -1,11 +1,31 @@
-import org.vertx.java.core.net { NetSocket_=NetSocket }
-import io.vertx.ceylon.core { Chunk }
-import org.vertx.java.core.buffer { Buffer_=Buffer }
-import ceylon.promise { Promise, Deferred }
-import io.vertx.ceylon.core.util { voidAsyncResult, AnythingVoidHandler, HandlerPromise }
-import ceylon.io { SocketAddress }
-import io.vertx.ceylon.core.stream { ReadStream, WriteStream }
-import java.lang { Void_=Void }
+import org.vertx.java.core.net {
+  NetSocket_=NetSocket
+}
+import io.vertx.ceylon.core {
+  Chunk
+}
+import org.vertx.java.core.buffer {
+  Buffer_=Buffer
+}
+import ceylon.promise {
+  Promise,
+  Deferred
+}
+import io.vertx.ceylon.core.util {
+  voidAsyncResult,
+  AnythingVoidHandler,
+  HandlerPromise
+}
+import ceylon.io {
+  SocketAddress
+}
+import io.vertx.ceylon.core.stream {
+  ReadStream,
+  WriteStream
+}
+import java.lang {
+  Void_=Void
+}
 
 """Represents a socket-like interface to a TCP/SSL connection on either the
    client or the server side.
@@ -20,7 +40,7 @@ import java.lang { Void_=Void }
    Instances of this class are not thread-safe."""
 shared class NetSocket(NetSocket_ delegate) {
   
-  value closed = HandlerPromise<Anything, Void_>((Void_? v) => ""); // Use null
+  value closed = HandlerPromise<Anything,Void_>((Void_? v) => ""); // Use null
   delegate.closeHandler(closed);
   
   shared WriteStream writeStream = WriteStream(delegate);
@@ -37,11 +57,11 @@ shared class NetSocket(NetSocket_ delegate) {
   
   "Write a [[Chunk]] to the request body."
   shared NetSocket write(Chunk chunk) {
-    switch (chunk) 
+    switch (chunk)
     case (is String) {
       delegate.write(chunk);
     }
-    case (is [String,String]) {
+    case (is [String, String]) {
       delegate.write(chunk[0], chunk[1]);
     }
     case (is Buffer_) {
@@ -58,7 +78,7 @@ shared class NetSocket(NetSocket_ delegate) {
     delegate.sendFile(fileName, result);
     return result.promise;
   }
-
+  
   """Return the remote address for this socket"""
   shared SocketAddress remoteAddress {
     value address = delegate.remoteAddress();

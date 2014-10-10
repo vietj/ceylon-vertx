@@ -1,4 +1,8 @@
-import org.vertx.java.core.http { WebSocketFrame_=WebSocketFrame { FrameType_=FrameType } }
+import org.vertx.java.core.http {
+  WebSocketFrame_=WebSocketFrame {
+    FrameType_=FrameType
+  }
+}
 
 """A Web Socket frame that represents either text or binary data."""
 shared class WebSocketFrame(WebSocketFrame_ delegate) {
@@ -36,5 +40,4 @@ shared class WebSocketFrame(WebSocketFrame_ delegate) {
   """Returns `true` if this is the final frame.  This should be true unless a number of 
      continuation frames are expected to follow this frame."""
   shared Boolean finalFrame = delegate.finalFrame;
-
 }

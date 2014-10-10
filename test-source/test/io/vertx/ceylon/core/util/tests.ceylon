@@ -1,31 +1,53 @@
-import io.vertx.ceylon.core.util { ... }
-import ceylon.json { JsonArray=Array, JsonObject=Object }
-import ceylon.collection { HashMap }
-import ceylon.test { ... }
-import org.vertx.java.core.json { JsonArray_=JsonArray, JsonObject_=JsonObject }
-import java.lang { String_=String, Long_=Long, Boolean_=Boolean, Double_=Double, Integer_=Integer, Byte_=Byte, Float_=Float, Short_=Short }
-
-shared test void testCombine() {
-
-    HashMap<String, [String+]> src = HashMap<String, [String+]> {
-        "foo" -> ["foo_value_2"],
-        "juu" -> ["juu_value"]
-    };
-    HashMap<String, [String+]> dst = HashMap<String, [String+]> {
-        "foo" -> ["foo_value_1"],
-        "bar" -> ["bar_value"]
-    };
-    value combined = combine { src=src; dst=dst; };
-    assertEquals(HashMap<String, {String+}> {
-        "foo" -> ["foo_value_1","foo_value_2"],
-        "bar" -> ["bar_value"],
-        "juu" -> ["juu_value"]
-    }, combined);
-
+import io.vertx.ceylon.core.util {
+  ...
+}
+import ceylon.json {
+  JsonArray=Array,
+  JsonObject=Object
+}
+import ceylon.collection {
+  HashMap
+}
+import ceylon.test {
+  ...
+}
+import org.vertx.java.core.json {
+  JsonArray_=JsonArray,
+  JsonObject_=JsonObject
+}
+import java.lang {
+  String_=String,
+  Long_=Long,
+  Boolean_=Boolean,
+  Double_=Double,
+  Integer_=Integer,
+  Byte_=Byte,
+  Float_=Float,
+  Short_=Short
 }
 
-shared test void testFromJson() {
-  value src = JsonObject{"a"->"b","b"->123,"c"->true,"d"->1.1,"e"->JsonArray{"b",123,true,1.1,JsonObject{},JsonArray{}},"f"->JsonObject{}};
+shared test
+void testCombine() {
+  
+  HashMap<String,[String+]> src = HashMap<String,[String+]> {
+    "foo"->["foo_value_2"],
+    "juu"->["juu_value"]
+  };
+  HashMap<String,[String+]> dst = HashMap<String,[String+]> {
+    "foo"->["foo_value_1"],
+    "bar"->["bar_value"]
+  };
+  value combined = combine { src = src; dst = dst; };
+  assertEquals(HashMap<String,{String+}> {
+      "foo"->["foo_value_1", "foo_value_2"],
+      "bar"->["bar_value"],
+      "juu"->["juu_value"]
+    }, combined);
+}
+
+shared test
+void testFromJson() {
+  value src = JsonObject { "a"->"b", "b"->123, "c"->true, "d"->1.1, "e"->JsonArray { "b", 123, true, 1.1, JsonObject { }, JsonArray { } }, "f"->JsonObject { } };
   value dst = toJsonObject(src);
   assertEquals(dst.getField("a"), String_("b"));
   assertEquals(dst.getField("b"), Long_(123));
@@ -41,7 +63,8 @@ shared test void testFromJson() {
   assertEquals(dst.getField("f"), JsonObject_());
 }
 
-shared test void testToJson() {
+shared test
+void testToJson() {
   value src = JsonObject_();
   src.putString("string", "s");
   src.putBoolean("boolean", Boolean_.\iTRUE);
@@ -52,7 +75,7 @@ shared test void testToJson() {
   src.putNumber("float", Float_.valueOf(Float_.parseFloat("3.14")));
   src.putNumber("double", Double_.valueOf(Double_.parseDouble("3.14")));
   src.putObject("object", JsonObject_());
-  value array =JsonArray_();
+  value array = JsonArray_();
   array.addString("s");
   array.addBoolean(Boolean_.\iTRUE);
   array.addNumber(Byte_(123.byte));
@@ -75,7 +98,7 @@ shared test void testToJson() {
   assertEquals(dst["double"], 3.14);
   assertEquals(dst["object"], JsonObject());
   value dstArray = dst["array"];
-  assert(is JsonArray dstArray);
+  assert (is JsonArray dstArray);
   assertEquals(dstArray[0], "s");
   assertEquals(dstArray[1], true);
   assertEquals(dstArray[2], 123);

@@ -856,5 +856,5 @@
    
    For more information see the [WebSocket API documentation](http://dev.w3.org/html5/websockets/)
    """
-by("Julien Viet")
+by ("Julien Viet")
 shared package io.vertx.ceylon.core.http;

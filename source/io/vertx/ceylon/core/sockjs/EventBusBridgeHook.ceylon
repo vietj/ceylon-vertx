@@ -1,4 +1,6 @@
-import ceylon.json { JsonObject=Object }
+import ceylon.json {
+  JsonObject=Object
+}
 import ceylon.promise {
   Deferred
 }
@@ -12,10 +14,14 @@ shared interface EventBusBridgeHook {
      accepting it.
      
      Return true to accept the socket, false to reject it"""
-  shared formal Boolean handleSocketCreated("sock The socket" SockJSSocket sock);
+  shared formal Boolean handleSocketCreated(
+    "sock The socket"
+    SockJSSocket sock);
   
   "The socket has been closed"
-  shared formal void handleSocketClosed("The socket" SockJSSocket sock);
+  shared formal void handleSocketClosed(
+    "The socket"
+    SockJSSocket sock);
   
   "Client is sending or publishing on the socket"
   shared formal Boolean handleSendOrPub(
@@ -61,5 +67,4 @@ shared interface EventBusBridgeHook {
     String sessionID,
     "call this when authorisation is complete"
     Deferred<Boolean> handler);
-  
 }

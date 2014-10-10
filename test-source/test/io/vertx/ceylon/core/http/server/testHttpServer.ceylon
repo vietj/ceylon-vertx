@@ -1,14 +1,44 @@
-import io.vertx.ceylon.core.http { HttpServer, HttpServerRequest, HttpServerResponse, textBody }
-import ceylon.net.http { Header }
-import ceylon.net.http.client { Response, Parser }
-import ceylon.test { ... }
-import ceylon.promise { Promise, Deferred }
-import ceylon.collection { HashMap, LinkedList }
-import ceylon.io { newSocketConnector, SocketAddress }
-import ceylon.io.charset { ascii }
-import test.io.vertx.ceylon.core { assertRequest, assertResolve, assertSend, with, httpServer }
+import io.vertx.ceylon.core.http {
+  HttpServer,
+  HttpServerRequest,
+  HttpServerResponse,
+  textBody
+}
+import ceylon.net.http {
+  Header
+}
+import ceylon.net.http.client {
+  Response,
+  Parser
+}
+import ceylon.test {
+  ...
+}
+import ceylon.promise {
+  Promise,
+  Deferred
+}
+import ceylon.collection {
+  HashMap,
+  LinkedList
+}
+import ceylon.io {
+  newSocketConnector,
+  SocketAddress
+}
+import ceylon.io.charset {
+  ascii
+}
+import test.io.vertx.ceylon.core {
+  assertRequest,
+  assertResolve,
+  assertSend,
+  with,
+  httpServer
+}
 
-shared test void testPath() => with {
+shared test
+void testPath() => with {
   httpServer {
     void test(HttpServer server) {
       variable String? path = null;
@@ -27,11 +57,12 @@ shared test void testPath() => with {
   };
 };
 
-shared test void testRequestHeader() => with {
+shared test
+void testRequestHeader() => with {
   httpServer {
     void test(HttpServer server) {
       variable String? path = null;
-      value headers = Deferred<Map<String, {String+}>>();
+      value headers = Deferred<Map<String,{String+}>>();
       void f(HttpServerRequest req) {
         path = req.path;
         headers.fulfill(req.headers);
@@ -57,17 +88,18 @@ shared test void testRequestHeader() => with {
       Parser(socket).parseResponse();
       socket.close();
       
-      Map<String, {String+}> a = assertResolve(headers);
-      assertEquals(HashMap{"foo"->["foo_value1","foo_value2"]}, a);
+      Map<String,{String+}> a = assertResolve(headers);
+      assertEquals(HashMap { "foo"->["foo_value1", "foo_value2"] }, a);
     }
   };
 };
 
-shared test void testQuery() => with {
+shared test
+void testQuery() => with {
   httpServer {
     void test(HttpServer server) {
       variable String? query = null;
-      variable Map<String, {String+}>? parameters = null;
+      variable Map<String,{String+}>? parameters = null;
       void f(HttpServerRequest req) {
         query = req.query;
         parameters = req.params;
@@ -79,16 +111,17 @@ shared test void testQuery() => with {
       assertResolve(server.requestHandler(f).listen(8080));
       assertRequest("http://localhost:8080/?foo=foo_value&bar=bar_value1&bar=bar_value2");
       assertEquals("foo=foo_value&bar=bar_value1&bar=bar_value2", query);
-      assertEquals(HashMap{"foo"->["foo_value"],"bar"->["bar_value1","bar_value2"]}, parameters);
+      assertEquals(HashMap { "foo"->["foo_value"], "bar"->["bar_value1", "bar_value2"] }, parameters);
     }
   };
 };
 
-shared test void testForm() => with {
+shared test
+void testForm() => with {
   httpServer {
     void test(HttpServer server) {
-      value parameters = Deferred<Map<String, {String+}>>();
-      Promise<Map<String, {String+}>> p = parameters.promise;
+      value parameters = Deferred<Map<String,{String+}>>();
+      Promise<Map<String,{String+}>> p = parameters.promise;
       void f(HttpServerRequest req) {
         req.formAttributes.compose(parameters.fulfill);
         HttpServerResponse resp = req.response;
@@ -99,18 +132,19 @@ shared test void testForm() => with {
       assertResolve(server.requestHandler(f).listen(8080));
       assertSend("POST / HTTP/1.1\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: 43\r\n\r\nfoo=foo_value&bar=bar_value1&bar=bar_value2");
       value o = assertResolve(p);
-      assertEquals(HashMap{"foo"->["foo_value"],"bar"->["bar_value1","bar_value2"]}, o);
+      assertEquals(HashMap { "foo"->["foo_value"], "bar"->["bar_value1", "bar_value2"] }, o);
     }
   };
 };
 
-shared test void testOk() => with {
+shared test
+void testOk() => with {
   httpServer {
     void test(HttpServer server) {
       void f(HttpServerRequest req) {
         HttpServerResponse resp = req.response;
         resp.status(200);
-        resp.headers{"foo"->"foo_value","bar"->"bar_value"};
+        resp.headers { "foo"->"foo_value", "bar"->"bar_value" };
         resp.contentType("text/html");
         resp.end("HELLO");
       }
@@ -136,12 +170,13 @@ shared test void testOk() => with {
   };
 };
 
-shared test void testParseBody() => with {
+shared test
+void testParseBody() => with {
   httpServer {
     void test(HttpServer server) {
       value parameters = Deferred<String>();
       Promise<String> p = parameters.promise;
-      value formAttributes = LinkedList<Map<String, {String+}>|Throwable>();
+      value formAttributes = LinkedList<Map<String,{String+}>|Throwable>();
       void f(HttpServerRequest req) {
         value text = req.parseBody(textBody);
         parameters.fulfill(text);
@@ -157,12 +192,13 @@ shared test void testParseBody() => with {
       assertEquals("some_text", o);
       assertEquals(1, formAttributes.size);
       value b = formAttributes.get(0);
-      assert(is Exception b);
+      assert (is Exception b);
     }
   };
 };
 
-shared test void testPump() => with {
+shared test
+void testPump() => with {
   httpServer {
     void test(HttpServer server) {
       void f(HttpServerRequest req) {

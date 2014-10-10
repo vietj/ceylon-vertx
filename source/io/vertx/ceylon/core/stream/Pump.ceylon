@@ -1,4 +1,6 @@
-import org.vertx.java.core.streams { Pump_=Pump }
+import org.vertx.java.core.streams {
+  Pump_=Pump
+}
 
 """Pumps data from a [[ReadStream]] to a [[WriteStream]] and performs flow control where necessary to
    prevent the write stream buffer from getting overfull.
@@ -19,33 +21,32 @@ import org.vertx.java.core.streams { Pump_=Pump }
    Instances of this class are not thread-safe.
 """
 shared class Pump(ReadStream rs, WriteStream ws, Integer? maxSize = null) {
-    
-    Pump_ delegate;
-    if (exists maxSize) {
-        delegate = Pump_.createPump(rs.delegate, ws.delegate, maxSize);
-    } else {
-        delegate = Pump_.createPump(rs.delegate, ws.delegate);
-    }
-    
-    "Set the write queue max size to `maxSize"
-    shared Pump setWriteQueueMaxSize(Integer maxSize) {
-        delegate.setWriteQueueMaxSize(maxSize);
-        return this;
-    }
-    
-    "Start the Pump. The Pump can be started and stopped multiple times."
-    shared Pump start() {
-        delegate.start();
-        return this;
-    }
-    
-    "Stop the Pump. The Pump can be started and stopped multiple times."
-    shared Pump stop() {
-        delegate.stop();
-        return this;
-    }
-
-    "Return the total number of bytes pumped by this pump."
-    shared Integer bytesPumped => delegate.bytesPumped();
-    
+  
+  Pump_ delegate;
+  if (exists maxSize) {
+    delegate = Pump_.createPump(rs.delegate, ws.delegate, maxSize);
+  } else {
+    delegate = Pump_.createPump(rs.delegate, ws.delegate);
+  }
+  
+  "Set the write queue max size to `maxSize"
+  shared Pump setWriteQueueMaxSize(Integer maxSize) {
+    delegate.setWriteQueueMaxSize(maxSize);
+    return this;
+  }
+  
+  "Start the Pump. The Pump can be started and stopped multiple times."
+  shared Pump start() {
+    delegate.start();
+    return this;
+  }
+  
+  "Stop the Pump. The Pump can be started and stopped multiple times."
+  shared Pump stop() {
+    delegate.stop();
+    return this;
+  }
+  
+  "Return the total number of bytes pumped by this pump."
+  shared Integer bytesPumped => delegate.bytesPumped();
 }

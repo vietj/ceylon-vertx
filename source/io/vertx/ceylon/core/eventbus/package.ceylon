@@ -253,5 +253,5 @@
    
    Once you've done that, any Vert.x instances started in cluster mode will merge to form a distributed event bus.
    """
-by("Julien Viet")
+by ("Julien Viet")
 shared package io.vertx.ceylon.core.eventbus;

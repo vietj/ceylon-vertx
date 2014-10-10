@@ -1,15 +1,31 @@
-import ceylon.promise { Promise }
-import io.vertx.ceylon.core { Vertx }
-import io.vertx.ceylon.core.http { ... }
-import ceylon.test { ... }
-import ceylon.io.charset { utf8, Charset }
-import ceylon.io.buffer { ByteBuffer }
-import org.vertx.java.core.buffer { Buffer }
+import ceylon.promise {
+  Promise
+}
+import io.vertx.ceylon.core {
+  Vertx
+}
+import io.vertx.ceylon.core.http {
+  ...
+}
+import ceylon.test {
+  ...
+}
+import ceylon.io.charset {
+  utf8,
+  Charset
+}
+import ceylon.io.buffer {
+  ByteBuffer
+}
+import org.vertx.java.core.buffer {
+  Buffer
+}
 import test.io.vertx.ceylon.core {
   with
 }
 
-shared test void testTimeout() => with {
+shared test
+void testTimeout() => with {
   void test(Vertx vertx) {
     try {
       HttpClient client = vertx.createHttpClient(5000, "localhost");
@@ -24,12 +40,11 @@ shared test void testTimeout() => with {
   }
 };
 
-shared test void testRequest() => with {
+shared test
+void testRequest() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
-    Promise<HttpServer> promise = server.
-        requestHandler((HttpServerRequest req) => req.response.headers{"bar"->"bar_value"}.contentType("text/plain").end("foo_content").close()).
-        listen(8080);
+    Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.headers { "bar"->"bar_value" }.contentType("text/plain").end("foo_content").close()).listen(8080);
     assertEquals(server, promise.future.get(10000));
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo");
@@ -51,16 +66,11 @@ shared test void testRequest() => with {
   }
 };
 
-shared test void testResponse() => with {
+shared test
+void testResponse() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
-    Promise<HttpServer> promise = server.
-        requestHandler((HttpServerRequest req)
-      => req.response.
-        headers{"bar"->"bar_value"}.
-        end().
-        close()).
-        listen(8080);
+    Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.headers { "bar"->"bar_value" }.end().close()).listen(8080);
     assertEquals(server, promise.future.get(10000));
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo").end();
@@ -74,16 +84,11 @@ shared test void testResponse() => with {
   }
 };
 
-shared test void testTextResponse() => with {
+shared test
+void testTextResponse() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
-    Promise<HttpServer> promise = server.
-        requestHandler((HttpServerRequest req)
-      => req.response.
-        contentType("text/plain").
-        end("foo_content").
-        close()).
-        listen(8080);
+    Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.contentType("text/plain").end("foo_content").close()).listen(8080);
     assertEquals(server, promise.future.get(10000));
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo");
@@ -104,16 +109,11 @@ shared test void testTextResponse() => with {
   }
 };
 
-shared test void testBinaryBody() => with {
+shared test
+void testBinaryBody() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
-    Promise<HttpServer> promise = server.
-        requestHandler((HttpServerRequest req)
-      => req.response.
-        contentType("text/plain").
-        end("ABC").
-        close()).
-        listen(8080);
+    Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.contentType("text/plain").end("ABC").close()).listen(8080);
     assertEquals(server, promise.future.get(10000));
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo");
@@ -151,16 +151,11 @@ Promise<String> check(HttpClientResponse resp) {
   };
 }
 
-shared test void testBodyParserFailure() => with {
+shared test
+void testBodyParserFailure() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
-    Promise<HttpServer> promise = server.
-        requestHandler((HttpServerRequest req)
-      => req.response.
-        contentType("text/plain").
-        end("ABC").
-        close()).
-        listen(8080);
+    Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.contentType("text/plain").end("ABC").close()).listen(8080);
     assertEquals(server, promise.future.get(10000));
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo");

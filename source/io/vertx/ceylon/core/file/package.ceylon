@@ -448,5 +448,4 @@
    To close an [[AsyncFile]] call the [[AsyncFile.close]] method. Closing is asynchronous and if you want
    to be notified when the close has been completed you can use the returned promise.
    """
-
 shared package io.vertx.ceylon.core.file;
