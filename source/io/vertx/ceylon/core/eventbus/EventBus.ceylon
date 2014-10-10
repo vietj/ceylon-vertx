@@ -65,19 +65,19 @@ shared class EventBus(EventBus_ delegate) {
         
         //
         switch (message)
-        case (is Buffer_) { delegate.send(address, message, replyHandler); }
-        case (is Character) { delegate.send(address, Character_(message), replyHandler); }
-        case (is Byte) { delegate.send(address, Byte_(message), replyHandler); }
-        case (is Float) { delegate.send(address, Double_(message), replyHandler); }
-        case (is Integer) { delegate.send(address, Long_(message), replyHandler); }
-        case (is Boolean) { delegate.send(address, Boolean_(message), replyHandler); }
-        case (is String) { delegate.send(address, message, replyHandler); }
-        case (is JSonObject) { delegate.send(address, toJsonObject(message), replyHandler); }
-        case (is JSonArray) { delegate.send(address, toJsonArray(message), replyHandler); }
-        case (is ByteArray) { delegate.send(address, message, replyHandler); }
+        case (is Buffer_) { Sender.send(delegate, address, message, replyHandler); }
+        case (is Character) { Sender.send(delegate, address, Character_(message), replyHandler); }
+        case (is Byte) { Sender.send(delegate, address, Byte_(message), replyHandler); }
+        case (is Float) { Sender.send(delegate, address, Double_(message), replyHandler); }
+        case (is Integer) { Sender.send(delegate, address, Long_(message), replyHandler); }
+        case (is Boolean) { Sender.send(delegate, address, Boolean_(message), replyHandler); }
+        case (is String) { Sender.send(delegate, address, message, replyHandler); }
+        case (is JSonObject) { Sender.send(delegate, address, toJsonObject(message), replyHandler); }
+        case (is JSonArray) { Sender.send(delegate, address, toJsonArray(message), replyHandler); }
+        case (is ByteArray) { Sender.send(delegate, address, message, replyHandler); }
         case (is Null) {
           String? dummy = null;
-          delegate.send(address, dummy, replyHandler);
+          Sender.send(delegate, address, dummy, replyHandler);
         }
         
         //
