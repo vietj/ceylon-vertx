@@ -14,11 +14,11 @@
 
    ## The Event Bus
    
-   See [[package io.vertx.ceylon.core.eventbus]].
+   [[package io.vertx.ceylon.core.eventbus]]
    
    ## Shared Data
    
-   See [[package io.vertx.ceylon.core.shareddata]].
+   [[package io.vertx.ceylon.core.shareddata]]
    
    ## Buffers
    
@@ -202,35 +202,35 @@
    
    ## Writing TCP Servers and Clients
    
-   See [[package io.vertx.ceylon.core.net]].
+   [[package io.vertx.ceylon.core.net]]
 
    ## Flow Control - Streams and Pumps
    
-   See [[package io.vertx.ceylon.core.stream]].
+   [[package io.vertx.ceylon.core.stream]]
    
    ## Writing HTTP Servers and Clients
    
-   See [[package io.vertx.ceylon.core.http]].
+   [[package io.vertx.ceylon.core.http]]
    
    ## Routing HTTP requests with Pattern Matching
    
-   See [[package io.vertx.ceylon.core.http]].
+   [[package io.vertx.ceylon.core.http]]
    
    ## WebSockets
    
-   See [[package io.vertx.ceylon.core.http]].
+   [[package io.vertx.ceylon.core.http]]
    
    ## SockJS
    
-   See [[package io.vertx.ceylon.core.sockjs]]
+   [[package io.vertx.ceylon.core.sockjs]]
    
    ## SockJS - EventBus Bridge
    
-   See [[package io.vertx.ceylon.core.sockjs]]
+   [[package io.vertx.ceylon.core.sockjs]]
    
    ## File System
    
-   See [[package io.vertx.ceylon.core.file]]
+   [[package io.vertx.ceylon.core.file]]
    
    """
 by ("Julien Viet")

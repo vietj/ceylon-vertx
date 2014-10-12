@@ -82,19 +82,20 @@
    It's as simple as that. The handler will then receive any messages sent to that address.
    
    The class [[Message]] is a generic type and specific Message types include:
-   - `Message<String>` : mapped to [[ceylon.language::String]]
-   - `Message<Boolean>` : mapped to [[ceylon.language::Boolean]]
-   - `Message<byte[]>` : mapped to [[java.lang::ByteArray]] virtual type
-   - `Message<Double>` : mapped to [[ceylon.language::Float]]
-   - `Message<JsonObject>` : mapped to [[ceylon.json::Object]]
-   - `Message<JsonArray>` : mapped to [[ceylon.json::Array]]
-   - `Message<Long>` : mapped to Ceylon [[ceylon.language::Integer]]
-   - `Message<Buffer>` : mapped to [[org.vertx.java.core.buffer::Buffer]]
-   - `Message<Byte>` : mapped to [[ceylon.language::Byte]] or [[ceylon.language::Integer]]
-   - `Message<Character>` : mapped to [[ceylon.language::Character]]
-   - `Message<Float>` :  mapped to [[ceylon.language::Float]]
-   - `Message<Integer>` : mapped to [[ceylon.language::Integer]]
-   - `Message<Short>` : mapped to [[ceylon.language::Integer]]
+   
+   * `Message<String>` : mapped to [[ceylon.language::String]]
+   * `Message<Boolean>` : mapped to [[ceylon.language::Boolean]]
+   * `Message<byte[]>` : mapped to [[java.lang::ByteArray]] virtual type
+   * `Message<Double>` : mapped to [[ceylon.language::Float]]
+   * `Message<JsonObject>` : mapped to [[ceylon.json::Object]]
+   * `Message<JsonArray>` : mapped to [[ceylon.json::Array]]
+   * `Message<Long>` : mapped to Ceylon [[ceylon.language::Integer]]
+   * `Message<Buffer>` : mapped to [[org.vertx.java.core.buffer::Buffer]]
+   * `Message<Byte>` : mapped to [[ceylon.language::Byte]] or [[ceylon.language::Integer]]
+   * `Message<Character>` : mapped to [[ceylon.language::Character]]
+   * `Message<Float>` :  mapped to [[ceylon.language::Float]]
+   * `Message<Integer>` : mapped to [[ceylon.language::Integer]]
+   * `Message<Short>` : mapped to [[ceylon.language::Integer]]
    
    If you know you'll always be receiving messages of a particular type you can use the specific type in your handler, e.g:
    
@@ -163,6 +164,7 @@
    When this method is invoked it causes a reply to be sent back to the sender where the reply Promise is resolved. An example will make this clear:
    
    The receiver:
+   
    ~~~
    void myHandler(Message<String> message) {
      print("I received a message ``message.body``");
@@ -175,6 +177,7 @@
    ~~~
    
    The sender:
+   
    ~~~
    value reply = eb.send<String>("test.address", "This is a message");
    reply.onComplete((Message<String> message) => println("I received a reply ``message.body``"));
@@ -196,19 +199,19 @@
    
    The message you send can be any of the following types:
    
-   * boolean
-   * byte[]
-   * double
-   * long
-   * java.lang.String
-   * org.vertx.java.core.json.JsonObject
-   * org.vertx.java.core.json.JsonArray
-   * short
-   * float
-   * integer
-   * org.vertx.java.core.buffer.Buffer
-   * byte
-   * character
+   * `boolean`
+   * `byte[]`
+   * `double`
+   * `long`
+   * `java.lang.String`
+   * `org.vertx.java.core.json.JsonObject`
+   * `org.vertx.java.core.json.JsonArray`
+   * `short`
+   * `float`
+   * `integer`
+   * `org.vertx.java.core.buffer.Buffer`
+   * `byte`
+   * `character`
    
    Vert.x buffers and JSON objects and arrays are copied before delivery if they are delivered in the same JVM, so different verticles
    can't access the exact same object instance which could lead to race conditions.
