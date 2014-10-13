@@ -256,7 +256,12 @@
    To write data to an HTTP response, you invoke the write function. This function can be invoked multiple times before the response is
    ended. It can be invoked in a few ways:
    
-   With a single buffer: currently not supported
+   With a single buffer:
+   
+   ~~~
+   Buffer myBuffer = ...
+   request.response.write(myBuffer);
+   ~~~
    
    A string. In this case the string will encoded using UTF-8 and the result written to the wire.
    
@@ -292,7 +297,7 @@
    ~~~
 
    The function can also be called with a string or Buffer in the same way [[HttpServerResponse.write]] is called. In this case
-   it's just the same as calling write with a string or Buffer (not supported) followed by calling [[HttpServerResponse.end]] with
+   it's just the same as calling write with a string or Buffer followed by calling [[HttpServerResponse.end]] with
    no arguments. For example:
    
    ~~~
@@ -368,7 +373,26 @@
 
    #### HTTP Compression
    
-   Not yet available in 2.0.
+   Vert.x comes with support for HTTP Compression out of the box. Which means you are able to automatically compress
+   the body of the responses before they are sent back to the Client. If the client does not support HTTP
+   Compression the responses are sent back without compressing the body. This allows to handle Client that
+   support HTTP Compression and those that not support it at the same time.
+   
+   To enable compression you only need to do:
+   
+   ~~~
+   HttpServer server = vertx.createHttpServer();
+   server.compressionSupported = true;
+   ~~~
+   
+   The default is false.
+   
+   When HTTP Compression is enabled the [[HttpServer]] will check if the client did include an 'Accept-Encoding'
+   header which includes the supported compressions. Common used are deflate and gzip. Both are supported by
+   Vert.x. Once such a header is found the [[HttpServer]] will automatically compress the body of the response
+   with one of the supported compressions and send it back to the client.
+   
+   Be aware that compression may be able to reduce network traffic but is more cpu-intensive.
    
    ### Writing HTTP Clients
    
@@ -619,8 +643,37 @@
    
    #### HTTP Compression
    
-   Not provided by the 2.0 API
+   Vert.x comes with support for HTTP Compression out of the box. Which means the HTTPClient can let the remote Http
+   server know that it supports compression, and so will be able to handle compressed response bodies. A Http
+   server is free to either compress with one of the supported compression algorithm or send the body
+   back without compress it at all. So this is only a hint for the Http server which it may ignore at all.
    
+   To tell the Http server which compression is supported by the [[HttpClient]] it will include a 'Accept-Encoding'
+   header with the supported compression algorithm as value. Multiple compression algorithms are supported.
+   In case of Vert.x this will result in have the following header added:
+   
+   ~~~
+   Accept-Encoding: gzip, deflate
+   ~~~
+
+   The Http Server will choose then from one of these. You can detect if a HttpServer did compress the body
+   by checking for the 'Content-Encoding' header in the response sent back from it.
+   
+   If the body of the response was compressed via gzip it will include for example the following header:
+   
+   ~~~
+   Content-Encoding: gzip
+   ~~~
+
+   To enable compression you only need to do:
+   
+   ~~~
+   HttpClient client = vertx.createHttpClient();
+   client.tryUserCompression = true;
+   ~~~
+
+   The default is false.
+      
    ### Pumping Requests and Responses
    
    The HTTP client and server requests and responses all implement either [[io.vertx.ceylon.core.stream::ReadStream]] or [[io.vertx.ceylon.core.stream::ReadStream]].
