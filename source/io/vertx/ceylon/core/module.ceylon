@@ -1,26 +1,12 @@
-"""# Vert.x for Ceylon
-   
-   Vert.x is a lightweight, high performance application platform for the JVM that's designed for modern mobile, web,
-   and enterprise applications.
-   
-   The original [Vert.x documentation](http://vertx.io/docs.html) explains how to use Vert.x. This Ceylon module is a port
-   of the Vert.x API to Ceylon, with this API you can:
-   
-   - Embed Vert.x in a Ceylon application
-   - Use the Vert.x API
-   - Verticles are not covered by this API but are managed by the `io.vertx.ceylon.platform` Ceylon module.
-   
-   # Reference
-
-   ## The Event Bus
+"""# The Event Bus
    
    [[package io.vertx.ceylon.core.eventbus]]
    
-   ## Shared Data
+   # Shared Data
    
    [[package io.vertx.ceylon.core.shareddata]]
    
-   ## Buffers
+   # Buffers
    
    Most data in Vert.x is shuffled around using instances of [[org.vertx.java.core.buffer::Buffer]]. We chose deliberately
    to use the Vert.x native type as it can easily used from Ceylon and a wrapper would complicate the bridge.
@@ -28,7 +14,7 @@
    A Buffer represents a sequence of zero or more bytes that can be written to or read from, and which expands
    automatically as necessary to accomodate any bytes written to it. You can perhaps think of a buffer as smart byte array.
    
-   ### Creating Buffers
+   ## Creating Buffers
    
    Create a new empty buffer:
    
@@ -65,13 +51,13 @@
    value buff = Buffer(10000);
    ~~~
    
-   ### Writing to a Buffer
+   ## Writing to a Buffer
    
    There are two ways to write to a buffer: appending, and random access. In either case buffers
    will always expand automatically to encompass the bytes. It's not possible to get an
    `IndexOutOfBoundsException` with a buffer.
    
-   #### Appending to a Buffer
+   ### Appending to a Buffer
    
    To append to a buffer, you use the `appendXXX` methods. Append methods exist for appending other buffers,
    byte[], String and all primitive types.
@@ -84,7 +70,7 @@
    buff.appendInt(123).appendString("hello\n");
    ~~~
    
-   #### Random access buffer writes
+   ### Random access buffer writes
    
    You can also write into the buffer at a specific index, by using the `setXXX` methods. Set methods exist for other
    buffers, byte[], String and all primitive types. All the set methods take an index as the first argument - this
@@ -97,7 +83,7 @@
    buff.setString(0, "hello");
    ~~~
 
-   ### Reading from a Buffer
+   ## Reading from a Buffer
    
    Data is read from a buffer using the `getXXX` methods. Get methods exist for byte[], String and all primitive types.
    The first argument to these methods is an index in the buffer from where to get the data.
@@ -107,12 +93,12 @@
    Integer i = buff.getInt(0);
    ~~~
 
-   ### Other buffer methods:
+   ## Other buffer methods:
 
    - length(). To obtain the length of the buffer. The length of a buffer is the index of the byte in the buffer with the largest index + 1.
    - copy(). Copy the entire buffer
    
-   ## JSON
+   # JSON
    
    Whereas JavaScript has first class support for JSON, and Ruby has Hash literals which make representing JSON easy
    within code, things aren't so easy in Ceylon
@@ -137,7 +123,7 @@
    }
    ~~~
 
-   ## Delayed and Periodic Tasks
+   # Delayed and Periodic Tasks
    
    It's very common in Vert.x to want to perform an action after a delay, or periodically.
    
@@ -146,7 +132,7 @@
    
    Instead you use Vert.x timers. Timers can be _one-shot_ or _periodic_. We'll discuss both
    
-   ### One-shot Timers
+   ## One-shot Timers
    
    A one shot timer calls an event handler after a certain delay, expressed in milliseconds.
 
@@ -160,7 +146,7 @@
    
    The return value is a unique timer id which can later be used to cancel the timer. The handler is also passed the timer id.
    
-   ### Periodic Timers
+   ## Periodic Timers
    
    You can also set a timer to fire periodically by using the [[Vertx.setPeriodic]] method. There will be an initial
    delay equal to the period. The return value of [[Vertx.setPeriodic]] is a unique timer id
@@ -173,7 +159,7 @@
    print("First this is printed");
    ~~~
    
-   ### Cancelling timers
+   ## Cancelling timers
    
    To cancel a periodic timer, call the [[Vertx.cancelTimer]] method specifying the timer id. For example:
 
@@ -200,35 +186,35 @@
    };
    ~~~
    
-   ## Writing TCP Servers and Clients
+   # Writing TCP Servers and Clients
    
    [[package io.vertx.ceylon.core.net]]
 
-   ## Flow Control - Streams and Pumps
+   # Flow Control - Streams and Pumps
    
    [[package io.vertx.ceylon.core.stream]]
    
-   ## Writing HTTP Servers and Clients
+   # Writing HTTP Servers and Clients
    
    [[package io.vertx.ceylon.core.http]]
    
-   ## Routing HTTP requests with Pattern Matching
+   # Routing HTTP requests with Pattern Matching
    
    [[package io.vertx.ceylon.core.http]]
    
-   ## WebSockets
+   # WebSockets
    
    [[package io.vertx.ceylon.core.http]]
    
-   ## SockJS
+   # SockJS
    
    [[package io.vertx.ceylon.core.sockjs]]
    
-   ## SockJS - EventBus Bridge
+   # SockJS - EventBus Bridge
    
    [[package io.vertx.ceylon.core.sockjs]]
    
-   ## File System
+   # File System
    
    [[package io.vertx.ceylon.core.file]]
    
