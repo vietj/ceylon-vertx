@@ -187,8 +187,34 @@
    
    #### Handling Multipart Form Uploads
    
-   todo
+   Vert.x understands file uploads submitted from HTML forms in browsers. In order to handle file uploads you should
+   set the [[HttpServerRequest.uploadHandler]] on the request. The handler will be called once for each upload in the form.
    
+   ~~~
+   request.expectMultiPart(true);
+   
+   request.uploadHandler {
+     void onUpload(HttpServerFileUpload upload) {
+     }
+   });
+   ~~~
+   
+   The [[HttpServerFileUpload]] class implements [[io.vertx.ceylon.core.stream::ReadStream]] so you read the data and
+   stream it to any object that implements [[io.vertx.ceylon.core.stream::WriteStream]] using a Pump, as previously
+   discussed.
+   
+   You can also stream it directly to disk using the convenience method [[HttpServerFileUpload.streamToFileSystem]].
+
+   ~~~
+   request.expectMultiPart(true);
+   
+   request.uploadHandler {
+     void onUpload(HttpServerFileUpload upload) {
+       upload.streamToFileSystem("uploads/``upload.filename()``");
+     }
+   });
+   ~~~
+
    #### Handling Multipart Form Attributes
    
    If the request corresponds to an HTML form that was submitted you can use the [[HttpServerRequest.formAttributes]] promise to access
@@ -323,7 +349,8 @@
    #### Pumping Responses
    
    The [[HttpServerResponse.stream]] provides a [[io.vertx.ceylon.core.stream::WriteStream]] you can pump to it from any
-   [[io.vertx.ceylon.core.stream::ReadStream]], e.g. an AsyncFile (todo), NetSocket (todo), WebSocket (todo) or [[HttpServerRequest]].
+   [[io.vertx.ceylon.core.stream::ReadStream]], e.g. an [[io.vertx.ceylon.core.file::AsyncFile]],
+   [[io.vertx.ceylon.core.net::NetSocket]], [[WebSocket]] or [[HttpServerRequest]].
    
    Here's an example which echoes HttpRequest headers and body back in the HttpResponse. It uses a pump for the body,
    so it will work even if the HTTP request body is much larger than can fit in memory at any one time:
@@ -465,7 +492,12 @@
    To write data to an [[HttpClientRequest]] object, you invoke the [[HttpClientRequest.write]] function. This function can be called multiple times
    before the request has ended. It can be invoked in a few ways:
    
-   With a single buffer: (todo)
+   With a single buffer:
+   
+   ~~~
+   Buffer myBuffer = Buffer(...);
+   sock.write(myBuffer);
+   ~~~
    
    A string. In this case the string will encoded using UTF-8 and the result written to the wire:
    
@@ -596,11 +628,21 @@
 
    ### HTTPS Servers
    
-   todo
+   HTTPS servers are very easy to write using Vert.x.
+   
+   An HTTPS server has an identical API to a standard HTTP server. Getting the server to use HTTPS is just a matter
+   of configuring the HTTP Server before listen is called.
+   
+   Configuration of an HTTPS server is done in exactly the same way as configuring a
+   [[io.vertx.ceylon.core.net::NetServer]] for SSL. Please see SSL server chapter
+   for detailed instructions.
    
    ### HTTPS Clients
    
-   todo
+   HTTPS clients can also be very easily written with Vert.x
+   
+   Configuring an HTTP client for HTTPS is done in exactly the same way as configuring a
+   [[io.vertx.ceylon.core.net::NetClient]] for SSL. Please see SSL client chapter for detailed instructions.
    
    ### Scaling HTTP servers
    
