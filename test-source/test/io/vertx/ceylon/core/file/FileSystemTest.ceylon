@@ -245,7 +245,7 @@ shared class FileSystemTest() {
       Deferred<Buffer> d = Deferred<Buffer>();
       vertx.runOnContext(void() {
           value fs = vertx.fileSystem;
-          value buffer = fs.open("work/foo.txt").compose<Buffer>((AsyncFile file) => file.read(Buffer(10), 0, 0, 10));
+          value buffer = fs.open("work/foo.txt").flatMap((AsyncFile file) => file.read(Buffer(10), 0, 0, 10));
           d.fulfill(buffer);
         });
       value buffer = assertResolve(d.promise);

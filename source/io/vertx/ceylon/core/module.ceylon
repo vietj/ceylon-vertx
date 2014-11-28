@@ -221,7 +221,7 @@
    """
 by ("Julien Viet")
 license ("ASL2")
-module io.vertx.ceylon.core "1.0.0" {
+module io.vertx.ceylon.core "1.1.0" {
   
   import io.netty "4.0.20.Final";
   import com.fasterxml.jackson.annotations "2.2.2";
@@ -230,9 +230,9 @@ module io.vertx.ceylon.core "1.0.0" {
   shared import io.vertx.core "2.1.2";
   shared import io.vertx.platform "2.1.2";
   shared import java.base "7";
-  shared import ceylon.promise "1.1.0";
-  shared import ceylon.json "1.1.0";
-  shared import ceylon.io "1.1.0";
-  shared import ceylon.time "1.1.0";
-  import ceylon.collection "1.1.0";
+  shared import ceylon.promise "1.1.1";
+  shared import ceylon.json "1.1.1";
+  shared import ceylon.io "1.1.1";
+  shared import ceylon.time "1.1.1";
+  import ceylon.collection "1.1.1";
 }

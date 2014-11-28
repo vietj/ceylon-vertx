@@ -59,7 +59,7 @@ void testRequest() => with {
       assertEquals(utf8, resp.charset);
       return resp.parseBody(textBody);
     }
-    Promise<String> body = req.response.compose<String>(check);
+    Promise<String> body = req.response.flatMap<String>(check);
     req.contentType("text/plain").end("the_body");
     String ret = assertResolve(body, 10000);
     assertEquals("foo_content", ret);
@@ -94,7 +94,7 @@ void testTextResponse() => with {
       assertEquals(utf8, resp.charset);
       return resp.parseBody(textBody);
     }
-    Promise<String> body = req.response.compose<String>(check);
+    Promise<String> body = req.response.flatMap<String>(check);
     req.end();
     String ret = assertResolve(body, 10000);
     assertEquals("foo_content", ret);
@@ -115,7 +115,7 @@ void testBinaryBody() => with {
       assertEquals(utf8, resp.charset);
       return resp.parseBody(binaryBody);
     }
-    Promise<ByteBuffer> body = req.response.compose<ByteBuffer>(check);
+    Promise<ByteBuffer> body = req.response.flatMap<ByteBuffer>(check);
     req.end();
     ByteBuffer ret = assertResolve(body, 10000);
     assertEquals(3, ret.size);
@@ -147,7 +147,7 @@ void testBodyParserFailure() => with {
     assertResolveTo(promise, server, 10000);
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo");
-    Promise<String> body = req.response.compose<String>(check);
+    Promise<String> body = req.response.flatMap<String>(check);
     req.end();
     try {
       assertResolve(body, 10000);
