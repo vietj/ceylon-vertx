@@ -4,7 +4,8 @@ import org.vertx.java.core {
 }
 import ceylon.promise {
   Deferred,
-  Promise
+  Promise,
+  ExecutionContext
 }
 import java.lang {
   Void_=Void,
@@ -17,10 +18,10 @@ import io.vertx.ceylon.core.util {
 }
 
 by ("Julien Viet")
-shared class AsyncResultPromise<Value,Result>(Value(Result) transform)
+shared class AsyncResultPromise<Value,Result>(ExecutionContext context, Value(Result) transform)
     satisfies Handler_<AsyncResult_<Result>> {
   
-  Deferred<Value> deferred = Deferred<Value>();
+  Deferred<Value> deferred = Deferred<Value>(context);
   shared Promise<Value> promise = deferred.promise;
   
   shared actual void handle(AsyncResult_<Result> asyncResult) {
@@ -39,9 +40,9 @@ shared class AsyncResultPromise<Value,Result>(Value(Result) transform)
   }
 }
 
-shared AsyncResultPromise<Boolean,Boolean_> booleanAsyncResult() => AsyncResultPromise<Boolean,Boolean_>((Boolean_ v) => v.booleanValue());
-shared AsyncResultPromise<Anything,Void_> voidAsyncResult() => AsyncResultPromise<Anything,Void_>((Void_ v) => ""); // should use null
-shared AsyncResultPromise<String,String_> stringAsyncResult() => AsyncResultPromise<String,String_>((String_ v) => v.string);
-shared AsyncResultPromise<{String*},ObjectArray_<String_>> stringArrayAsyncResult() => AsyncResultPromise<{String*},ObjectArray_<String_>>(fromStringArray);
+shared AsyncResultPromise<Boolean,Boolean_> booleanAsyncResult(ExecutionContext context) => AsyncResultPromise<Boolean,Boolean_>(context, (Boolean_ v) => v.booleanValue());
+shared AsyncResultPromise<Anything,Void_> voidAsyncResult(ExecutionContext context) => AsyncResultPromise<Anything,Void_>(context, (Void_ v) => ""); // should use null
+shared AsyncResultPromise<String,String_> stringAsyncResult(ExecutionContext context) => AsyncResultPromise<String,String_>(context, (String_ v) => v.string);
+shared AsyncResultPromise<{String*},ObjectArray_<String_>> stringArrayAsyncResult(ExecutionContext context) => AsyncResultPromise<{String*},ObjectArray_<String_>>(context, fromStringArray);
 
-shared AsyncResultPromise<Result,Result> asyncResult<Result>() => AsyncResultPromise<Result,Result>((Result result) => result);
+shared AsyncResultPromise<Result,Result> asyncResult<Result>(ExecutionContext context) => AsyncResultPromise<Result,Result>(context, (Result result) => result);

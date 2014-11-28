@@ -16,7 +16,8 @@ import org.vertx.java.core {
   Handler_=Handler
 }
 import ceylon.promise {
-  Promise
+  Promise,
+  ExecutionContext
 }
 import java.lang {
   Byte_=Byte,
@@ -30,6 +31,8 @@ import java.lang {
 "Represents a message on the event bus."
 by ("Julien Viet")
 shared class Message<T = Anything>(
+  "The execution context"
+  ExecutionContext context,
   "The wrapped message"
   Message_<Object> delegate,
   "The body of the message"
@@ -49,7 +52,7 @@ shared class Message<T = Anything>(
       replyHandler = null;
       promise = promiseOfNothing;
     } else {
-      MessageAdapter<M> adapter = MessageAdapter<M>();
+      MessageAdapter<M> adapter = MessageAdapter<M>(context);
       replyHandler = adapter;
       promise = adapter.deferred.promise;
     }

@@ -5,7 +5,8 @@ import org.vertx.java.core {
   Handler_=Handler
 }
 import ceylon.promise {
-  Promise
+  Promise,
+  ExecutionContext
 }
 import io.vertx.ceylon.core {
   Registration
@@ -16,15 +17,15 @@ import org.vertx.java.core.eventbus {
 }
 
 by ("Julien Viet")
-class HandlerRegistration<M>(EventBus_ delegate, String address, Anything(Message<M>) handler)
-    extends AbstractMessageAdapter<M>()
+class HandlerRegistration<M>(ExecutionContext context, EventBus_ delegate, String address, Anything(Message<M>) handler)
+    extends AbstractMessageAdapter<M>(context)
     satisfies Registration & Handler_<Message_<Object>> {
   
-  value resultHandler = voidAsyncResult();
+  value resultHandler = voidAsyncResult(context);
   shared actual Promise<Anything> completed => resultHandler.promise;
   
   shared actual Promise<Anything> cancel() {
-    value cancelled = voidAsyncResult();
+    value cancelled = voidAsyncResult(context);
     delegate.unregisterHandler(address, this, cancelled);
     return cancelled.promise;
   }

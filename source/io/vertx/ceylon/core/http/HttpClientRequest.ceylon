@@ -1,9 +1,10 @@
 import org.vertx.java.core.http { HttpClient_=HttpClient, HttpClientResponse_=HttpClientResponse }
-import ceylon.promise { Deferred, Promise }
+import ceylon.promise { Deferred, Promise, ExecutionContext }
 import io.vertx.ceylon.core.util { putAll, FunctionalHandlerAdapter, functionalHandler }
 import io.vertx.ceylon.core.stream { WriteStream }
 import org.vertx.java.core.buffer { Buffer }
-import io.vertx.ceylon.core { Chunk, Entries }
+import io.vertx.ceylon.core { Chunk, Entries,
+  Vertx }
 
 """Represents a client-side HTTP request.
  
@@ -34,9 +35,14 @@ import io.vertx.ceylon.core { Chunk, Entries }
  
    Instances of HttpClientRequest are not thread-safe."""
 by("Julien Viet")
-shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) extends HttpOutput<HttpClientRequest>() {
+shared class HttpClientRequest(Vertx vertx, HttpClient_ delegate, String method, String uri) extends HttpOutput<HttpClientRequest>() {
 
-    Deferred<HttpClientResponse> deferred = Deferred<HttpClientResponse>();
+    Deferred<HttpClientResponse> deferred = Deferred<HttpClientResponse> {
+      object context satisfies ExecutionContext {
+        shared actual ExecutionContext childContext() => vertx.executionContext;
+        shared actual void run(void task()) => task();
+      }
+    };
 
     """The response promise is resolved when the http client response is available.
        
@@ -46,7 +52,9 @@ shared class HttpClientRequest(HttpClient_ delegate, String method, String uri) 
     value request = delegate.request(
       method.string,
       uri,
-      FunctionalHandlerAdapter<HttpClientResponse, HttpClientResponse_>(HttpClientResponse, deferred.fulfill));
+      FunctionalHandlerAdapter<HttpClientResponse, HttpClientResponse_>(
+        (HttpClientResponse_ delegate) => HttpClientResponse(vertx, delegate),
+        deferred.fulfill));
     
     request.exceptionHandler(functionalHandler<Throwable>(deferred.reject));
 

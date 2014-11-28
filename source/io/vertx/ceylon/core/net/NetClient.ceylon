@@ -1,5 +1,5 @@
-import org.vertx.java.core.net { NetClient_=NetClient }
-import io.vertx.ceylon.core { ClientBase }
+import org.vertx.java.core.net { NetClient_=NetClient, NetSocket_=NetSocket }
+import io.vertx.ceylon.core { ClientBase, Vertx }
 import ceylon.promise { Promise }
 import io.vertx.ceylon.core.util { AsyncResultPromise }
 
@@ -16,13 +16,13 @@ import io.vertx.ceylon.core.util { AsyncResultPromise }
    are called.
    
    Instances of this class are thread-safe."""
-shared class NetClient(NetClient_ delegate) extends ClientBase(delegate, delegate) {
+shared class NetClient(Vertx vertx, NetClient_ delegate) extends ClientBase(delegate, delegate) {
   
   "Attempt to open a connection to a server at the specific [[port]] and [[host]].
    [[host]] can be a valid host name or IP address. The connect is done asynchronously and on success, a
    [[NetSocket]] instance is supplied via the returned promise"
   shared Promise<NetSocket> connect(Integer port, String? host = null) {
-    value handler = AsyncResultPromise(NetSocket);
+    value handler = AsyncResultPromise(vertx.executionContext, (NetSocket_ delegate) => NetSocket(vertx, delegate));
     if (exists host) {
       delegate.connect(port, host, handler);
     } else {

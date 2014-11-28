@@ -1,6 +1,7 @@
 import ceylon.promise {
   Deferred,
-  Promise
+  Promise,
+  ExecutionContext
 }
 import org.vertx.java.core {
   Handler_=Handler
@@ -20,13 +21,14 @@ import org.vertx.java.core.buffer {
 
 "Parse the body of an input"
 Promise<Body> doParseBody<Body,T>(
+  ExecutionContext context, 
   BodyType<Body> bodyType,
   Anything(Handler_<Buffer>) setBodyHandler,
   ReadStream_<T> stream,
   Charset? charset) {
   
   //
-  Deferred<Body> deferred = Deferred<Body>();
+  Deferred<Body> deferred = Deferred<Body>(context);
   
   //
   object valueHandler satisfies Handler_<Buffer> {

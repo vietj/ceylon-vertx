@@ -9,7 +9,8 @@ import ceylon.promise {
   Promise
 }
 import io.vertx.ceylon.core {
-  Registration
+  Registration,
+  Vertx
 }
 import io.vertx.ceylon.core.util {
   toJsonObject,
@@ -66,7 +67,7 @@ import java.lang {
  registered from outside an event loop (i.e. when using Vert.x embedded) then Vert.x will assign an event loop
  to the handler and use it to deliver messages to that handler."
 by ("Julien Viet")
-shared class EventBus(EventBus_ delegate) {
+shared class EventBus(Vertx vertx, EventBus_ delegate) {
   
   "Send a message via the event bus. The returned promise allows to receive any reply message from the recipient."
   shared Promise<Message<M>> send<M = Nothing>(
@@ -82,7 +83,7 @@ shared class EventBus(EventBus_ delegate) {
       replyHandler = null;
       promise = promiseOfNothing;
     } else {
-      MessageAdapter<M> adapter = MessageAdapter<M>();
+      MessageAdapter<M> adapter = MessageAdapter<M>(vertx.executionContext);
       replyHandler = adapter;
       promise = adapter.deferred.promise;
     }
@@ -140,7 +141,7 @@ shared class EventBus(EventBus_ delegate) {
     String address,
     "The handler"
     Anything(Message<M>) onMessage) {
-    HandlerRegistration<M> handlerAdapter = HandlerRegistration<M>(delegate, address, onMessage);
+    HandlerRegistration<M> handlerAdapter = HandlerRegistration<M>(vertx.executionContext, delegate, address, onMessage);
     handlerAdapter.register();
     return handlerAdapter;
   }

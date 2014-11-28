@@ -17,11 +17,14 @@ import ceylon.collection {
   LinkedList,
   HashMap
 }
+import io.vertx.ceylon.core {
+  Vertx
+}
 
 shared test
 void testRouter() => with {
   httpServer {
-    void test(HttpServer server) {
+    void test(Vertx vertx, HttpServer server) {
       variable Integer catsCount = 0;
       void cats(HttpServerRequest req) {
         catsCount++;
@@ -32,7 +35,7 @@ void testRouter() => with {
         dogsCount++;
         req.response.status(200).end();
       }
-      value router = RouteMatcher();
+      value router = RouteMatcher(vertx);
       router.get("/animal/cats", cats);
       router.get("/animal/dogs", dogs);
       assertResolve(server.requestHandler(router.handle).listen(8080));
@@ -49,8 +52,8 @@ void testRouter() => with {
 shared test
 void testRouterParameters() => with {
   httpServer {
-    void test(HttpServer server) {
-      value router = RouteMatcher();
+    void test(Vertx vertx, HttpServer server) {
+      value router = RouteMatcher(vertx);
       value params = LinkedList<Map<String,{String+}>>();
       router.get {
         pattern = "/:blogname/:post";

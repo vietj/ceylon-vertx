@@ -2,7 +2,8 @@ import org.vertx.java.core.net {
   NetSocket_=NetSocket
 }
 import io.vertx.ceylon.core {
-  Chunk
+  Chunk,
+  Vertx
 }
 import org.vertx.java.core.buffer {
   Buffer_=Buffer
@@ -38,9 +39,9 @@ import java.lang {
    [[io.vertx.ceylon.core.stream::Pump]] to pump data with flow control.
    
    Instances of this class are not thread-safe."""
-shared class NetSocket(NetSocket_ delegate) {
+shared class NetSocket(Vertx vertx, NetSocket_ delegate) {
   
-  value closed = HandlerPromise<Anything,Void_>((Void_? v) => ""); // Use null
+  value closed = HandlerPromise<Anything,Void_>(vertx.executionContext, (Void_? v) => ""); // Use null
   delegate.closeHandler(closed);
   
   shared WriteStream writeStream = WriteStream(delegate);
@@ -74,7 +75,7 @@ shared class NetSocket(NetSocket_ delegate) {
      outgoing connection, bypassing userspace altogether (where supported by the underlying
      operating system. This is a very efficient way to serve files."""
   shared Promise<Anything> sendFile(String fileName) {
-    value result = voidAsyncResult();
+    value result = voidAsyncResult(vertx.executionContext);
     delegate.sendFile(fileName, result);
     return result.promise;
   }
@@ -97,7 +98,7 @@ shared class NetSocket(NetSocket_ delegate) {
   
   "Upgrade channel to use SSL/TLS. Be aware that for this to work SSL must be configured."
   shared Promise<Anything> sslUpgrade(void onUpgrade()) {
-    value done = Deferred<Anything>();
+    value done = Deferred<Anything>(vertx.executionContext);
     delegate.ssl(AnythingVoidHandler(done.fulfill));
     return done.promise;
   }

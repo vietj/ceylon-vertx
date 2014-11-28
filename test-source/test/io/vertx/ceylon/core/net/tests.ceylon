@@ -29,7 +29,7 @@ void testClientServer() => with {
     value client = vertx.createNetClient();
     value socket = assertResolve(client.connect(12345));
     value acc = Buffer();
-    value done = Deferred<Null>();
+    value done = Deferred<Null>(testContext);
     socket.readStream.dataHandler(void(Buffer buffer) {
         acc.appendBuffer(buffer);
         if (acc.length() == 5) {

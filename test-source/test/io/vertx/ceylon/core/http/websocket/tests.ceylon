@@ -4,7 +4,8 @@ import ceylon.test {
 import test.io.vertx.ceylon.core {
   with,
   assertResolveTo,
-  assertResolve
+  assertResolve,
+  testContext
 }
 import io.vertx.ceylon.core {
   Vertx
@@ -22,7 +23,7 @@ import ceylon.promise {
 shared test
 void clientSendHeader() => with {
   void test(Vertx vertx) {
-    value deferred = Deferred<String>();
+    value deferred = Deferred<String>(testContext);
     value server = vertx.createHttpServer();
     server.websocketHandler(void(ServerWebSocket websocket) {
         value header = websocket.headers["foo"];
@@ -46,7 +47,7 @@ void clientSendHeader() => with {
 shared test
 void clientSendMessage() => with {
   void test(Vertx vertx) {
-    value deferred = Deferred<String>();
+    value deferred = Deferred<String>(testContext);
     value server = vertx.createHttpServer();
     server.websocketHandler(void(ServerWebSocket websocket) {
         websocket.frameHandler(void(WebSocketFrame frame) {
@@ -64,7 +65,7 @@ void clientSendMessage() => with {
 shared test
 void serverSendMessage() => with {
   void test(Vertx vertx) {
-    value deferred = Deferred<String>();
+    value deferred = Deferred<String>(testContext);
     value server = vertx.createHttpServer();
     server.websocketHandler(void(ServerWebSocket websocket) {
         websocket.writeTextFrame("helloFromServer");
@@ -89,7 +90,7 @@ void clientCloseHandler() => with {
       });
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
-    value deferred = Deferred<Anything>();
+    value deferred = Deferred<Anything>(testContext);
     value ws = client.connectWebsocket("/foo");
     ws.onComplete((WebSocket websocket) => websocket.closeHandler().compose(deferred.fulfill, deferred.reject));
     assertResolve(deferred);
@@ -100,7 +101,7 @@ shared test
 void serverCloseHandler() => with {
   void test(Vertx vertx) {
     value server = vertx.createHttpServer();
-    value deferred = Deferred<Anything>();
+    value deferred = Deferred<Anything>(testContext);
     server.websocketHandler(void(ServerWebSocket websocket) {
         websocket.closeHandler().compose(deferred.fulfill, deferred.reject);
       });
@@ -121,7 +122,7 @@ void serverRejects() => with {
       });
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
-    value deferred = Deferred<String>();
+    value deferred = Deferred<String>(testContext);
     client.exceptionHandler(void(Throwable t) {
         deferred.fulfill("rejected");
       });

@@ -3,7 +3,8 @@ import io.vertx.ceylon.core.stream {
   WriteStream
 }
 import ceylon.promise {
-  Promise
+  Promise,
+  ExecutionContext
 }
 import org.vertx.java.core.buffer {
   Buffer
@@ -25,7 +26,7 @@ import io.vertx.ceylon.core.util {
    class.
    
    Instances of AsyncFile are not thread-safe"""
-shared class AsyncFile(String path, AsyncFile_ delegate) {
+shared class AsyncFile(ExecutionContext context, String path, AsyncFile_ delegate) {
   
   variable ReadStream? readStream_ = null;
   variable WriteStream? writeStream_ = null;
@@ -53,7 +54,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
   "Close the file. The actual close happens asynchronously. The returned promise will be
    resolved when the close is complete, or an error occurs."
   shared Promise<Anything> close() {
-    value result = AsyncResultPromise<Anything,Void_>((Void_ v) => ""); // use null
+    value result = AsyncResultPromise<Anything,Void_>(context, (Void_ v) => ""); // use null
     delegate.close(result);
     return result.promise;
   }
@@ -66,7 +67,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
      
      The returned promise will be resolved when the write is complete, or if an error occurs."""
   shared Promise<Anything> write(Buffer buffer, Integer position) {
-    value result = AsyncResultPromise<Anything,Void_>((Void_ v) => ""); // use null
+    value result = AsyncResultPromise<Anything,Void_>(context, (Void_ v) => ""); // use null
     delegate.write(buffer, position, result);
     return result.promise;
   }
@@ -82,7 +83,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
      
      The returned promise will be resolved when the close is complete, or if an error occurs."""
   shared Promise<Buffer> read(Buffer buffer, Integer offset, Integer position, Integer length) {
-    value result = AsyncResultPromise<Buffer,Buffer>((Buffer v) => v);
+    value result = AsyncResultPromise<Buffer,Buffer>(context, (Buffer v) => v);
     delegate.read(buffer, offset, position, length, result);
     return result.promise;
   }
@@ -95,7 +96,7 @@ shared class AsyncFile(String path, AsyncFile_ delegate) {
      
      The returned promise will be resolved when the flush is complete or if an error occurs"""
   shared Promise<Anything> flush() {
-    value result = AsyncResultPromise<Anything,Void_>((Void_ v) => ""); // use null
+    value result = AsyncResultPromise<Anything,Void_>(context, (Void_ v) => ""); // use null
     delegate.flush(result);
     return result.promise;
   }

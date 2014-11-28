@@ -1,33 +1,13 @@
-import org.vertx.java.core {
-  Vertx_=Vertx,
-  Context_=Context
-}
-import io.vertx.ceylon.core.http {
-  HttpServer,
-  HttpClient
-}
-import io.vertx.ceylon.core.eventbus {
-  EventBus
-}
-import io.vertx.ceylon.core.shareddata {
-  SharedData
-}
-import java.lang {
-  Long_=Long
-}
-import io.vertx.ceylon.core.file {
-  FileSystem
-}
-import io.vertx.ceylon.core.sockjs {
-  SockJSServer
-}
-import io.vertx.ceylon.core.net {
-  NetServer,
-  NetClient
-}
-import io.vertx.ceylon.core.util {
-  NoArgVoidHandler
-}
+import org.vertx.java.core { Vertx_=Vertx, Context_=Context }
+import io.vertx.ceylon.core.http { HttpServer, HttpClient }
+import io.vertx.ceylon.core.eventbus { EventBus }
+import io.vertx.ceylon.core.shareddata { SharedData }
+import java.lang { Long_=Long }
+import io.vertx.ceylon.core.file { FileSystem }
+import io.vertx.ceylon.core.sockjs { SockJSServer }
+import io.vertx.ceylon.core.net { NetServer, NetClient }
+import io.vertx.ceylon.core.util { NoArgVoidHandler }
+import ceylon.promise { ExecutionContext }
 
 "The control centre of the Vert.x Core API.
  
@@ -42,20 +22,20 @@ import io.vertx.ceylon.core.util {
 by ("Julien Viet")
 shared class Vertx(shared Vertx_ delegate = VertxProvider.create()) {
   
-  "The event bus"
-  shared EventBus eventBus = EventBus(delegate.eventBus());
-  
   "The shared data object"
   shared SharedData sharedData = SharedData(delegate.sharedData());
   
   "The File system object"
-  shared FileSystem fileSystem = FileSystem(delegate.fileSystem());
+  shared FileSystem fileSystem => FileSystem(this, delegate.fileSystem());
+  
+  "The event bus"
+  shared EventBus eventBus => EventBus(this, delegate.eventBus());
   
   "Create a new net server and returns it"
-  shared NetServer createNetServer() => NetServer(delegate.createNetServer());
+  shared NetServer createNetServer() => NetServer(this, delegate.createNetServer());
   
   "Create a new http server and returns it"
-  shared HttpServer createHttpServer() => HttpServer(delegate, delegate.createHttpServer());
+  shared HttpServer createHttpServer() => HttpServer(this, delegate.createHttpServer());
   
   "Create a new http client and return it"
   shared HttpClient createHttpClient(
@@ -70,11 +50,11 @@ shared class Vertx(shared Vertx_ delegate = VertxProvider.create()) {
     if (exists host) {
       client.setHost(host);
     }
-    return HttpClient(client);
+    return HttpClient(this, client);
   }
   
   "Create a new net client and return it"
-  shared NetClient createNetClient() => NetClient(delegate.createNetClient());
+  shared NetClient createNetClient() => NetClient(this, delegate.createNetClient());
   
   "Put the handler on the event queue for the current loop (or worker context) so it will be run asynchronously
    ASAP after this event has
@@ -96,6 +76,12 @@ shared class Vertx(shared Vertx_ delegate = VertxProvider.create()) {
   
   "Is the current thread an worker thread?"
   shared Boolean worker => delegate.worker;
+  
+  "Context for executing a promise on the vertx event loop"
+  shared object executionContext satisfies ExecutionContext {
+    shared actual void run(void task()) => delegate.runOnContext(NoArgVoidHandler(task));
+    shared actual ExecutionContext childContext() => this;
+  }
   
   "Stop the eventbus and any resource managed by the eventbus."
   shared void stop() {

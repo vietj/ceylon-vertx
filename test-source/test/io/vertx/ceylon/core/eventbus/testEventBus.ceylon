@@ -22,7 +22,8 @@ import test.io.vertx.ceylon.core {
   assertResolve,
   toByteArray,
   with,
-  eventBus
+  eventBus,
+  testContext
 }
 import java.lang {
   Character_=Character,
@@ -167,7 +168,7 @@ void testJavaIntegerOrString2() => testNativeJavaType<Integer|String>("3", (Even
 
 void testNativeJavaType<C>(C expected, void send(EventBus_ bus)) {
   value vertx = Vertx();
-  value deferred = Deferred<C>();
+  value deferred = Deferred<C>(testContext);
   vertx.eventBus.registerHandler("foo", (Message<C> msg) => deferred.fulfill(msg.body));
   send(vertx.delegate.eventBus());
   value payload = assertResolve(deferred);
@@ -176,7 +177,7 @@ void testNativeJavaType<C>(C expected, void send(EventBus_ bus)) {
 
 void send<M>(M msg)(EventBus bus) {
   assert (is Payload msg);
-  value deferred = Deferred<M>();
+  value deferred = Deferred<M>(testContext);
   Registration registration = bus.registerHandler("foo", (Message<M> msg) => deferred.fulfill(msg.body));
   assertResolve(registration.completed);
   bus.send("foo", msg);
@@ -196,7 +197,7 @@ void reply<M>(M msg)(EventBus bus) {
   assert (is Payload msg);
   Registration registration = bus.registerHandler("foo", (Message<String> whateverMsg) => whateverMsg.reply(msg));
   assertResolve(registration.completed);
-  value deferred = Deferred<M>();
+  value deferred = Deferred<M>(testContext);
   Promise<Message<M>> reply = bus.send<M>("foo", "whatever");
   reply.compose((Message<M> msg) => deferred.fulfill(msg.body));
   value payload = assertResolve(deferred.promise, 1000);
@@ -214,7 +215,7 @@ void reply<M>(M msg)(EventBus bus) {
 void replyToReply<M>(M msg)(EventBus bus)
     given M of String | JSonObject | Boolean | Integer | Float | JSonArray | ByteArray | Byte | Character | Buffer_ | Null {
   assert (is Payload msg);
-  value deferred = Deferred<M>();
+  value deferred = Deferred<M>(testContext);
   Registration registration = bus.registerHandler("foo",
     (Message<String> whateverMsg) => whateverMsg.reply<M>("whatever_reply").compose((Message<M> whateverReplyMsg) => deferred.fulfill(whateverReplyMsg.body)));
   assertResolve(registration.completed);

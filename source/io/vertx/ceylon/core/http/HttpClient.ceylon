@@ -4,7 +4,7 @@ import org.vertx.java.core.http.impl { HttpHeadersAdapter }
 import io.netty.handler.codec.http { DefaultHttpHeaders }
 import java.util { HashSet_=HashSet }
 import java.lang { String_=String }
-import io.vertx.ceylon.core { ClientBase }
+import io.vertx.ceylon.core { ClientBase, Vertx }
 import ceylon.promise { Promise }
 
 "An HTTP client that maintains a pool of connections to a specific host, at a specific port. The client supports
@@ -16,7 +16,7 @@ import ceylon.promise { Promise }
  
  Instances of HttpClient are thread-safe."
 by("Julien Viet")
-shared class HttpClient(HttpClient_ delegate) extends ClientBase(delegate, delegate) {
+shared class HttpClient(Vertx vertx, HttpClient_ delegate) extends ClientBase(delegate, delegate) {
 
     shared Integer maxPoolSize => delegate.maxPoolSize;
 
@@ -85,7 +85,7 @@ shared class HttpClient(HttpClient_ delegate) extends ClientBase(delegate, deleg
      When an HTTP response is received from the server the promise `response`
      is resolved with the response."
     shared HttpClientRequest request(String method, String uri) {
-        return HttpClientRequest(delegate, method, uri);
+        return HttpClientRequest(vertx, delegate, method, uri);
     }
     
     """Attempt to connect an HTML5 websocket to the specified URI
@@ -98,9 +98,10 @@ shared class HttpClient(HttpClient_ delegate) extends ClientBase(delegate, deleg
     shared Promise<WebSocket> connectWebsocket(String uri,
       WebSocketVersion? wsVersion = null, {<String-><String|{String+}>>*}? headers = null, String[]? subprotocols = null) {
       value handler = HandlerPromise {
+        context = vertx.executionContext;
         WebSocket transform(WebSocket_? ws) {
           assert(exists ws);
-          return WebSocket(ws);
+          return WebSocket(vertx.executionContext, ws);
         }
       };
       if (exists wsVersion) {

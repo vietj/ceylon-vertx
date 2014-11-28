@@ -16,7 +16,8 @@ import org.vertx.java.core.buffer {
 }
 import io.vertx.ceylon.core {
   Chunk,
-  Entries
+  Entries,
+  Vertx
 }
 
 "Represents a server-side HTTP response. Instances of this class are created and associated to every instance of
@@ -26,7 +27,7 @@ import io.vertx.ceylon.core {
  
  Instances of this class are not thread-safe."
 by ("Julien Viet")
-shared class HttpServerResponse(HttpServerResponse_ delegate)
+shared class HttpServerResponse(Vertx vertx, HttpServerResponse_ delegate)
     extends HttpOutput<HttpServerResponse>() {
   
   shared actual WriteStream stream = WriteStream(delegate);
@@ -110,7 +111,7 @@ shared class HttpServerResponse(HttpServerResponse_ delegate)
      operating system. This is a very efficient way to serve files. It also takes the path [[notFoundFile]]
      to a resource to serve if the resource is not found"""
   shared Promise<Anything> sendFile(String fileName, String? notFoundFile = null) {
-    value result = voidAsyncResult();
+    value result = voidAsyncResult(vertx.executionContext);
     if (exists notFoundFile) {
       delegate.sendFile(fileName, notFoundFile, result);
     } else {

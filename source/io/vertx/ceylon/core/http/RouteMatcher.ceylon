@@ -5,6 +5,9 @@ import org.vertx.java.core.http {
 import org.vertx.java.core {
   Handler_=Handler
 }
+import io.vertx.ceylon.core {
+  Vertx
+}
 
 """This class allows you to do route requests based on the HTTP verb and the request URI, in a manner similar
    to [Sinatra](http://www.sinatrarb.com/) or [Express](http://expressjs.com/).
@@ -26,7 +29,7 @@ import org.vertx.java.core {
    
    Instances of this class are not thread-safe"""
 by ("Julien Viet")
-shared class RouteMatcher() {
+shared class RouteMatcher(Vertx vertx) {
   
   value delegate = RouteMatcher_();
   
@@ -36,7 +39,7 @@ shared class RouteMatcher() {
         // Rewrapper avoids to use thread local
         // + it will compute the parameters again since they may have been modified
         // by the router
-        handler(InternalHttpServerRequest(e));
+        handler(InternalHttpServerRequest(vertx, e));
       }
     }
     return impl;

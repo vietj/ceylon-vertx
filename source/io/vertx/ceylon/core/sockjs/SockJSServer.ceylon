@@ -29,6 +29,9 @@ import java.lang {
 import ceylon.promise {
   Deferred
 }
+import io.vertx.ceylon.core {
+  Vertx
+}
 
 """This is an implementation of the server side part of [SockJS](https://github.com/sockjs)
    
@@ -57,7 +60,7 @@ import ceylon.promise {
    application will have its own handler, and configuration.
    
    Instances of this class are not thread-safe."""
-shared class SockJSServer(SockJSServer_ delegate) {
+shared class SockJSServer(Vertx vertx, SockJSServer_ delegate) {
   
   "Install an application"
   shared SockJSServer installApp(
@@ -95,7 +98,7 @@ shared class SockJSServer(SockJSServer_ delegate) {
     object impl satisfies EventBusBridgeHook_ {
       
       shared actual Boolean handleAuthorise(JsonObject_ jsonObject, String sessionID, Handler_<AsyncResult_<Boolean_>> handler) {
-        Deferred<Boolean> deferred = Deferred<Boolean>();
+        Deferred<Boolean> deferred = Deferred<Boolean>(vertx.executionContext);
         deferred.promise.onComplete {
           void onFulfilled(Boolean b) {
             handler.handle(DefaultFutureResult_<Boolean_>(b then Boolean_.\iTRUE else Boolean_.\iFALSE));

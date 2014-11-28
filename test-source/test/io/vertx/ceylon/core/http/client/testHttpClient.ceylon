@@ -1,5 +1,6 @@
 import ceylon.promise {
-  Promise
+  Promise,
+  Deferred
 }
 import io.vertx.ceylon.core {
   Vertx

@@ -1,10 +1,9 @@
-import org.vertx.java.core.http { HttpServer_=HttpServer }
-import org.vertx.java.core { Vertx_=Vertx }
+import org.vertx.java.core.http { HttpServer_=HttpServer, ServerWebSocket_=ServerWebSocket, HttpServerRequest_=HttpServerRequest }
 import ceylon.promise { Promise }
 import io.vertx.ceylon.core.util { AsyncResultPromise, FunctionalHandlerAdapter, voidAsyncResult }
 import ceylon.collection { LinkedList }
 import io.vertx.ceylon.core.sockjs { SockJSServer }
-import io.vertx.ceylon.core { ServerBase }
+import io.vertx.ceylon.core { ServerBase, Vertx }
 
 "An HTTP and WebSockets server
 
@@ -15,19 +14,19 @@ import io.vertx.ceylon.core { ServerBase }
  
  Instances of HttpServer are thread-safe."
 by("Julien Viet")
-shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) extends ServerBase(delegate, delegate) {
+shared class HttpServer(Vertx vertx, HttpServer_ delegate) extends ServerBase(delegate, delegate) {
 	
 	"Set the request handler for the server to `requestHandler`. As HTTP requests are received by the server,
      instances of [[HttpServerRequest]] will be created and passed to this handler."
 	shared HttpServer requestHandler(void onRequest(HttpServerRequest req)) {
-		delegate.requestHandler(FunctionalHandlerAdapter(InternalHttpServerRequest, onRequest));
+		delegate.requestHandler(FunctionalHandlerAdapter((HttpServerRequest_ delegate) => InternalHttpServerRequest(vertx, delegate), onRequest));
 		return this;
 	}
 	
 	"""Set the websocket handler for the server to [[onConnect]]. If a websocket connect handshake is successful a
     new [[ServerWebSocket]] instance will be created and passed to [[onConnect]]."""
 	shared HttpServer websocketHandler(void onConnect(ServerWebSocket websocket)) {
-		delegate.websocketHandler(FunctionalHandlerAdapter(ServerWebSocket, onConnect));
+		delegate.websocketHandler(FunctionalHandlerAdapter((ServerWebSocket_ delegate) => ServerWebSocket(vertx.executionContext, delegate), onConnect));
 		return this;
 	}
 	
@@ -64,7 +63,7 @@ shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) extends ServerBase(d
 	}
 	
 	shared SockJSServer createSockJSServer() {
-		return SockJSServer(vertx.createSockJSServer(delegate));
+		return SockJSServer(vertx, vertx.delegate.createSockJSServer(delegate));
 	}
 
     "Tell the server to start listening on all available interfaces and port `port`.
@@ -72,7 +71,7 @@ shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) extends ServerBase(d
      The returned promise is resolved when the server is listening"
     shared Promise<HttpServer> listen(Integer port, String? hostName = null) {
         value server = this;
-        value handler = AsyncResultPromise((HttpServer_ s) => server);
+        value handler = AsyncResultPromise(vertx.executionContext, (HttpServer_ s) => server);
         if (exists hostName) {
             delegate.listen(port, hostName, handler);
         } else {
@@ -84,7 +83,7 @@ shared class HttpServer(Vertx_ vertx, HttpServer_ delegate) extends ServerBase(d
     "Close the server. Any open HTTP connections will be closed.
      The returned promise is resolved when the close is complete."	
     shared Promise<Anything> close() {
-        value handler = voidAsyncResult();
+        value handler = voidAsyncResult(vertx.executionContext);
         delegate.close(handler);
         return handler.promise;
     }

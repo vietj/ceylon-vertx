@@ -1,4 +1,6 @@
 import ceylon.promise {
+  ExecutionContext,
+  defineGlobalExecutionContext,
   Promise,
   Deferred
 }
@@ -37,7 +39,8 @@ import java.lang {
   ByteArray
 }
 import io.vertx.ceylon.core {
-  Vertx
+  Vertx,
+  Context
 }
 import io.vertx.ceylon.core.http {
   HttpServer
@@ -52,9 +55,6 @@ import io.vertx.ceylon.core.net {
   NetServer
 }
 import java.util.concurrent { CountDownLatch, TimeUnit }
-import io.netty.util {
-  Timeout
-}
 
 shared void with(void test(Vertx vertx)) {
   value vertx = Vertx();
@@ -75,10 +75,10 @@ shared Anything(Vertx) netServer(void test(NetServer server)) {
   return f;
 }
 
-shared Anything(Vertx) httpServer(void test(HttpServer server)) {
+shared Anything(Vertx) httpServer(void test(Vertx vertx, HttpServer server)) {
   void f(Vertx vertx) {
     value server = vertx.createHttpServer();
-    test(server);
+    test(vertx, server);
     Promise<Anything> promise = server.close();
     assertResolve(promise);
   }
@@ -125,11 +125,13 @@ shared T assertResolve<T>(Promise<T>|Deferred<T> obj, Integer timeout = 20000) {
       latch.countDown();
     }
   };
-  latch.await(timeout, TimeUnit.\iMILLISECONDS);
-  if (is T ret = result) {
-    return ret;
-  } else if (is Exception failure = result) {
-    throw failure;
+  if (latch.await(timeout, TimeUnit.\iMILLISECONDS)) {
+    if (is Exception failure = result) {
+      throw failure;
+    } else {
+      assert(is T ret = result);
+      return ret;
+    }
   } else {
     throw Exception("Callback timeout");
   }
@@ -166,6 +168,18 @@ shared ByteArray toByteArray({Integer*} seq) {
 
 by ("Julien Viet")
 void run() {
+
+  "Make sure we don't use the global context"
+  object globalContext satisfies ExecutionContext {
+    shared actual void run(void task()) {
+      throw Exception("Should not use the global context");
+    }
+    shared actual ExecutionContext childContext() => this;
+    
+  }
+  defineGlobalExecutionContext(globalContext);
+
+
   value runner = createTestRunner([`module test.io.vertx.ceylon.core`], [DefaultLoggingListener()]);
   value result = runner.run();
   print(result);

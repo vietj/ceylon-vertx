@@ -7,11 +7,14 @@ import io.vertx.ceylon.core {
 import io.vertx.ceylon.core.util {
   toMap
 }
+import ceylon.promise {
+  ExecutionContext
+}
 
 """Represents a server side WebSocket that is passed into a the websocketHandler of an [[HttpServer]]
    
    Instances of this class are not thread-safe"""
-shared class ServerWebSocket(ServerWebSocket_ delegate) extends WebSocketBase(delegate) {
+shared class ServerWebSocket(ExecutionContext context, ServerWebSocket_ delegate) extends WebSocketBase(context, delegate) {
   
   """The uri the websocket handshake occurred at"""
   shared String uri = delegate.uri();

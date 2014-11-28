@@ -7,9 +7,12 @@ import org.vertx.java.core.eventbus {
 import io.vertx.ceylon.core.util {
   fromObject
 }
+import ceylon.promise {
+  ExecutionContext
+}
 
 by ("Julien Viet")
-abstract class AbstractMessageAdapter<M>()
+abstract class AbstractMessageAdapter<M>(ExecutionContext context)
     satisfies Handler_<Message_<Object>> {
   
   shared actual void handle(Message_<Object> eventDelegate) {
@@ -17,7 +20,7 @@ abstract class AbstractMessageAdapter<M>()
     Object? body = eventDelegate.body();
     value adapted = fromObject<M>(body);
     if (is M adapted) {
-      dispatch(Message<M>(eventDelegate, adapted, replyAddress));
+      dispatch(Message<M>(context, eventDelegate, adapted, replyAddress));
     } else {
       reject(body);
     }

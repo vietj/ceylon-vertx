@@ -31,7 +31,8 @@ import java.lang {
   Void_=Void
 }
 import io.vertx.ceylon.core {
-  MultiMap
+  MultiMap,
+  Vertx
 }
 import io.vertx.ceylon.core.net {
   NetSocket
@@ -40,7 +41,7 @@ import io.vertx.ceylon.core.net {
 "Represents a server-side HTTP request. Each instance of this class is associated with a corresponding
  [[HttpServerResponse]] instance via the `response` field. Instances of this class are not thread-safe."
 by ("Julien Viet")
-shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() {
+shared class HttpServerRequest(Vertx vertx, HttpServerRequest_ delegate) extends HttpInput() {
   
   variable MultiMap? headerMap = null;
   variable MultiMap? paramsMap = null;
@@ -51,7 +52,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
   
   "The response. Each instance of this class has an [[HttpServerResponse]] instance attached to it.
    This is used to send the response back to the client."
-  shared HttpServerResponse response = HttpServerResponse(delegate.response());
+  shared HttpServerResponse response = HttpServerResponse(vertx, delegate.response());
   
   "The HTTP version of the request."
   shared HttpVersion version = delegate.version() == http_1_0_ then http_1_0 else http_1_1;
@@ -76,7 +77,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     if (exists t = formDeferred) {
       return t.promise;
     } else {
-      value d = Deferred<MultiMap>();
+      value d = Deferred<MultiMap>(vertx.executionContext);
       String? contentType = delegate.headers().get("Content-Type");
       if (exists contentType,
         (contentType.lowercased.startsWith("application/x-www-form-urlencoded") ||
@@ -128,7 +129,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
   }
   
   shared actual Promise<Body> parseBody<Body>(BodyType<Body> parser) {
-    return doParseBody(parser, delegate.bodyHandler, delegate, charset);
+    return doParseBody(vertx.executionContext, parser, delegate.bodyHandler, delegate, charset);
   }
   
   "Convenience method for receiving the entire request body in one piece. This saves the user having to manually
@@ -145,7 +146,7 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
     if (exists ns = cachedNetSocket) {
       return ns;
     } else {
-      return cachedNetSocket = NetSocket(delegate.netSocket());
+      return cachedNetSocket = NetSocket(vertx, delegate.netSocket());
     }
   }
   
@@ -164,6 +165,6 @@ shared class HttpServerRequest(HttpServerRequest_ delegate) extends HttpInput() 
   }
 }
 
-class InternalHttpServerRequest(shared HttpServerRequest_ delegate)
-    extends HttpServerRequest(delegate) {
+class InternalHttpServerRequest(shared Vertx vertx, shared HttpServerRequest_ delegate)
+    extends HttpServerRequest(vertx, delegate) {
 }

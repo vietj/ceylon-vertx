@@ -4,7 +4,7 @@ import io.vertx.ceylon.core.util { FunctionalHandlerAdapter, HandlerPromise }
 import ceylon.io { SocketAddress }
 import io.vertx.ceylon.core.stream { WriteStream, ReadStream }
 import java.lang { Void_=Void }
-import ceylon.promise { Promise }
+import ceylon.promise { Promise, ExecutionContext }
 
 """Represents an HTML 5 Websocket
    
@@ -19,9 +19,9 @@ import ceylon.promise { Promise }
    it can be used with [[io.vertx.ceylon.core.stream::Pump]] to pump data with flow control.
    
    Instances of this class are not thread-safe"""
-shared abstract class WebSocketBase(WebSocketBase_<out Object> delegate) {
+shared abstract class WebSocketBase(ExecutionContext context, WebSocketBase_<out Object> delegate) {
   
-  value closed = HandlerPromise<Anything, Void_>((Void_? v) => null);
+  value closed = HandlerPromise<Anything, Void_>(context, (Void_? v) => null);
   delegate.closeHandler(closed);
 
   shared WriteStream writeStream = WriteStream(delegate);

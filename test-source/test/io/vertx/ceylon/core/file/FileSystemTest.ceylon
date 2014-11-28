@@ -1,7 +1,8 @@
 import ceylon.test {
   beforeTest,
   assertEquals,
-  test
+  test,
+  fail
 }
 import ceylon.file {
   current,
@@ -30,7 +31,8 @@ import ceylon.promise {
 }
 import test.io.vertx.ceylon.core {
   assertResolveTo,
-  assertResolve
+  assertResolve,
+  testContext
 }
 shared class FileSystemTest() {
   
@@ -181,8 +183,12 @@ shared class FileSystemTest() {
       value fs = vertx.fileSystem;
       value names = assertResolve(fs.readDir("work"));
       assertEquals(["bar.txt", "foo.txt", "juu.txt"], sort(names.map((String element) => element.spanFrom(element.size - 7))));
-      value t = assertResolve(fs.readDir("work/foo.txt"));
-      assert (is Throwable t);
+      try {
+        assertResolve(fs.readDir("work/foo.txt"));
+        fail("Was expecting to fail");
+      } catch (Exception ignore) {
+        // Expected
+      }
     } finally {
       vertx.stop();
     }
@@ -242,7 +248,7 @@ shared class FileSystemTest() {
     createFile("foo.txt", "helloworld");
     value vertx = Vertx();
     try {
-      Deferred<Buffer> d = Deferred<Buffer>();
+      Deferred<Buffer> d = Deferred<Buffer>(testContext);
       vertx.runOnContext(void() {
           value fs = vertx.fileSystem;
           value buffer = fs.open("work/foo.txt").flatMap((AsyncFile file) => file.read(Buffer(10), 0, 0, 10));
@@ -260,7 +266,7 @@ shared class FileSystemTest() {
     value expected = Buffer("helloworld");
     value vertx = Vertx();
     try {
-      Deferred<Anything> d = Deferred<Anything>();
+      Deferred<Anything> d = Deferred<Anything>(testContext);
       vertx.runOnContext(void() {
           value fs = vertx.fileSystem;
           fs.open("work/foo.txt").onComplete(void(AsyncFile file) {
@@ -282,7 +288,7 @@ shared class FileSystemTest() {
     createFile("foo.txt", "helloworld");
     value vertx = Vertx();
     try {
-      Deferred<Null> d = Deferred<Null>();
+      Deferred<Null> d = Deferred<Null>(testContext);
       vertx.runOnContext(void() {
           value fs = vertx.fileSystem;
           value src = fs.openSync("work/foo.txt");

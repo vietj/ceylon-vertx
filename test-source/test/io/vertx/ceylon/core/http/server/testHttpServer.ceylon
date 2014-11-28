@@ -34,13 +34,17 @@ import test.io.vertx.ceylon.core {
   assertResolve,
   assertSend,
   with,
-  httpServer
+  httpServer,
+  testContext
+}
+import io.vertx.ceylon.core {
+  Vertx
 }
 
 shared test
 void testPath() => with {
   httpServer {
-    void test(HttpServer server) {
+    void test(Vertx vertx, HttpServer server) {
       variable String? path = null;
       void f(HttpServerRequest req) {
         path = req.path;
@@ -60,9 +64,9 @@ void testPath() => with {
 shared test
 void testRequestHeader() => with {
   httpServer {
-    void test(HttpServer server) {
+    void test(Vertx vertx, HttpServer server) {
       variable String? path = null;
-      value headers = Deferred<Map<String,{String+}>>();
+      value headers = Deferred<Map<String,{String+}>>(testContext);
       void f(HttpServerRequest req) {
         path = req.path;
         headers.fulfill(req.headers);
@@ -97,7 +101,7 @@ void testRequestHeader() => with {
 shared test
 void testQuery() => with {
   httpServer {
-    void test(HttpServer server) {
+    void test(Vertx vertx, HttpServer server) {
       variable String? query = null;
       variable Map<String,{String+}>? parameters = null;
       void f(HttpServerRequest req) {
@@ -119,8 +123,8 @@ void testQuery() => with {
 shared test
 void testForm() => with {
   httpServer {
-    void test(HttpServer server) {
-      value parameters = Deferred<Map<String,{String+}>>();
+    void test(Vertx vertx, HttpServer server) {
+      value parameters = Deferred<Map<String,{String+}>>(testContext);
       Promise<Map<String,{String+}>> p = parameters.promise;
       void f(HttpServerRequest req) {
         req.formAttributes.compose(parameters.fulfill);
@@ -140,7 +144,7 @@ void testForm() => with {
 shared test
 void testOk() => with {
   httpServer {
-    void test(HttpServer server) {
+    void test(Vertx vertx, HttpServer server) {
       void f(HttpServerRequest req) {
         HttpServerResponse resp = req.response;
         resp.status(200);
@@ -173,8 +177,8 @@ void testOk() => with {
 shared test
 void testParseBody() => with {
   httpServer {
-    void test(HttpServer server) {
-      value parameters = Deferred<String>();
+    void test(Vertx vertx, HttpServer server) {
+      value parameters = Deferred<String>(testContext);
       Promise<String> p = parameters.promise;
       value formAttributes = LinkedList<Map<String,{String+}>|Throwable>();
       void f(HttpServerRequest req) {
@@ -200,7 +204,7 @@ void testParseBody() => with {
 shared test
 void testPump() => with {
   httpServer {
-    void test(HttpServer server) {
+    void test(Vertx vertx, HttpServer server) {
       void f(HttpServerRequest req) {
         HttpServerResponse resp = req.response;
         resp.headers(req.headers);

@@ -3,14 +3,15 @@ import org.vertx.java.core {
 }
 import ceylon.promise {
   Deferred,
-  Promise
+  Promise,
+  ExecutionContext
 }
 
 by ("Julien Viet")
-shared class HandlerPromise<Value,Result>(Value transform(Result? result))
+shared class HandlerPromise<Value,Result>(ExecutionContext context, Value transform(Result? result))
     satisfies Handler_<Result> {
   
-  Deferred<Value> deferred = Deferred<Value>();
+  Deferred<Value> deferred = Deferred<Value>(context);
   shared Promise<Value> promise = deferred.promise;
   
   shared actual void handle(Result? result) {
