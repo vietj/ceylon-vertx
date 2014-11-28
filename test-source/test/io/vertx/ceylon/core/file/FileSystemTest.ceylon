@@ -17,7 +17,6 @@ import ceylon.language.meta {
   type
 }
 import io.vertx.ceylon.core.file {
-  FileProps,
   AsyncFile
 }
 import ceylon.time {
@@ -28,6 +27,10 @@ import org.vertx.java.core.buffer {
 }
 import ceylon.promise {
   Deferred
+}
+import test.io.vertx.ceylon.core {
+  assertResolveTo,
+  assertResolve
 }
 shared class FileSystemTest() {
   
@@ -95,7 +98,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      assertEquals(true, fs.\iexists("work/foo.txt").future.get());
+      assertResolveTo(fs.\iexists("work/foo.txt"), true);
     } finally {
       vertx.stop();
     }
@@ -107,7 +110,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      fs.copy("work/foo.txt", "work/bar.txt").future.get();
+      assertResolve(fs.copy("work/foo.txt", "work/bar.txt"));
       assertFile("foo.txt");
       assertFile("bar.txt");
     } finally {
@@ -121,7 +124,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      fs.move("work/foo.txt", "work/bar.txt").future.get();
+      assertResolve(fs.move("work/foo.txt", "work/bar.txt"));
       assertNil("foo.txt");
       assertFile("bar.txt");
     } finally {
@@ -135,7 +138,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      fs.delete("work/foo.txt").future.get();
+      assertResolve(fs.delete("work/foo.txt"));
       assertNil("foo.txt");
     } finally {
       vertx.stop();
@@ -148,7 +151,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      fs.createFile("work/foo.txt").future.get();
+      assertResolve(fs.createFile("work/foo.txt"));
       assertFile("foo.txt");
     } finally {
       vertx.stop();
@@ -161,7 +164,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      fs.mkdir("work/foo").future.get();
+      assertResolve(fs.mkdir("work/foo"));
       assertDir("foo");
     } finally {
       vertx.stop();
@@ -176,10 +179,9 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      value names = fs.readDir("work").future.get();
-      assert (is {String*} names);
+      value names = assertResolve(fs.readDir("work"));
       assertEquals(["bar.txt", "foo.txt", "juu.txt"], sort(names.map((String element) => element.spanFrom(element.size - 7))));
-      value t = fs.readDir("work/foo.txt").future.get();
+      value t = assertResolve(fs.readDir("work/foo.txt"));
       assert (is Throwable t);
     } finally {
       vertx.stop();
@@ -192,8 +194,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      value props = fs.props("work/foo.txt").future.get();
-      assert (is FileProps props);
+      value props = assertResolve(fs.props("work/foo.txt"));
       value dateTime = now().dateTime();
       for (i in { props.creationTime, props.lastAccessTime, props.lastModifiedTime }) {
         assert (i.rangeTo(dateTime).duration.milliseconds < 2000); // < 2 seconds
@@ -214,7 +215,7 @@ shared class FileSystemTest() {
     value vertx = Vertx();
     try {
       value fs = vertx.fileSystem;
-      assertEquals(buffer, fs.readFile("work/foo.txt").future.get());
+      assertResolveTo(fs.readFile("work/foo.txt"), buffer);
     } finally {
       vertx.stop();
     }
@@ -227,7 +228,7 @@ shared class FileSystemTest() {
     try {
       value fs = vertx.fileSystem;
       value content = Buffer("helloworld");
-      fs.writeFile("work/foo.txt", content).future.get();
+      assertResolve(fs.writeFile("work/foo.txt", content));
       value buffer = assertFile("foo.txt");
       assertEquals(content, buffer);
     } finally {
@@ -247,7 +248,7 @@ shared class FileSystemTest() {
           value buffer = fs.open("work/foo.txt").compose<Buffer>((AsyncFile file) => file.read(Buffer(10), 0, 0, 10));
           d.fulfill(buffer);
         });
-      value buffer = d.promise.future.get();
+      value buffer = assertResolve(d.promise);
       assertEquals(buffer, expected);
     } finally {
       vertx.stop();
@@ -267,7 +268,7 @@ shared class FileSystemTest() {
               d.fulfill("");
             });
         });
-      d.promise.future.get();
+      assertResolve(d.promise);
     } finally {
       vertx.stop();
     }
@@ -293,7 +294,7 @@ shared class FileSystemTest() {
               d.fulfill(null);
             });
         });
-      value done = d.promise.future.get();
+      value done = assertResolve(d.promise);
       assertEquals(done, null);
     } finally {
       vertx.stop();

@@ -1,7 +1,6 @@
 import ceylon.promise {
   Promise,
-  Deferred,
-  Future
+  Deferred
 }
 import ceylon.test {
   ...
@@ -52,6 +51,10 @@ import io.vertx.ceylon.core.eventbus {
 import io.vertx.ceylon.core.net {
   NetServer
 }
+import java.util.concurrent { CountDownLatch, TimeUnit }
+import io.netty.util {
+  Timeout
+}
 
 shared void with(void test(Vertx vertx)) {
   value vertx = Vertx();
@@ -96,33 +99,39 @@ shared Anything(Vertx) eventBus(void test(EventBus sharedData)) {
   return f;
 }
 
-shared void assertResolveTo<T>(Promise<T>|Deferred<T> obj, T expected) {
-  Future<T> future;
-  switch (obj)
-  case (is Promise<T>) { future = obj.future; }
-  case (is Deferred<T>) { future = obj.promise.future; }
-  T|Throwable r = future.get(20000);
-  if (is T r) {
-    assertEquals(r, expected);
-  } else if (is Exception r) {
-    throw r;
-  } else {
-    throw Exception("Was not expecting this");
-  }
+shared void assertResolveTo<T>(Promise<T>|Deferred<T> obj, T expected, Integer timeout = 20000) {
+  T ret = assertResolve(obj, timeout);
+  assertEquals(ret, expected);
 }
 
-shared T assertResolve<T>(Promise<T>|Deferred<T> obj) {
-  Future<T> future;
+shared T assertResolve<T>(Promise<T>|Deferred<T> obj, Integer timeout = 20000) {
+  Promise<T> future;
   switch (obj)
-  case (is Promise<T>) { future = obj.future; }
-  case (is Deferred<T>) { future = obj.promise.future; }
-  T|Throwable r = future.get(20000);
-  if (is T r) {
-    return r;
-  } else if (is Exception r) {
-    throw r;
+  case (is Promise<T>) {
+    future = obj;
+  }
+  case (is Deferred<T>) {
+    future = obj.promise;
+  }
+  variable Anything result = null;
+  value latch = CountDownLatch(1);
+  future.onComplete {
+    void onFulfilled(T val) {
+      result = val;
+      latch.countDown();
+    }
+    void onRejected(Throwable t) {
+      result = t;
+      latch.countDown();
+    }
+  };
+  latch.await(timeout, TimeUnit.\iMILLISECONDS);
+  if (is T ret = result) {
+    return ret;
+  } else if (is Exception failure = result) {
+    throw failure;
   } else {
-    throw Exception("Was not expecting this");
+    throw Exception("Callback timeout");
   }
 }
 

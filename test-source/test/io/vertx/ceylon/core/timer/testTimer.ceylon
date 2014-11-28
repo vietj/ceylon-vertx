@@ -8,7 +8,8 @@ import ceylon.promise {
   Deferred
 }
 import test.io.vertx.ceylon.core {
-  with
+  with,
+  assertResolve
 }
 
 shared test
@@ -16,7 +17,7 @@ void testTimer() => with {
   void test(Vertx vertx) {
     value deferred = Deferred<Integer>();
     value id1 = vertx.setTimer(100, deferred.fulfill);
-    value id2 = deferred.promise.future.get(300);
+    value id2 = assertResolve(deferred.promise, 300);
     assertEquals(id1, id2);
   }
 };
@@ -36,8 +37,8 @@ void testPeriodicTimer() => with {
         }
         count++;
       });
-    value id2 = deferred.promise.future.get(300);
+    value id2 = assertResolve(deferred.promise, 300);
     assertEquals(id1, id2);
-    assertThatException(() => a.promise.future.get(50));
+    assertThatException(() => assertResolve(a.promise, 50));
   }
 };

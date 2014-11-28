@@ -21,7 +21,9 @@ import org.vertx.java.core.buffer {
   Buffer
 }
 import test.io.vertx.ceylon.core {
-  with
+  with,
+  assertResolve,
+  assertResolveTo
 }
 
 shared test
@@ -30,9 +32,11 @@ void testTimeout() => with {
     try {
       HttpClient client = vertx.createHttpClient(5000, "localhost");
       HttpClientRequest req = client.get("/foo").timeout(100);
-      HttpClientResponse|Throwable f = req.response.future.get(10000);
-      if (is HttpClientResponse f) {
+      try {
+        assertResolve(req.response, 10000);
         fail("Was expecting an exception");
+      } catch (Exception ignore) {
+        // Expected
       }
     } finally {
       vertx.stop();
@@ -45,7 +49,7 @@ void testRequest() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
     Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.headers { "bar"->"bar_value" }.contentType("text/plain").end("foo_content").close()).listen(8080);
-    assertEquals(server, promise.future.get(10000));
+    assertEquals(server, assertResolve(promise, 10000));
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo");
     Promise<String> check(HttpClientResponse resp) {
@@ -57,12 +61,8 @@ void testRequest() => with {
     }
     Promise<String> body = req.response.compose<String>(check);
     req.contentType("text/plain").end("the_body");
-    String|Throwable ret = body.future.get(10000);
-    if (is String ret) {
-      assertEquals("foo_content", ret);
-    } else {
-      fail("Was expecting a response");
-    }
+    String ret = assertResolve(body, 10000);
+    assertEquals("foo_content", ret);
   }
 };
 
@@ -71,16 +71,12 @@ void testResponse() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
     Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.headers { "bar"->"bar_value" }.end().close()).listen(8080);
-    assertEquals(server, promise.future.get(10000));
+    assertResolveTo(promise, server, 10000);
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo").end();
-    HttpClientResponse|Throwable ret = req.response.future.get(10000);
-    if (is HttpClientResponse ret) {
-      assertEquals(200, ret.statusCode);
-      assertEquals(["bar_value"], ret.headers["bar"]);
-    } else {
-      fail("Was expecting a response");
-    }
+    HttpClientResponse ret = assertResolve(req.response, 10000);
+    assertEquals(200, ret.statusCode);
+    assertEquals(["bar_value"], ret.headers["bar"]);
   }
 };
 
@@ -89,7 +85,7 @@ void testTextResponse() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
     Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.contentType("text/plain").end("foo_content").close()).listen(8080);
-    assertEquals(server, promise.future.get(10000));
+    assertResolveTo(promise, server, 10000);
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo");
     Promise<String> check(HttpClientResponse resp) {
@@ -100,12 +96,8 @@ void testTextResponse() => with {
     }
     Promise<String> body = req.response.compose<String>(check);
     req.end();
-    String|Throwable ret = body.future.get(10000);
-    if (is String ret) {
-      assertEquals("foo_content", ret);
-    } else {
-      fail("Was expecting a response");
-    }
+    String ret = assertResolve(body, 10000);
+    assertEquals("foo_content", ret);
   }
 };
 
@@ -114,7 +106,7 @@ void testBinaryBody() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
     Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.contentType("text/plain").end("ABC").close()).listen(8080);
-    assertEquals(server, promise.future.get(10000));
+    assertResolveTo(promise, server, 10000);
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo");
     Promise<ByteBuffer> check(HttpClientResponse resp) {
@@ -125,15 +117,11 @@ void testBinaryBody() => with {
     }
     Promise<ByteBuffer> body = req.response.compose<ByteBuffer>(check);
     req.end();
-    ByteBuffer|Throwable ret = body.future.get(10000);
-    if (is ByteBuffer ret) {
-      assertEquals(3, ret.size);
-      assertEquals(Byte(65), ret.get());
-      assertEquals(Byte(66), ret.get());
-      assertEquals(Byte(67), ret.get());
-    } else {
-      fail("Was expecting a response");
-    }
+    ByteBuffer ret = assertResolve(body, 10000);
+    assertEquals(3, ret.size);
+    assertEquals(Byte(65), ret.get());
+    assertEquals(Byte(66), ret.get());
+    assertEquals(Byte(67), ret.get());
   }
 };
 
@@ -156,16 +144,16 @@ void testBodyParserFailure() => with {
   void test(Vertx vertx) {
     HttpServer server = vertx.createHttpServer();
     Promise<HttpServer> promise = server.requestHandler((HttpServerRequest req) => req.response.contentType("text/plain").end("ABC").close()).listen(8080);
-    assertEquals(server, promise.future.get(10000));
+    assertResolveTo(promise, server, 10000);
     HttpClient client = vertx.createHttpClient(8080, "localhost");
     HttpClientRequest req = client.get("/foo");
     Promise<String> body = req.response.compose<String>(check);
     req.end();
-    String|Throwable ret = body.future.get(10000);
-    if (is Throwable ret) {
-      assertEquals("the_failure", ret.message);
-    } else {
+    try {
+      assertResolve(body, 10000);
       fail("Was expecting a failure");
+    } catch (Exception e) {
+      // Expected
     }
   }
 };

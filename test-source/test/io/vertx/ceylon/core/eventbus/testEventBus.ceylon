@@ -180,7 +180,7 @@ void send<M>(M msg)(EventBus bus) {
   Registration registration = bus.registerHandler("foo", (Message<M> msg) => deferred.fulfill(msg.body));
   assertResolve(registration.completed);
   bus.send("foo", msg);
-  value payload = deferred.promise.future.get(1000);
+  value payload = assertResolve(deferred.promise, 1000);
   if (is ByteArray msg) {
     assert (is ByteArray payload);
     // backend error : disabled for now
@@ -199,7 +199,7 @@ void reply<M>(M msg)(EventBus bus) {
   value deferred = Deferred<M>();
   Promise<Message<M>> reply = bus.send<M>("foo", "whatever");
   reply.compose((Message<M> msg) => deferred.fulfill(msg.body));
-  value payload = deferred.promise.future.get(1000);
+  value payload = assertResolve(deferred.promise, 1000);
   if (is ByteArray msg) {
     assert (is ByteArray payload);
     // backend error : disabled for now
@@ -220,7 +220,7 @@ void replyToReply<M>(M msg)(EventBus bus)
   assertResolve(registration.completed);
   Promise<Message<String>> whateverReply = bus.send<String>("foo", "whatever");
   whateverReply.compose((Message<String> whateverReplyMsg) => whateverReplyMsg.reply(msg));
-  value payload = deferred.promise.future.get(1000);
+  value payload = assertResolve(deferred.promise, 1000);
   if (is ByteArray msg) {
     assert (is ByteArray payload);
     // backend error : disabled for now
