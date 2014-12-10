@@ -37,12 +37,7 @@ import io.vertx.ceylon.core { Chunk, Entries,
 by("Julien Viet")
 shared class HttpClientRequest(Vertx vertx, HttpClient_ delegate, String method, String uri) extends HttpOutput<HttpClientRequest>() {
 
-    Deferred<HttpClientResponse> deferred = Deferred<HttpClientResponse> {
-      object context satisfies ExecutionContext {
-        shared actual ExecutionContext childContext() => vertx.executionContext;
-        shared actual void run(void task()) => task();
-      }
-    };
+    Deferred<HttpClientResponse> deferred = Deferred<HttpClientResponse>(vertx.executionContext);
 
     """The response promise is resolved when the http client response is available.
        

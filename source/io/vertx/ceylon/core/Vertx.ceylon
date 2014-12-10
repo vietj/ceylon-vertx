@@ -79,7 +79,13 @@ shared class Vertx(shared Vertx_ delegate = VertxProvider.create()) {
   
   "Context for executing a promise on the vertx event loop"
   shared object executionContext satisfies ExecutionContext {
-    shared actual void run(void task()) => delegate.runOnContext(NoArgVoidHandler(task));
+    shared actual void run(void task()) {
+      if (eventLoop) {
+        task();
+      } else {
+        delegate.runOnContext(NoArgVoidHandler(task));
+      }
+    }
     shared actual ExecutionContext childContext() => this;
   }
   
