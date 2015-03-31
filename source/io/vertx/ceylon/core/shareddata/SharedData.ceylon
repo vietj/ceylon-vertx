@@ -17,7 +17,7 @@ Double_ wrapFloat(Float v) => Double_(v);
 Float unwrapFloat(Double_ v) => v.doubleValue();
 String_ wrapString(String v) => String_(v);
 String(String_) unwrapString = String_.string;
-ByteArray(ByteArray) wrapByteArray = identity<ByteArray>;
+ByteArray(ByteArray) wrapByteArray = (ByteArray arg) => arg;
 ByteArray(ByteArray) unwrapByteArray = wrapByteArray;
 
 """Sometimes it is desirable to share immutable data between different event loops, for example to implement a

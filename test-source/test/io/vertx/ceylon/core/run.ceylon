@@ -167,7 +167,7 @@ shared ByteArray toByteArray({Integer*} seq) {
 }
 
 by ("Julien Viet")
-void run() {
+shared void run() {
 
   "Make sure we don't use the global context"
   object globalContext satisfies ExecutionContext {
