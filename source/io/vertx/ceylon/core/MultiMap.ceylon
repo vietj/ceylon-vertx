@@ -33,7 +33,7 @@ shared class MultiMap(MultiMap_ delegate) satisfies Map<String,[String+]> {
   shared actual [String+]? get(Object key) {
     if (is String key) {
       List_<String_>? val = delegate.getAll(key);
-      if (exists val) {
+      if (exists val, !val.empty) {
         return read(val.iterator());
       }
     }
