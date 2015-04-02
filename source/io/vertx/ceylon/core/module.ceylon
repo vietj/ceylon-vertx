@@ -221,7 +221,7 @@
    """
 by ("Julien Viet")
 license ("ASL2")
-module io.vertx.ceylon.core "1.0.0" {
+module io.vertx.ceylon.core "1.0.0.stef" {
   
   import io.netty "4.0.20.Final";
   import com.fasterxml.jackson.annotations "2.2.2";
