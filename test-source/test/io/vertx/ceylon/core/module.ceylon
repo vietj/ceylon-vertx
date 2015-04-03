@@ -1,10 +1,10 @@
 by ("Julien Viet")
 license ("ASL2")
-module test.io.vertx.ceylon.core "1.0.0.stef" {
+module test.io.vertx.ceylon.core "1.0.1" {
   
   import io.netty "4.0.20.Final";
   import ceylon.promise "1.1.0";
-  shared import io.vertx.ceylon.core "1.0.0.stef";
+  shared import io.vertx.ceylon.core "1.0.1";
   shared import java.base "7";
   shared import ceylon.net "1.1.0";
   import ceylon.json "1.1.0";
