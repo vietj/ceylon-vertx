@@ -115,7 +115,7 @@ shared T assertResolve<T>(Promise<T>|Deferred<T> obj, Integer timeout = 20000) {
   }
   variable Anything result = null;
   value latch = CountDownLatch(1);
-  future.onComplete {
+  future.completed {
     void onFulfilled(T val) {
       result = val;
       latch.countDown();

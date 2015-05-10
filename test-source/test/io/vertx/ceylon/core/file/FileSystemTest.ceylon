@@ -269,7 +269,7 @@ shared class FileSystemTest() {
       Deferred<Anything> d = Deferred<Anything>(testContext);
       vertx.runOnContext(void() {
           value fs = vertx.fileSystem;
-          fs.open("work/foo.txt").onComplete(void(AsyncFile file) {
+          fs.open("work/foo.txt").completed(void(AsyncFile file) {
               file.write(expected, 0);
               d.fulfill("");
             });

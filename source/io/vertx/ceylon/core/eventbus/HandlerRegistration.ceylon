@@ -22,7 +22,7 @@ class HandlerRegistration<M>(ExecutionContext context, EventBus_ delegate, Strin
     satisfies Registration & Handler_<Message_<Object>> {
   
   value resultHandler = voidAsyncResult(context);
-  shared actual Promise<Anything> completed => resultHandler.promise;
+  shared actual Promise<Anything> completion => resultHandler.promise;
   
   shared actual Promise<Anything> cancel() {
     value cancelled = voidAsyncResult(context);

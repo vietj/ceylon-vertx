@@ -17,7 +17,7 @@ object promiseOfNothing extends Promise<Nothing>() {
     }
      */
   }
-  shared actual Promise<Result> compose<Result>(Result(Nothing) onFulfilled, Result(Throwable) onRejected) {
+  shared actual Promise<Result> map<Result>(Result(Nothing) onFulfilled, Result(Throwable) onRejected) {
     throw Exception();
   }
   

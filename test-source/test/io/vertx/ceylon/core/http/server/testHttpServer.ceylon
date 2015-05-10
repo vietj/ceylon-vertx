@@ -127,7 +127,7 @@ void testForm() => with {
       value parameters = Deferred<Map<String,{String+}>>(testContext);
       Promise<Map<String,{String+}>> p = parameters.promise;
       void f(HttpServerRequest req) {
-        req.formAttributes.compose(parameters.fulfill);
+        req.formAttributes.completed(parameters.fulfill);
         HttpServerResponse resp = req.response;
         resp.status(200);
         resp.contentType("text/html");
@@ -184,7 +184,7 @@ void testParseBody() => with {
       void f(HttpServerRequest req) {
         value text = req.parseBody(textBody);
         parameters.fulfill(text);
-        req.formAttributes.always(formAttributes.add);
+        req.formAttributes.onComplete(formAttributes.add);
         HttpServerResponse resp = req.response;
         resp.status(200);
         resp.contentType("text/html");

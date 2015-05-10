@@ -179,7 +179,7 @@ void send<M>(M msg)(EventBus bus) {
   assert (is Payload msg);
   value deferred = Deferred<M>(testContext);
   Registration registration = bus.registerHandler("foo", (Message<M> msg) => deferred.fulfill(msg.body));
-  assertResolve(registration.completed);
+  assertResolve(registration.completion);
   bus.send("foo", msg);
   value payload = assertResolve(deferred.promise, 1000);
   if (is ByteArray msg) {
@@ -196,10 +196,10 @@ void send<M>(M msg)(EventBus bus) {
 void reply<M>(M msg)(EventBus bus) {
   assert (is Payload msg);
   Registration registration = bus.registerHandler("foo", (Message<String> whateverMsg) => whateverMsg.reply(msg));
-  assertResolve(registration.completed);
+  assertResolve(registration.completion);
   value deferred = Deferred<M>(testContext);
   Promise<Message<M>> reply = bus.send<M>("foo", "whatever");
-  reply.compose((Message<M> msg) => deferred.fulfill(msg.body));
+  reply.completed((Message<M> msg) => deferred.fulfill(msg.body));
   value payload = assertResolve(deferred.promise, 1000);
   if (is ByteArray msg) {
     assert (is ByteArray payload);
@@ -217,10 +217,10 @@ void replyToReply<M>(M msg)(EventBus bus)
   assert (is Payload msg);
   value deferred = Deferred<M>(testContext);
   Registration registration = bus.registerHandler("foo",
-    (Message<String> whateverMsg) => whateverMsg.reply<M>("whatever_reply").compose((Message<M> whateverReplyMsg) => deferred.fulfill(whateverReplyMsg.body)));
-  assertResolve(registration.completed);
+    (Message<String> whateverMsg) => whateverMsg.reply<M>("whatever_reply").completed((Message<M> whateverReplyMsg) => deferred.fulfill(whateverReplyMsg.body)));
+  assertResolve(registration.completion);
   Promise<Message<String>> whateverReply = bus.send<String>("foo", "whatever");
-  whateverReply.compose((Message<String> whateverReplyMsg) => whateverReplyMsg.reply(msg));
+  whateverReply.completed((Message<String> whateverReplyMsg) => whateverReplyMsg.reply(msg));
   value payload = assertResolve(deferred.promise, 1000);
   if (is ByteArray msg) {
     assert (is ByteArray payload);

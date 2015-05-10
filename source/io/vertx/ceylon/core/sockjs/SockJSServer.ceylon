@@ -99,7 +99,7 @@ shared class SockJSServer(Vertx vertx, SockJSServer_ delegate) {
       
       shared actual Boolean handleAuthorise(JsonObject_ jsonObject, String sessionID, Handler_<AsyncResult_<Boolean_>> handler) {
         Deferred<Boolean> deferred = Deferred<Boolean>(vertx.executionContext);
-        deferred.promise.onComplete {
+        deferred.promise.completed {
           void onFulfilled(Boolean b) {
             handler.handle(DefaultFutureResult_<Boolean_>(b then Boolean_.\iTRUE else Boolean_.\iFALSE));
           }

@@ -57,7 +57,7 @@ void clientSendMessage() => with {
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
     value ws = client.connectWebsocket("/foo");
-    ws.onComplete((WebSocket websocket) => websocket.writeTextFrame("helloFromClient"));
+    ws.completed((WebSocket websocket) => websocket.writeTextFrame("helloFromClient"));
     assertResolveTo(deferred, "helloFromClient");
   }
 };
@@ -73,7 +73,7 @@ void serverSendMessage() => with {
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
     value ws = client.connectWebsocket("/foo");
-    ws.onComplete((WebSocket websocket) => websocket.frameHandler(void(WebSocketFrame frame) {
+    ws.completed((WebSocket websocket) => websocket.frameHandler(void(WebSocketFrame frame) {
             deferred.fulfill(frame.textData);
           })
     );
@@ -92,7 +92,7 @@ void clientCloseHandler() => with {
     value client = vertx.createHttpClient(8080);
     value deferred = Deferred<Anything>(testContext);
     value ws = client.connectWebsocket("/foo");
-    ws.onComplete((WebSocket websocket) => websocket.closeHandler().compose(deferred.fulfill, deferred.reject));
+    ws.map((WebSocket websocket) => websocket.closeHandler().completed(deferred.fulfill, deferred.reject));
     assertResolve(deferred);
   }
 };
@@ -103,12 +103,12 @@ void serverCloseHandler() => with {
     value server = vertx.createHttpServer();
     value deferred = Deferred<Anything>(testContext);
     server.websocketHandler(void(ServerWebSocket websocket) {
-        websocket.closeHandler().compose(deferred.fulfill, deferred.reject);
+        websocket.closeHandler().completed(deferred.fulfill, deferred.reject);
       });
     server.listen(8080);
     value client = vertx.createHttpClient(8080);
     value ws = client.connectWebsocket("/foo");
-    ws.onComplete((WebSocket websocket) => websocket.close());
+    ws.completed((WebSocket websocket) => websocket.close());
     assertResolve(deferred);
   }
 };
@@ -127,7 +127,7 @@ void serverRejects() => with {
         deferred.fulfill("rejected");
       });
     value ws = client.connectWebsocket("/foo");
-    ws.onComplete((WebSocket websocket) => deferred.reject(Exception()));
+    ws.completed((WebSocket websocket) => deferred.reject(Exception()));
     assertResolveTo(deferred, "rejected");
   }
 };

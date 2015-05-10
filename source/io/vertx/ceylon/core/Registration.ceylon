@@ -8,7 +8,7 @@ by ("Julien Viet")
 shared interface Registration {
   
   "Resolved when the registration is complete"
-  shared formal Promise<Anything> completed;
+  shared formal Promise<Anything> completion;
   
   "Cancel the registration, this is an asynchronous operation."
   shared formal Promise<Anything> cancel();

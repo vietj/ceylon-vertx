@@ -121,7 +121,7 @@
    ~~~
    
    When you register a handler on an address and you're in a cluster it can take some time for the knowledge of that
-   new handler to be propagated across the entire cluster. If you want to be notified you can use the [[io.vertx.ceylon.core::Registration.completed]]
+   new handler to be propagated across the entire cluster. If you want to be notified you can use the [[io.vertx.ceylon.core::Registration.completion]]
    `Promise` object. This promise will then be resolved once the information has reached all nodes of the cluster.
 
    ~~~
