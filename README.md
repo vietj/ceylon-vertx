@@ -2,6 +2,8 @@
 
 Provides a Ceylon API for the Vert.x framework.
 
+Please see the much improved, official Ceylon.support for Vert.x [here](https://github.com/vert-x3/vertx-lang-ceylon).
+
 # Documentation
 
 Documentation can be found [here](https://modules.ceylon-lang.org/repo/1/io/vertx/ceylon/0.3.10/module-doc/index.html)
